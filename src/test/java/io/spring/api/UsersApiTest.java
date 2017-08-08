@@ -6,6 +6,7 @@ import io.spring.application.user.UserData;
 import io.spring.application.user.UserReadService;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
+import io.spring.infrastructure.service.DefaultJwtService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,13 +57,10 @@ public class UsersApiTest {
         UserData userData = new UserData(email, username, "", "https://static.productionready.io/images/smiley-cyrus.jpg");
         when(userReadService.findOne(eq(username))).thenReturn(userData);
 
-        Map<String, Object> param = new HashMap<String, Object>() {{
-            put("user", new HashMap<String, Object>() {{
-                put("email", email);
-                put("password", "johnnyjacob");
-                put("username", username);
-            }});
-        }};
+        when(userRepository.findByUsername(eq(username))).thenReturn(Optional.empty());
+        when(userRepository.findByEmail(eq(email))).thenReturn(Optional.empty());
+
+        Map<String, Object> param = prepareRegisterParameter(email, username);
 
         given()
             .contentType("application/json")
@@ -86,13 +84,7 @@ public class UsersApiTest {
         String email = "john@jacob.com";
         String username = "";
 
-        Map<String, Object> param = new HashMap<String, Object>() {{
-            put("user", new HashMap<String, Object>() {{
-                put("email", email);
-                put("password", "johnnyjacob");
-                put("username", username);
-            }});
-        }};
+        Map<String, Object> param = prepareRegisterParameter(email, username);
 
         given()
             .contentType("application/json")
@@ -109,13 +101,7 @@ public class UsersApiTest {
         String email = "johnxjacob.com";
         String username = "johnjacob";
 
-        Map<String, Object> param = new HashMap<String, Object>() {{
-            put("user", new HashMap<String, Object>() {{
-                put("email", email);
-                put("password", "johnnyjacob");
-                put("username", username);
-            }});
-        }};
+        Map<String, Object> param = prepareRegisterParameter(email, username);
 
         given()
             .contentType("application/json")
@@ -137,13 +123,7 @@ public class UsersApiTest {
             email, username, "123", "bio", ""
         )));
 
-        Map<String, Object> param = new HashMap<String, Object>() {{
-            put("user", new HashMap<String, Object>() {{
-                put("email", email);
-                put("password", "johnnyjacob");
-                put("username", username);
-            }});
-        }};
+        Map<String, Object> param = prepareRegisterParameter(email, username);
 
         given()
             .contentType("application/json")
@@ -166,13 +146,7 @@ public class UsersApiTest {
 
         when(userRepository.findByUsername(eq(username))).thenReturn(Optional.empty());
 
-        Map<String, Object> param = new HashMap<String, Object>() {{
-            put("user", new HashMap<String, Object>() {{
-                put("email", email);
-                put("password", "johnnyjacob");
-                put("username", username);
-            }});
-        }};
+        Map<String, Object> param = prepareRegisterParameter(email, username);
 
         given()
             .contentType("application/json")
@@ -182,5 +156,15 @@ public class UsersApiTest {
             .then()
             .statusCode(422)
             .body("errors.email[0]", equalTo("duplicated email"));
+    }
+
+    private HashMap<String, Object> prepareRegisterParameter(final String email, final String username) {
+        return new HashMap<String, Object>() {{
+            put("user", new HashMap<String, Object>() {{
+                put("email", email);
+                put("password", "johnnyjacob");
+                put("username", username);
+            }});
+        }};
     }
 }

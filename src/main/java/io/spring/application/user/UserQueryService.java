@@ -20,6 +20,9 @@ public class UserQueryService  {
         return new UserWithToken(userData, jwtService.toToken(userData));
     }
 
+    public UserWithToken fetchCurrentUser(String username, String token) {
+        return new UserWithToken(userReadService.findOne(username), token);
+    }
 }
 
 @JsonRootName("user")

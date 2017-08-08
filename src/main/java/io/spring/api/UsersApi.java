@@ -12,8 +12,10 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,21 +23,22 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/users")
 public class UsersApi {
     private UserRepository userRepository;
     private UserQueryService userQueryService;
     private String defaultImage;
 
     @Autowired
-    public UsersApi(UserRepository userRepository, UserQueryService userQueryService, @Value("${image.default}") String defaultImage) {
+    public UsersApi(UserRepository userRepository,
+                    UserQueryService userQueryService,
+                    @Value("${image.default}") String defaultImage) {
         this.userRepository = userRepository;
         this.userQueryService = userQueryService;
         this.defaultImage = defaultImage;
     }
 
-    @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity creeteUser(@Valid @RequestBody RegisterParam registerParam, BindingResult bindingResult) {
+    @RequestMapping(path = "/users", method = RequestMethod.POST)
+    public ResponseEntity createUser(@Valid @RequestBody RegisterParam registerParam, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new InvalidRequestException(bindingResult);
         }

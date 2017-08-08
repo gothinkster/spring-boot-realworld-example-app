@@ -7,17 +7,20 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.spring.application.JwtService;
 import io.spring.application.user.UserData;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.Optional;
 
-@Service
+@Component
 public class DefaultJwtService implements JwtService {
     private String secret;
     private int sessionTime;
 
+    @Autowired
     public DefaultJwtService(@Value("${jwt.secret}") String secret,
                              @Value("${jwt.sessionTime}") int sessionTime) {
         this.secret = secret;
