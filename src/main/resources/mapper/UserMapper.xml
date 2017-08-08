@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="io.spring.infrastructure.user.UserMapper">
+    <insert id="save">
+        insert into users (username, email, password, bio, image) values(
+          #{user.username},
+          #{user.email},
+          #{user.password},
+          #{user.bio},
+          #{user.image}
+        )
+    </insert>
+    <select id="findByUsername" resultMap="user">
+        select * from users where username = #{username}
+    </select>
+    <select id="findByEmail" resultMap="user">
+        select username, email, password, bio, image from users where email = #{email}
+    </select>
+
+    <resultMap id="user" type="io.spring.core.user.User" >
+        <id column="username" property="username"/>
+        <result column="email" property="email"/>
+        <result column="password" property="password"/>
+        <result column="bio" property="bio"/>
+        <result column="image" property="image"/>
+    </resultMap>
+</mapper>
