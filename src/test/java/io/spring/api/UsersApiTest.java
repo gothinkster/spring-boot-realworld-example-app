@@ -54,7 +54,7 @@ public class UsersApiTest {
         String username = "johnjacob";
 
         when(jwtService.toToken(any())).thenReturn("123");
-        UserData userData = new UserData(email, username, "", defaultAvatar);
+        UserData userData = new UserData("123", email, username, "", defaultAvatar);
         when(userReadService.findOne(eq(username))).thenReturn(userData);
 
         when(userRepository.findByUsername(eq(username))).thenReturn(Optional.empty());
@@ -175,7 +175,7 @@ public class UsersApiTest {
         String password = "123";
 
         User user = new User(email, username, password, "", defaultAvatar);
-        UserData userData = new UserData(email, username, "", defaultAvatar);
+        UserData userData = new UserData("123", email, username, "", defaultAvatar);
 
         when(userRepository.findByEmail(eq(email))).thenReturn(Optional.of(user));
         when(userReadService.findOne(eq(username))).thenReturn(userData);
@@ -209,7 +209,7 @@ public class UsersApiTest {
         String password = "123";
 
         User user = new User(email, username, password, "", defaultAvatar);
-        UserData userData = new UserData(email, username, "", defaultAvatar);
+        UserData userData = new UserData(user.getId(), email, username, "", defaultAvatar);
 
         when(userRepository.findByEmail(eq(email))).thenReturn(Optional.of(user));
         when(userReadService.findOne(eq(username))).thenReturn(userData);

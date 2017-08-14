@@ -24,7 +24,7 @@ public class DefaultJwtServiceTest {
     public void should_generate_and_parse_token() throws Exception {
         String username = "aisensiy";
 
-        UserData userData = new UserData("aisensiy@163.com", username, "", "");
+        UserData userData = new UserData("123", "aisensiy@163.com", username, "", "");
         String token = jwtService.toToken(userData);
         assertThat(token, notNullValue());
         Optional<String> optional = jwtService.getSubFromToken(token);

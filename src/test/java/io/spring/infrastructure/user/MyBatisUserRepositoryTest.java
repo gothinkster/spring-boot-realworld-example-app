@@ -2,6 +2,7 @@ package io.spring.infrastructure.user;
 
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
@@ -20,14 +21,37 @@ import static org.junit.Assert.*;
 public class MyBatisUserRepositoryTest {
     @Autowired
     private UserRepository userRepository;
+    private User user;
+
+    @Before
+    public void setUp() throws Exception {
+        user = new User("aisensiy@163.com", "aisensiy", "123", "", "default");
+    }
 
     @Test
     public void should_save_and_fetch_user_success() throws Exception {
-        User user = new User("aisensiy@163.com", "aisensiy", "123", "", "default");
         userRepository.save(user);
         Optional<User> userOptional = userRepository.findByUsername("aisensiy");
         assertThat(userOptional.get(), is(user));
         Optional<User> userOptional2 = userRepository.findByEmail("aisensiy@163.com");
         assertThat(userOptional2.get(), is(user));
+    }
+
+    @Test
+    public void should_update_user_success() throws Exception {
+        String newEmail = "newemail@email.com";
+        user.update(newEmail, "", "", "", "");
+        userRepository.save(user);
+        Optional<User> optional = userRepository.findByUsername(user.getUsername());
+        assertThat(optional.isPresent(), is(true));
+        assertThat(optional.get().getEmail(), is(newEmail));
+
+        String newUsername = "newUsername";
+        user.update("", newUsername, "", "", "");
+        userRepository.save(user);
+        optional = userRepository.findByEmail(user.getEmail());
+        assertThat(optional.isPresent(), is(true));
+        assertThat(optional.get().getUsername(), is(newUsername));
+        assertThat(optional.get().getImage(), is(user.getImage()));
     }
 }

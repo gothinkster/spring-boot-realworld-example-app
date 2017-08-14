@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="io.spring.infrastructure.user.UserMapper">
-    <insert id="save">
-        insert into users (username, email, password, bio, image) values(
+    <insert id="insert">
+        insert into users (id, username, email, password, bio, image) values(
+          #{user.id},
           #{user.username},
           #{user.email},
           #{user.password},
@@ -10,15 +11,30 @@
           #{user.image}
         )
     </insert>
+    <update id="update">
+        update users
+          <set>
+              <if test="user.username != ''">username = #{user.username},</if>
+              <if test="user.email != ''">email = #{user.email},</if>
+              <if test="user.password != ''">password = #{user.password},</if>
+              <if test="user.bio != ''">bio = #{user.bio},</if>
+              <if test="user.image != ''">image = #{user.image}</if>
+          </set>
+        where id = #{user.id}
+    </update>
     <select id="findByUsername" resultMap="user">
         select * from users where username = #{username}
     </select>
     <select id="findByEmail" resultMap="user">
-        select username, email, password, bio, image from users where email = #{email}
+        select id, username, email, password, bio, image from users where email = #{email}
+    </select>
+    <select id="findById" resultMap="user">
+        select id, username, email, password, bio, image from users where id = #{id}
     </select>
 
     <resultMap id="user" type="io.spring.core.user.User" >
-        <id column="username" property="username"/>
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
         <result column="email" property="email"/>
         <result column="password" property="password"/>
         <result column="bio" property="bio"/>

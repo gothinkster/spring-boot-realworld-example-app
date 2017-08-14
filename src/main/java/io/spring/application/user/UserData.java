@@ -14,8 +14,9 @@ import javax.persistence.Id;
 @Entity
 @JsonRootName("user")
 public class UserData {
-    private String email;
     @Id
+    private String id;
+    private String email;
     private String username;
     private String bio;
     private String image;

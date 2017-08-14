@@ -6,7 +6,6 @@ import io.spring.application.user.UserData;
 import io.spring.application.user.UserReadService;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
-import io.spring.infrastructure.service.DefaultJwtService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,9 +15,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
@@ -38,24 +41,32 @@ public class CurrentUserApiTest {
 
     @Autowired
     private JwtService jwtService;
+    private User user;
+    private UserData userData;
+    private String token;
+    private String email;
+    private String username;
+    private String defaultAvatar;
 
     @Before
     public void setUp() throws Exception {
         RestAssured.port = port;
+        email = "john@jacob.com";
+        username = "johnjacob";
+
+        defaultAvatar = "https://static.productionready.io/images/smiley-cyrus.jpg";
+        user = new User(email, username, "123", "", defaultAvatar);
+        when(userRepository.findByUsername(eq(username))).thenReturn(Optional.of(user));
+
+        userData = new UserData(user.getId(), email, username, "", defaultAvatar);
+        when(userReadService.findOne(eq(username))).thenReturn(userData);
+
+        token = jwtService.toToken(userData);
     }
 
     @Test
     public void should_get_current_user_with_token() throws Exception {
-        String email = "john@jacob.com";
-        String username = "johnjacob";
 
-        User user = new User(email, username, "123", "", "https://static.productionready.io/images/smiley-cyrus.jpg");
-        when(userRepository.findByUsername(eq(username))).thenReturn(Optional.of(user));
-
-        UserData userData = new UserData(email, username, "", "https://static.productionready.io/images/smiley-cyrus.jpg");
-        when(userReadService.findOne(eq(username))).thenReturn(userData);
-
-        String token = jwtService.toToken(userData);
 
         given()
             .header("Authorization", "Token " + token)
@@ -91,5 +102,43 @@ public class CurrentUserApiTest {
             .get("/user")
             .then()
             .statusCode(401);
+    }
+
+    @Test
+    public void should_update_current_user_profile() throws Exception {
+        String newEmail = "newemail@example.com";
+        String newBio = "updated";
+
+        Map<String, Object> param = new HashMap<String, Object>() {{
+            put("user", new HashMap<String, Object>() {{
+                put("email", newEmail);
+                put("bio", newBio);
+            }});
+        }};
+
+        given()
+            .contentType("application/json")
+            .header("Authorization", "Token " + token)
+            .body(param)
+            .when()
+            .put("/user")
+            .then()
+            .statusCode(200);
+
+        assertThat(user.getEmail(), is(newEmail));
+        assertThat(user.getBio(), is(newBio));
+        assertThat(user.getImage(), is(defaultAvatar));
+    }
+
+    @Test
+    public void should_get_401_if_not_login() throws Exception {
+        given()
+            .contentType("application/json")
+            .body(new HashMap<String, Object>() {{
+                put("user", new HashMap<String, Object>());
+            }})
+            .when()
+            .put("/user")
+            .then().statusCode(401);
     }
 }
