@@ -70,4 +70,26 @@ public class CurrentUserApiTest {
             .body("user.image", equalTo("https://static.productionready.io/images/smiley-cyrus.jpg"))
             .body("user.token", equalTo(token));
     }
+
+    @Test
+    public void should_get_401_without_token() throws Exception {
+        given()
+            .contentType("application/json")
+            .when()
+            .get("/user")
+            .then()
+            .statusCode(401);
+
+    }
+
+    @Test
+    public void should_get_401_with_invalid_token() throws Exception {
+        given()
+            .contentType("application/json")
+            .header("Authorization", "Token asdfasd")
+            .when()
+            .get("/user")
+            .then()
+            .statusCode(401);
+    }
 }

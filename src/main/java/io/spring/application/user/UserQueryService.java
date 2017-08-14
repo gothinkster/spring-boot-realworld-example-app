@@ -15,7 +15,7 @@ public class UserQueryService  {
         this.jwtService = jwtService;
     }
 
-    public UserWithToken fetchCreatedUser(String username) {
+    public UserWithToken fetchNewAuthenticatedUser(String username) {
         UserData userData = userReadService.findOne(username);
         return new UserWithToken(userData, jwtService.toToken(userData));
     }
