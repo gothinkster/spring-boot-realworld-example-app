@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/articles/{slug}")
@@ -36,13 +38,15 @@ public class ArticleApi {
     }
 
     @GetMapping
-    public ResponseEntity<ArticleData> article(@PathVariable("slug") String slug,
+    public ResponseEntity<?> article(@PathVariable("slug") String slug,
                                                @AuthenticationPrincipal User user) {
-        return articleQueryService.findBySlug(slug, user).map(ResponseEntity::ok).orElseThrow(ResourceNotFoundException::new);
+        return articleQueryService.findBySlug(slug, user)
+            .map(articleData -> ResponseEntity.ok(articleResponse(articleData)))
+            .orElseThrow(ResourceNotFoundException::new);
     }
 
     @PutMapping
-    public ResponseEntity<ArticleData> updateArticle(@PathVariable("slug") String slug,
+    public ResponseEntity<?> updateArticle(@PathVariable("slug") String slug,
                                                      @AuthenticationPrincipal User user,
                                                      @Valid @RequestBody UpdateArticleParam updateArticleParam) {
         return articleRepository.findBySlug(slug).map(article -> {
@@ -54,7 +58,7 @@ public class ArticleApi {
                 updateArticleParam.getDescription(),
                 updateArticleParam.getBody());
             articleRepository.save(article);
-            return ResponseEntity.ok(articleQueryService.findBySlug(slug, user).get());
+            return ResponseEntity.ok(articleResponse(articleQueryService.findBySlug(slug, user).get()));
         }).orElseThrow(ResourceNotFoundException::new);
     }
 
@@ -68,6 +72,12 @@ public class ArticleApi {
             articleRepository.remove(article);
             return ResponseEntity.noContent().build();
         }).orElseThrow(ResourceNotFoundException::new);
+    }
+
+    private Map<String, Object> articleResponse(ArticleData articleData) {
+        return new HashMap<String, Object>() {{
+            put("article", articleData);
+        }};
     }
 }
 

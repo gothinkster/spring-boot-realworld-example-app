@@ -1,7 +1,7 @@
 package io.spring.application.comment;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
 import io.spring.application.profile.ProfileData;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,10 +11,10 @@ import org.joda.time.DateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonRootName("comment")
 public class CommentData {
     private String id;
     private String body;
+    @JsonIgnore
     private String articleId;
     private DateTime createdAt;
     private DateTime updatedAt;

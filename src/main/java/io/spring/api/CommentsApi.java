@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +26,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.xml.ws.Response;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/articles/{slug}/comments")
@@ -43,7 +47,7 @@ public class CommentsApi {
     }
 
     @PostMapping
-    public ResponseEntity<CommentData> createComment(@PathVariable("slug") String slug,
+    public ResponseEntity<?> createComment(@PathVariable("slug") String slug,
                                                      @AuthenticationPrincipal User user,
                                                      @Valid @RequestBody NewCommentParam newCommentParam,
                                                      BindingResult bindingResult) {
@@ -53,11 +57,27 @@ public class CommentsApi {
         }
         Comment comment = new Comment(newCommentParam.getBody(), user.getId(), article.getId());
         commentRepository.save(comment);
-        return ResponseEntity.status(201).body(commentQueryService.findById(comment.getId(), user).get());
+        return ResponseEntity.status(201).body(commentResponse(commentQueryService.findById(comment.getId(), user).get()));
+    }
+
+    @GetMapping
+    public ResponseEntity getComments(@PathVariable("slug") String slug,
+                                      @AuthenticationPrincipal User user) {
+        Article article = findArticle(slug);
+        List<CommentData> comments = commentQueryService.findByArticleSlug(article.getSlug(), user);
+        return ResponseEntity.ok(new HashMap<String, Object>() {{
+            put("comments", comments);
+        }});
     }
 
     private Article findArticle(String slug) {
         return articleRepository.findBySlug(slug).map(article -> article).orElseThrow(ResourceNotFoundException::new);
+    }
+
+    private Map<String, Object> commentResponse(CommentData commentData) {
+        return new HashMap<String, Object>() {{
+            put("comment", commentData);
+        }};
     }
 }
 

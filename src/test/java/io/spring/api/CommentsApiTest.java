@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -47,6 +48,7 @@ public class CommentsApiTest extends TestWithCurrentUser {
     private CommentQueryService commentQueryService;
 
     private Article article;
+    private CommentData commentData;
 
     @Before
     public void setUp() throws Exception {
@@ -58,6 +60,13 @@ public class CommentsApiTest extends TestWithCurrentUser {
 
         article = new Article("title", "desc", "body", new String[]{"test", "java"}, user.getId());
         when(articleRepository.findBySlug(eq(article.getSlug()))).thenReturn(Optional.of(article));
+        commentData = new CommentData(
+            "123",
+            "comment",
+            article.getId(),
+            new DateTime(),
+            new DateTime(),
+            new ProfileData(user.getId(), user.getUsername(), user.getBio(), user.getImage(), false));
     }
 
     @Test
@@ -67,14 +76,6 @@ public class CommentsApiTest extends TestWithCurrentUser {
                 put("body", "comment content");
             }});
         }};
-
-        CommentData commentData = new CommentData(
-            "123",
-            "comment",
-            article.getId(),
-            new DateTime(),
-            new DateTime(),
-            new ProfileData(user.getId(), user.getUsername(), user.getBio(), user.getImage(), false));
 
         when(commentQueryService.findById(anyString(), eq(user))).thenReturn(Optional.of(commentData));
 
@@ -107,5 +108,16 @@ public class CommentsApiTest extends TestWithCurrentUser {
             .statusCode(422)
             .body("errors.body[0]", equalTo("can't be empty"));
 
+    }
+
+    @Test
+    public void should_get_comments_of_article_success() throws Exception {
+        when(commentQueryService.findByArticleSlug(anyString(), eq(null))).thenReturn(Arrays.asList(commentData));
+        RestAssured.when()
+            .get("/articles/{slug}/comments", article.getSlug())
+            .prettyPeek()
+            .then()
+            .statusCode(200)
+            .body("comments[0].id", equalTo(commentData.getId()));
     }
 }

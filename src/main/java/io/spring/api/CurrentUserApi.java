@@ -2,6 +2,7 @@ package io.spring.api;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 import io.spring.application.user.UserQueryService;
+import io.spring.application.user.UserWithToken;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
 import lombok.Getter;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/user")
@@ -35,7 +38,7 @@ public class CurrentUserApi {
     @GetMapping
     public ResponseEntity currentUser(@AuthenticationPrincipal User currentUser,
                                       @RequestHeader(value = "Authorization") String authorization) {
-        return ResponseEntity.ok(userQueryService.fetchCurrentUser(currentUser.getUsername(), authorization.split(" ")[1]));
+        return ResponseEntity.ok(userResponse(userQueryService.fetchCurrentUser(currentUser.getUsername(), authorization.split(" ")[1])));
     }
 
     @PutMapping
@@ -50,7 +53,13 @@ public class CurrentUserApi {
             updateUserParam.getBio(),
             updateUserParam.getImage());
         userRepository.save(currentUser);
-        return ResponseEntity.ok(userQueryService.fetchCurrentUser(currentUser.getUsername(), authorization.split(" ")[1]));
+        return ResponseEntity.ok(userResponse(userQueryService.fetchCurrentUser(currentUser.getUsername(), authorization.split(" ")[1])));
+    }
+
+    private Map<String, Object> userResponse(UserWithToken userWithToken) {
+        return new HashMap<String, Object>() {{
+            put("user", userWithToken);
+        }};
     }
 }
 

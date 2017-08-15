@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping(path = "/articles")
@@ -47,7 +48,9 @@ public class ArticlesApi {
             newArticleParam.getTagList(),
             user.getId());
         articleRepository.save(article);
-        return ResponseEntity.ok(articleQueryService.findById(article.getId(), user).get());
+        return ResponseEntity.ok(new HashMap<String, Object>() {{
+            put("article", articleQueryService.findById(article.getId(), user).get());
+        }});
     }
 }
 

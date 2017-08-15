@@ -4,6 +4,8 @@ import io.spring.application.profile.UserRelationshipQueryService;
 import io.spring.core.user.User;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,5 +29,9 @@ public class CommentQueryService {
                     commentData.getProfileData().getId()));
         }
         return Optional.ofNullable(commentData);
+    }
+
+    public List<CommentData> findByArticleSlug(String slug, User user) {
+        return new ArrayList<>();
     }
 }

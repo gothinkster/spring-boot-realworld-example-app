@@ -13,7 +13,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonRootName("article")
 public class ArticleData {
     private String id;
     private String slug;

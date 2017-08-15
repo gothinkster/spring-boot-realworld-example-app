@@ -111,6 +111,7 @@ public class ArticlesApiTest extends TestWithCurrentUser {
             .body(param)
             .when()
             .post("/articles")
+            .prettyPeek()
             .then()
             .statusCode(422)
             .body("errors.body[0]", equalTo("can't be empty"));

@@ -2,7 +2,9 @@ package io.spring.api;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 import io.spring.api.exception.InvalidRequestException;
+import io.spring.application.user.UserData;
 import io.spring.application.user.UserQueryService;
+import io.spring.application.user.UserWithToken;
 import io.spring.core.user.EncryptService;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
@@ -20,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -63,18 +67,24 @@ public class UsersApi {
             "",
             defaultImage);
         userRepository.save(user);
-        return ResponseEntity.status(201).body(userQueryService.fetchNewAuthenticatedUser(user.getUsername()));
+        return ResponseEntity.status(201).body(userResponse(userQueryService.fetchNewAuthenticatedUser(user.getUsername())));
     }
 
     @RequestMapping(path = "/users/login", method = POST)
     public ResponseEntity userLogin(@Valid @RequestBody LoginParam loginParam, BindingResult bindingResult) {
         Optional<User> optional = userRepository.findByEmail(loginParam.getEmail());
         if (optional.isPresent() && encryptService.check(loginParam.getPassword(), optional.get().getPassword())) {
-            return ResponseEntity.ok(userQueryService.fetchNewAuthenticatedUser(optional.get().getUsername()));
+            return ResponseEntity.ok(userResponse(userQueryService.fetchNewAuthenticatedUser(optional.get().getUsername())));
         } else {
             bindingResult.rejectValue("password", "INVALID", "invalid email or password");
             throw new InvalidRequestException(bindingResult);
         }
+    }
+
+    private Map<String, Object> userResponse(UserWithToken userWithToken) {
+        return new HashMap<String, Object>() {{
+            put("user", userWithToken);
+        }};
     }
 }
 
