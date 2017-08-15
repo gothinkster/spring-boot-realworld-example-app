@@ -1,7 +1,6 @@
 package io.spring.api.exception;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 
 @SuppressWarnings("serial")

@@ -3,8 +3,6 @@ package io.spring.api.security;
 import io.spring.application.JwtService;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

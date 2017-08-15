@@ -1,15 +1,9 @@
 package io.spring.api;
 
 import io.restassured.RestAssured;
-import io.spring.application.JwtService;
-import io.spring.application.user.UserData;
-import io.spring.application.user.UserReadService;
-import io.spring.core.user.User;
-import io.spring.core.user.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
