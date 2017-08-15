@@ -19,26 +19,44 @@
     <insert id="insertArticleTagRelation">
         insert into article_tags (article_id, tag_id) values(#{articleId}, #{tagId})
     </insert>
-    <select id="findById" resultMap="article">
+    <update id="update">
+        update articles
+          <set>
+              <if test="article.title != ''">title = #{article.title},</if>
+              <if test="article.title != ''">slug = #{article.slug},</if>
+              <if test="article.description != ''">description = #{article.description},</if>
+              <if test="article.body != ''">body = #{article.body}</if>
+          </set>
+        where id = #{article.id}
+    </update>
+    <sql id="selectArticle">
         select
-         A.id articleId,
-         A.slug articleSlug,
-         A.title articleTitle,
-         A.description articleDescription,
-         A.body articleBody,
-         A.user_id articleUserId,
-         A.created_at articleCreatedAt,
-         A.updated_at articleUpdatedAt,
-         T.id tagId,
-         T.name tagName
-         from articles A
-         left join article_tags AT on A.id = AT.article_id
-         left join tags T on T.id = AT.tag_id
+        A.id articleId,
+        A.slug articleSlug,
+        A.title articleTitle,
+        A.description articleDescription,
+        A.body articleBody,
+        A.user_id articleUserId,
+        A.created_at articleCreatedAt,
+        A.updated_at articleUpdatedAt,
+        T.id tagId,
+        T.name tagName
+        from articles A
+        left join article_tags AT on A.id = AT.article_id
+        left join tags T on T.id = AT.tag_id
+    </sql>
+
+    <select id="findById" resultMap="article">
+        <include refid="selectArticle"/>
         where A.id = #{id}
     </select>
 
     <select id="findTag" resultType="java.lang.Boolean">
         select count(*) from tags where name = #{tagName}
+    </select>
+    <select id="findBySlug" resultMap="article">
+        <include refid="selectArticle"/>
+        where A.slug = #{slug}
     </select>
 
     <resultMap id="article" type="io.spring.core.article.Article">

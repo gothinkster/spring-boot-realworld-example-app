@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.*;
 
 @MybatisTest
@@ -29,22 +30,38 @@ public class MyBatisArticleRepositoryTest {
     @Autowired
     private UserRepository userRepository;
     private User user;
+    private Article article;
 
 
     @Before
     public void setUp() throws Exception {
         user = new User("aisensiy@gmail.com", "aisensiy", "123", "bio", "default");
         userRepository.save(user);
+        article = new Article("test", "desc", "body", new String[]{"java", "spring"}, user.getId());
     }
 
     @Test
     public void should_create_and_fetch_article_success() throws Exception {
-        Article article = new Article("test", "test", "desc", "body", new String[]{"java", "spring"}, user.getId());
         articleRepository.save(article);
         Optional<Article> optional = articleRepository.findById(article.getId());
         assertThat(optional.isPresent(), is(true));
         assertThat(optional.get(), is(article));
         assertThat(optional.get().getTags().contains(new Tag("java")), is(true));
         assertThat(optional.get().getTags().contains(new Tag("spring")), is(true));
+    }
+
+    @Test
+    public void should_update_and_fetch_article_success() throws Exception {
+        articleRepository.save(article);
+
+        String newTitle = "new test 2";
+        article.update(newTitle, "", "");
+        articleRepository.save(article);
+        System.out.println(article.getSlug());
+        Optional<Article> optional = articleRepository.findBySlug(article.getSlug());
+        assertThat(optional.isPresent(), is(true));
+        Article fetched = optional.get();
+        assertThat(fetched.getTitle(), is(newTitle));
+        assertThat(fetched.getBody(), not(""));
     }
 }

@@ -1,25 +1,37 @@
 package io.spring.api;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
+import io.spring.api.exception.NoAuthorizationException;
 import io.spring.api.exception.ResourceNotFoundException;
+import io.spring.application.AuthorizationService;
 import io.spring.application.article.ArticleData;
 import io.spring.application.article.ArticleQueryService;
+import io.spring.core.article.ArticleRepository;
 import io.spring.core.user.User;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/articles/{slug}")
 public class ArticleApi {
     private ArticleQueryService articleQueryService;
+    private ArticleRepository articleRepository;
 
     @Autowired
-    public ArticleApi(ArticleQueryService articleQueryService) {
+    public ArticleApi(ArticleQueryService articleQueryService, ArticleRepository articleRepository) {
         this.articleQueryService = articleQueryService;
+        this.articleRepository = articleRepository;
     }
 
     @GetMapping
@@ -27,4 +39,30 @@ public class ArticleApi {
                                                @AuthenticationPrincipal User user) {
         return articleQueryService.findBySlug(slug, user).map(ResponseEntity::ok).orElseThrow(ResourceNotFoundException::new);
     }
+
+    @PutMapping
+    public ResponseEntity<ArticleData> updateArticle(@PathVariable("slug") String slug,
+                                                     @AuthenticationPrincipal User user,
+                                                     @Valid @RequestBody UpdateArticleParam updateArticleParam) {
+        return articleRepository.findBySlug(slug).map(article -> {
+            if (!AuthorizationService.canUpdateArticle(user, article)) {
+                throw new NoAuthorizationException();
+            }
+            article.update(
+                updateArticleParam.getTitle(),
+                updateArticleParam.getDescription(),
+                updateArticleParam.getBody());
+            articleRepository.save(article);
+            return ResponseEntity.ok(articleQueryService.findBySlug(slug, user).get());
+        }).orElseThrow(ResourceNotFoundException::new);
+    }
+}
+
+@Getter
+@NoArgsConstructor
+@JsonRootName("article")
+class UpdateArticleParam {
+    private String title = "";
+    private String body = "";
+    private String description = "";
 }

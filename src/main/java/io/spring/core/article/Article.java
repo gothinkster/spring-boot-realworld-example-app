@@ -26,9 +26,9 @@ public class Article {
     private DateTime createdAt;
     private DateTime updatedAt;
 
-    public Article(String slug, String title, String description, String body, String[] tagList, String userId) {
+    public Article(String title, String description, String body, String[] tagList, String userId) {
         this.id = UUID.randomUUID().toString();
-        this.slug = slug;
+        this.slug = toSlug(title);
         this.title = title;
         this.description = description;
         this.body = body;
@@ -38,4 +38,20 @@ public class Article {
         this.updatedAt = new DateTime();
     }
 
+    public void update(String title, String description, String body) {
+        if (!"".equals(title)) {
+            this.title = title;
+            this.slug = toSlug(title);
+        }
+        if (!"".equals(description)) {
+            this.description = description;
+        }
+        if (!"".equals(body)) {
+            this.body = body;
+        }
+    }
+
+    private String toSlug(String title) {
+        return title.toLowerCase().replace(' ', '-');
+    }
 }

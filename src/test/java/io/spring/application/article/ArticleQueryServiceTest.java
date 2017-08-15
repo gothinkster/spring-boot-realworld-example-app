@@ -37,7 +37,7 @@ public class ArticleQueryServiceTest {
         User user = new User("aisensiy@gmail.com", "aisensiy", "123", "", "");
         userRepository.save(user);
 
-        Article article = new Article("test", "test", "desc", "body", new String[]{"java", "spring"}, user.getId());
+        Article article = new Article("test", "desc", "body", new String[]{"java", "spring"}, user.getId());
         articleRepository.save(article);
 
         Optional<ArticleData> optional = queryService.findById(article.getId(), user);

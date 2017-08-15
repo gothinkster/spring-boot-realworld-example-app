@@ -41,8 +41,6 @@ public class ArticlesApi {
         }
 
         Article article = new Article(
-            articleRepository.toSlug(
-                newArticleParam.getTitle()),
             newArticleParam.getTitle(),
             newArticleParam.getDescription(),
             newArticleParam.getBody(),
