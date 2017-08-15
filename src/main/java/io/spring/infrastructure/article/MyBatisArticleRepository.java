@@ -43,4 +43,9 @@ public class MyBatisArticleRepository implements ArticleRepository {
     public Optional<Article> findBySlug(String slug) {
         return Optional.ofNullable(articleMapper.findBySlug(slug));
     }
+
+    @Override
+    public void remove(Article article) {
+        articleMapper.delete(article.getId());
+    }
 }

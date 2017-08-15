@@ -64,4 +64,12 @@ public class MyBatisArticleRepositoryTest {
         assertThat(fetched.getTitle(), is(newTitle));
         assertThat(fetched.getBody(), not(""));
     }
+
+    @Test
+    public void should_delete_article() throws Exception {
+        articleRepository.save(article);
+
+        articleRepository.remove(article);
+        assertThat(articleRepository.findById(article.getId()).isPresent(), is(false));
+    }
 }

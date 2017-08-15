@@ -232,6 +232,45 @@ public class ArticlesApiTest extends TestWithCurrentUser {
             .statusCode(403);
     }
 
+    @Test
+    public void should_delete_article_success() throws Exception {
+        String title = "title";
+        String body = "body";
+        String description = "description";
+
+        Article article = new Article(title, description, body, new String[]{"java", "spring", "jpg"}, user.getId());
+        when(articleRepository.findBySlug(eq(article.getSlug()))).thenReturn(Optional.of(article));
+
+        given()
+            .header("Authorization", "Token " + token)
+            .when()
+            .delete("/articles/{slug}", article.getSlug())
+            .then()
+            .statusCode(204);
+
+        verify(articleRepository).remove(eq(article));
+    }
+
+    @Test
+    public void should_403_if_not_author_delete_article() throws Exception {
+        String title = "new-title";
+        String body = "new body";
+        String description = "new description";
+        Map<String, Object> updateParam = prepareUpdateParam(title, body, description);
+
+        User anotherUser = new User("test@test.com", "test", "123123", "", "");
+
+        Article article = new Article(title, description, body, new String[]{"java", "spring", "jpg"}, anotherUser.getId());
+
+        when(articleRepository.findBySlug(eq(article.getSlug()))).thenReturn(Optional.of(article));
+        given()
+            .header("Authorization", "Token " + token)
+            .when()
+            .delete("/articles/{slug}", article.getSlug())
+            .then()
+            .statusCode(403);
+    }
+
     private HashMap<String, Object> prepareUpdateParam(final String title, final String body, final String description) {
         return new HashMap<String, Object>() {{
             put("article", new HashMap<String, Object>() {{

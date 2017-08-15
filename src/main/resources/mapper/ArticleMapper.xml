@@ -29,6 +29,9 @@
           </set>
         where id = #{article.id}
     </update>
+    <delete id="delete">
+        delete from articles where id = #{id}
+    </delete>
     <sql id="selectArticle">
         select
         A.id articleId,

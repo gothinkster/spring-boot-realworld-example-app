@@ -9,4 +9,7 @@ public interface ArticleRepository {
     Optional<Article> findById(String id);
 
     Optional<Article> findBySlug(String slug);
+
+
+    void remove(Article article);
 }

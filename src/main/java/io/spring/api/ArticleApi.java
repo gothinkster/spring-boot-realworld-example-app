@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -45,7 +46,7 @@ public class ArticleApi {
                                                      @AuthenticationPrincipal User user,
                                                      @Valid @RequestBody UpdateArticleParam updateArticleParam) {
         return articleRepository.findBySlug(slug).map(article -> {
-            if (!AuthorizationService.canUpdateArticle(user, article)) {
+            if (!AuthorizationService.canWriteArticle(user, article)) {
                 throw new NoAuthorizationException();
             }
             article.update(
@@ -54,6 +55,18 @@ public class ArticleApi {
                 updateArticleParam.getBody());
             articleRepository.save(article);
             return ResponseEntity.ok(articleQueryService.findBySlug(slug, user).get());
+        }).orElseThrow(ResourceNotFoundException::new);
+    }
+
+    @DeleteMapping
+    public ResponseEntity deleteArticle(@PathVariable("slug") String slug,
+                                        @AuthenticationPrincipal User user) {
+        return articleRepository.findBySlug(slug).map(article -> {
+            if (!AuthorizationService.canWriteArticle(user, article)) {
+                throw new NoAuthorizationException();
+            }
+            articleRepository.remove(article);
+            return ResponseEntity.noContent().build();
         }).orElseThrow(ResourceNotFoundException::new);
     }
 }
