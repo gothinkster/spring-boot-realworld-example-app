@@ -10,5 +10,7 @@ import org.springframework.stereotype.Component;
 public interface CommentMapper {
     void insert(@Param("comment") Comment comment);
 
-    Comment findById(@Param("id") String id);
+    Comment findById(@Param("articleId") String articleId, @Param("id") String id);
+
+    void delete(@Param("id") String id);
 }

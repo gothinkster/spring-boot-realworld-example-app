@@ -26,7 +26,7 @@ public class MyBatisCommentRepositoryTest {
         Comment comment = new Comment("content", "123", "456");
         commentRepository.save(comment);
 
-        Optional<Comment> optional = commentRepository.findById(comment.getId());
+        Optional<Comment> optional = commentRepository.findById("456", comment.getId());
         assertThat(optional.isPresent(), is(true));
         assertThat(optional.get(), is(comment));
     }

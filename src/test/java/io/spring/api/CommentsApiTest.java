@@ -4,10 +4,12 @@ import io.restassured.RestAssured;
 import io.spring.application.comment.CommentData;
 import io.spring.application.comment.CommentQueryService;
 import io.spring.application.profile.ProfileData;
+import io.spring.application.user.UserData;
 import io.spring.core.article.Article;
 import io.spring.core.article.ArticleRepository;
+import io.spring.core.comment.Comment;
 import io.spring.core.comment.CommentRepository;
-import org.joda.time.DateTime;
+import io.spring.core.user.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,7 +24,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.any;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -49,6 +50,7 @@ public class CommentsApiTest extends TestWithCurrentUser {
 
     private Article article;
     private CommentData commentData;
+    private Comment comment;
 
     @Before
     public void setUp() throws Exception {
@@ -60,12 +62,13 @@ public class CommentsApiTest extends TestWithCurrentUser {
 
         article = new Article("title", "desc", "body", new String[]{"test", "java"}, user.getId());
         when(articleRepository.findBySlug(eq(article.getSlug()))).thenReturn(Optional.of(article));
+        comment = new Comment("comment", user.getId(), article.getId());
         commentData = new CommentData(
-            "123",
-            "comment",
-            article.getId(),
-            new DateTime(),
-            new DateTime(),
+            comment.getId(),
+            comment.getBody(),
+            comment.getArticleId(),
+            comment.getCreatedAt(),
+            comment.getCreatedAt(),
             new ProfileData(user.getId(), user.getUsername(), user.getBio(), user.getImage(), false));
     }
 
@@ -119,5 +122,39 @@ public class CommentsApiTest extends TestWithCurrentUser {
             .then()
             .statusCode(200)
             .body("comments[0].id", equalTo(commentData.getId()));
+    }
+
+    @Test
+    public void should_delete_comment_success() throws Exception {
+        when(commentRepository.findById(article.getId(), eq(comment.getId()))).thenReturn(Optional.of(comment));
+
+        given()
+            .header("Authorization", "Token " + token)
+            .when()
+            .delete("/articles/{slug}/comments/{id}", article.getSlug(), comment.getId())
+            .then()
+            .statusCode(204);
+    }
+
+    @Test
+    public void should_get_403_if_not_author_of_article_or_author_of_comment_when_delete_comment() throws Exception {
+        User anotherUser = new User("other@example.com", "other", "123", "", "");
+        when(userRepository.findByUsername(eq(anotherUser.getUsername()))).thenReturn(Optional.of(anotherUser));
+
+        when(commentRepository.findById(eq(article.getId()), eq(comment.getId()))).thenReturn(Optional.of(comment));
+        String token = jwtService.toToken(
+            new UserData(
+                anotherUser.getId(),
+                anotherUser.getEmail(),
+                anotherUser.getUsername(),
+                anotherUser.getBio(),
+                anotherUser.getImage()));
+        given()
+            .header("Authorization", "Token " + token)
+            .when()
+            .delete("/articles/{slug}/comments/{id}", article.getSlug(), comment.getId())
+            .then()
+            .statusCode(403);
+
     }
 }

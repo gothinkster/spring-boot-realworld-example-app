@@ -22,7 +22,12 @@ public class MyBatisCommentRepository implements CommentRepository {
     }
 
     @Override
-    public Optional<Comment> findById(String id) {
-        return Optional.ofNullable(commentMapper.findById(id));
+    public Optional<Comment> findById(String articleId, String id) {
+        return Optional.ofNullable(commentMapper.findById(articleId, id));
+    }
+
+    @Override
+    public void remove(Comment comment) {
+        commentMapper.delete(comment.getId());
     }
 }

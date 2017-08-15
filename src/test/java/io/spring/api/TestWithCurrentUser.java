@@ -25,7 +25,7 @@ class TestWithCurrentUser {
     protected String token;
 
     @Autowired
-    private JwtService jwtService;
+    protected JwtService jwtService;
 
     protected void userFixture(String email, String username, String defaultAvatar) {
         user = new User(email, username, "123", "", defaultAvatar);

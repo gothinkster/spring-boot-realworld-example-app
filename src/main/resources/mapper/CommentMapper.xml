@@ -12,6 +12,9 @@
           #{comment.createdAt}
         )
     </insert>
+    <delete id="delete">
+        delete from comments where id = #{id}
+    </delete>
     <select id="findById" resultMap="comment">
         select
           id commentId,
@@ -20,7 +23,7 @@
           article_id commentArticleId,
           created_at commentCreatedAt
         from comments
-        where id = #{id}
+        where id = #{id} and article_id = #{articleId}
     </select>
     <resultMap id="comment" type="io.spring.core.comment.Comment">
         <id column="commentId" property="id"/>

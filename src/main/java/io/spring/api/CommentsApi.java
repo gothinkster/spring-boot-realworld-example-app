@@ -2,7 +2,9 @@ package io.spring.api;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 import io.spring.api.exception.InvalidRequestException;
+import io.spring.api.exception.NoAuthorizationException;
 import io.spring.api.exception.ResourceNotFoundException;
+import io.spring.application.AuthorizationService;
 import io.spring.application.comment.CommentData;
 import io.spring.application.comment.CommentQueryService;
 import io.spring.core.article.Article;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -68,6 +71,20 @@ public class CommentsApi {
         return ResponseEntity.ok(new HashMap<String, Object>() {{
             put("comments", comments);
         }});
+    }
+
+    @RequestMapping(path = "{id}", method = RequestMethod.DELETE)
+    public ResponseEntity deleteComment(@PathVariable("slug") String slug,
+                                        @PathVariable("id") String commentId,
+                                        @AuthenticationPrincipal User user) {
+        Article article = findArticle(slug);
+        return commentRepository.findById(article.getId(), commentId).map(comment -> {
+            if (!AuthorizationService.canWriteComment(user, article, comment)) {
+                throw new NoAuthorizationException();
+            }
+            commentRepository.remove(comment);
+            return ResponseEntity.noContent().build();
+        }).orElseThrow(ResourceNotFoundException::new);
     }
 
     private Article findArticle(String slug) {
