@@ -24,6 +24,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -130,5 +131,45 @@ public class ArticlesApiTest extends TestWithCurrentUser {
                 put("tagList", tagList);
             }});
         }};
+    }
+
+    @Test
+    public void should_read_article_success() throws Exception {
+        String slug = "test-new-article";
+        Article article = new Article(slug, "Test New Article", "Desc", "Body", new String[]{"java", "spring", "jpg"}, user.getId());
+
+        DateTime time = new DateTime();
+        ArticleData articleData = new ArticleData(
+            article.getId(),
+            article.getSlug(),
+            article.getTitle(),
+            article.getDescription(),
+            article.getBody(),
+            false,
+            0,
+            time,
+            time,
+            Arrays.asList("joda"),
+            new ProfileData(user.getId(), user.getUsername(), user.getBio(), user.getImage(), false));
+
+        when(articleQueryService.findBySlug(eq(slug), eq(null))).thenReturn(Optional.of(articleData));
+
+        RestAssured.when()
+            .get("/articles/{slug}", slug)
+            .then()
+            .statusCode(200)
+            .body("article.slug", equalTo(slug))
+            .body("article.body", equalTo(articleData.getBody()))
+            .body("article.createdAt", equalTo(time.toDateTimeISO().toString()));
+
+    }
+
+    @Test
+    public void should_404_if_article_not_found() throws Exception {
+        when(articleQueryService.findBySlug(anyString(), any())).thenReturn(Optional.empty());
+        RestAssured.when()
+            .get("/articles/not-exists")
+            .then()
+            .statusCode(404);
     }
 }

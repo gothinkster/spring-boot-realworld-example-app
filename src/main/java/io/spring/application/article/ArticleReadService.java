@@ -7,5 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Mapper
 public interface ArticleReadService {
-    ArticleData ofId(@Param("id") String id);
+    ArticleData findById(@Param("id") String id);
+
+    ArticleData findBySlug(@Param("slug") String slug);
 }

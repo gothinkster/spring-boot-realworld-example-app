@@ -23,17 +23,35 @@ public class ArticleQueryService {
     }
 
     public Optional<ArticleData> findById(String id, User user) {
-        ArticleData articleData = articleReadService.ofId(id);
+        ArticleData articleData = articleReadService.findById(id);
         if (articleData == null) {
             return Optional.empty();
         } else {
-            articleData.setFavorited(articleFavoritesQueryService.isUserFavorite(user.getId(), id));
-            articleData.setFavoritesCount(articleFavoritesQueryService.articleFavoriteCount(id));
-            articleData.getProfileData().setFollowing(
-                userRelationshipQueryService.isUserFollowing(
-                    user.getId(),
-                    articleData.getProfileData().getId()));
+            if (user != null) {
+                fillExtraInfo(id, user, articleData);
+            }
             return Optional.of(articleData);
         }
+    }
+
+    public Optional<ArticleData> findBySlug(String slug, User user) {
+        ArticleData articleData = articleReadService.findBySlug(slug);
+        if (articleData == null) {
+            return Optional.empty();
+        } else {
+            if (user != null) {
+                fillExtraInfo(articleData.getId(), user, articleData);
+            }
+            return Optional.of(articleData);
+        }
+    }
+
+    private void fillExtraInfo(String id, User user, ArticleData articleData) {
+        articleData.setFavorited(articleFavoritesQueryService.isUserFavorite(user.getId(), id));
+        articleData.setFavoritesCount(articleFavoritesQueryService.articleFavoriteCount(id));
+        articleData.getProfileData().setFollowing(
+            userRelationshipQueryService.isUserFollowing(
+                user.getId(),
+                articleData.getProfileData().getId()));
     }
 }
