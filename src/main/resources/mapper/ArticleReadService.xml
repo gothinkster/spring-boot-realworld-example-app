@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="io.spring.application.article.ArticleReadService">
+    <sql id="profileColumns">
+        U.id userId,
+        U.username userUsername,
+        U.bio userBio,
+        U.image userImage
+    </sql>
     <sql id="selectArticleData">
         select
         A.id articleId,
@@ -11,10 +17,7 @@
         A.created_at articleCreatedAt,
         A.updated_at articleUpdatedAt,
         T.name as tagName,
-        U.id userId,
-        U.username userUsername,
-        U.bio userBio,
-        U.image userImage
+        <include refid="profileColumns"/>
         from
         articles A
         left join article_tags AT on A.id = AT.article_id

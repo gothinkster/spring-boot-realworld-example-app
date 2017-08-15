@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="io.spring.application.comment.CommentReadService">
+    <select id="findById" resultMap="commentData">
+        SELECT
+          C.id commentId,
+          C.body commentBody,
+          C.created_at commentCreatedAt,
+          <include refid="io.spring.application.article.ArticleReadService.profileColumns"/>
+        from comments C
+        left join users U
+        on C.user_id = U.id
+        where C.id = #{id}
+    </select>
+
+    <resultMap id="commentData" type="io.spring.application.comment.CommentData">
+        <id column="commentId" property="id"/>
+        <result column="commentBody" property="body"/>
+        <result column="commentCreatedAt" property="createdAt"/>
+        <result column="commentCreatedAt" property="updatedAt"/>
+        <association property="profileData" resultMap="io.spring.application.article.ArticleReadService.profileData"/>
+    </resultMap>
+</mapper>

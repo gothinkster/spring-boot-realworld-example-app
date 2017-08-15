@@ -37,3 +37,12 @@ create table article_tags (
   article_id varchar(255) not null,
   tag_id varchar(255) not null
 );
+
+create table comments (
+  id varchar(255) primary key,
+  body text,
+  article_id varchar(255),
+  user_id varchar(255),
+  created_at TIMESTAMP NOT NULL,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
