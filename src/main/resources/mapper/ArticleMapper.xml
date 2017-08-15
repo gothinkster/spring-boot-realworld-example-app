@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="io.spring.infrastructure.article.ArticleMapper">
+    <insert id="insert">
+        insert into articles(id, slug, title, description, body, user_id, created_at, updated_at)
+        values(
+          #{article.id},
+          #{article.slug},
+          #{article.title},
+          #{article.description},
+          #{article.body},
+          #{article.userId},
+          #{article.createdAt},
+          #{article.updatedAt})
+    </insert>
+    <insert id="insertTag">
+        insert into tags (id, name) values (#{tag.id}, #{tag.name})
+    </insert>
+    <insert id="insertArticleTagRelation">
+        insert into article_tags (article_id, tag_id) values(#{articleId}, #{tagId})
+    </insert>
+    <select id="findById" resultMap="article">
+        select
+         A.id articleId,
+         A.slug articleSlug,
+         A.title articleTitle,
+         A.description articleDescription,
+         A.body articleBody,
+         A.user_id articleUserId,
+         A.created_at articleCreatedAt,
+         A.updated_at articleUpdatedAt,
+         T.id tagId,
+         T.name tagName
+         from articles A
+         left join article_tags AT on A.id = AT.article_id
+         left join tags T on T.id = AT.tag_id
+        where A.id = #{id}
+    </select>
+
+    <select id="findTag" resultType="java.lang.Boolean">
+        select count(*) from tags where name = #{tagName}
+    </select>
+
+    <resultMap id="article" type="io.spring.core.article.Article">
+        <id column="articleId" property="id"/>
+        <result column="articleUserId" property="userId"/>
+        <result column="articleTitle" property="title"/>
+        <result column="articleSlug" property="slug"/>
+        <result column="articleDescription" property="description"/>
+        <result column="articleBody" property="body"/>
+        <result column="articleCreatedAt" property="createdAt"/>
+        <result column="articleUpdatedAt" property="updatedAt"/>
+        <collection property="tags" ofType="arraylist" resultMap="tag"/>
+    </resultMap>
+
+    <resultMap id="tag" type="io.spring.core.article.Tag">
+        <id column="tagId" property="id"/>
+        <result column="tagName" property="name"/>
+    </resultMap>
+</mapper>

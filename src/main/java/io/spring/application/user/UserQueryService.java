@@ -16,12 +16,12 @@ public class UserQueryService  {
     }
 
     public UserWithToken fetchNewAuthenticatedUser(String username) {
-        UserData userData = userReadService.findOne(username);
+        UserData userData = userReadService.findByUsername(username);
         return new UserWithToken(userData, jwtService.toToken(userData));
     }
 
     public UserWithToken fetchCurrentUser(String username, String token) {
-        return new UserWithToken(userReadService.findOne(username), token);
+        return new UserWithToken(userReadService.findByUsername(username), token);
     }
 }
 

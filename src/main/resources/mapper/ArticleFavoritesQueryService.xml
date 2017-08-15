@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="io.spring.application.article.ArticleFavoritesQueryService">
+    <select id="isUserFavorite" resultType="java.lang.Boolean">
+        select count(1) from article_favorites where user_id = #{userId} and article_id = #{articleId}
+    </select>
+    <select id="articleFavoriteCount" resultType="java.lang.Integer">
+        select count(1) from article_favorites where article_id = #{articleId}
+    </select>
+
+</mapper>

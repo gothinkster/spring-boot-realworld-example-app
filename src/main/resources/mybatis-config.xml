@@ -17,6 +17,11 @@
         <setting name="useGeneratedKeys" value="true"/>
     </settings>
 
+    <typeHandlers>
+        <typeHandler handler="io.spring.infrastructure.mybatis.DateTimeHandler"
+                     javaType="org.joda.time.DateTime"/>
+    </typeHandlers>
+
     <!-- Continue going here -->
 
 </configuration>

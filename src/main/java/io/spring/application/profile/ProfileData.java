@@ -1,21 +1,18 @@
-package io.spring.application.user;
+package io.spring.application.profile;
 
-import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonRootName("user")
-public class UserData {
+public class ProfileData {
+    @JsonIgnore
     private String id;
-    private String email;
     private String username;
     private String bio;
     private String image;
+    private boolean following;
 }

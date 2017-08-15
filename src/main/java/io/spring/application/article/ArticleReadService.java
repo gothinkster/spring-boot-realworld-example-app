@@ -1,4 +1,4 @@
-package io.spring.application.user;
+package io.spring.application.article;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -6,8 +6,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Mapper
-public interface UserReadService {
-
-    UserData findByUsername(@Param("username") String username);
+public interface ArticleReadService {
+    ArticleData ofId(@Param("id") String id);
 }
-

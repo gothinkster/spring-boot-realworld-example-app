@@ -12,56 +12,35 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @RunWith(SpringRunner.class)
-public class CurrentUserApiTest {
-    @MockBean
-    private UserRepository userRepository;
-
-    @MockBean
-    private UserReadService userReadService;
+public class CurrentUserApiTest extends TestWithCurrentUser {
 
     @LocalServerPort
     private int port;
 
-    @Autowired
-    private JwtService jwtService;
-    private User user;
-    private UserData userData;
-    private String token;
-    private String email;
-    private String username;
-    private String defaultAvatar;
+    protected String email;
+    protected String username;
+    protected String defaultAvatar;
 
     @Before
     public void setUp() throws Exception {
         RestAssured.port = port;
         email = "john@jacob.com";
         username = "johnjacob";
-
         defaultAvatar = "https://static.productionready.io/images/smiley-cyrus.jpg";
-        user = new User(email, username, "123", "", defaultAvatar);
-        when(userRepository.findByUsername(eq(username))).thenReturn(Optional.of(user));
-
-        userData = new UserData(user.getId(), email, username, "", defaultAvatar);
-        when(userReadService.findOne(eq(username))).thenReturn(userData);
-
-        token = jwtService.toToken(userData);
+        userFixture(email, username, defaultAvatar);
     }
 
     @Test

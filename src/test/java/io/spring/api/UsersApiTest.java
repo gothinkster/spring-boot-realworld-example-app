@@ -55,7 +55,7 @@ public class UsersApiTest {
 
         when(jwtService.toToken(any())).thenReturn("123");
         UserData userData = new UserData("123", email, username, "", defaultAvatar);
-        when(userReadService.findOne(eq(username))).thenReturn(userData);
+        when(userReadService.findByUsername(eq(username))).thenReturn(userData);
 
         when(userRepository.findByUsername(eq(username))).thenReturn(Optional.empty());
         when(userRepository.findByEmail(eq(email))).thenReturn(Optional.empty());
@@ -178,7 +178,7 @@ public class UsersApiTest {
         UserData userData = new UserData("123", email, username, "", defaultAvatar);
 
         when(userRepository.findByEmail(eq(email))).thenReturn(Optional.of(user));
-        when(userReadService.findOne(eq(username))).thenReturn(userData);
+        when(userReadService.findByUsername(eq(username))).thenReturn(userData);
         when(jwtService.toToken(any())).thenReturn("123");
 
         Map<String, Object> param = new HashMap<String, Object>() {{
@@ -212,7 +212,7 @@ public class UsersApiTest {
         UserData userData = new UserData(user.getId(), email, username, "", defaultAvatar);
 
         when(userRepository.findByEmail(eq(email))).thenReturn(Optional.of(user));
-        when(userReadService.findOne(eq(username))).thenReturn(userData);
+        when(userReadService.findByUsername(eq(username))).thenReturn(userData);
 
         Map<String, Object> param = new HashMap<String, Object>() {{
             put("user", new HashMap<String, Object>() {{

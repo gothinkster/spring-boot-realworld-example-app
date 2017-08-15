@@ -31,6 +31,7 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('io.jsonwebtoken:jjwt:0.7.0')
     compile('org.springframework.boot:spring-boot-starter-security')
+	compile('joda-time:joda-time:2.9.9')
     compileOnly('org.projectlombok:lombok')
 	runtime('com.h2database:h2')
     testCompile 'io.rest-assured:rest-assured:3.0.2'
