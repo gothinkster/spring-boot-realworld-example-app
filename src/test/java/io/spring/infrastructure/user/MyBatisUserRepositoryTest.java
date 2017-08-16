@@ -65,4 +65,16 @@ public class MyBatisUserRepositoryTest {
         userRepository.saveRelation(followRelation);
         assertThat(userRepository.findRelation(user.getId(), other.getId()).isPresent(), is(true));
     }
+
+    @Test
+    public void should_unfollow_user_success() throws Exception {
+        User other = new User("other@example.com", "other", "123", "", "");
+        userRepository.save(other);
+
+        FollowRelation followRelation = new FollowRelation(user.getId(), other.getId());
+        userRepository.saveRelation(followRelation);
+
+        userRepository.removeRelation(followRelation);
+        assertThat(userRepository.findRelation(user.getId(), other.getId()).isPresent(), is(false));
+    }
 }

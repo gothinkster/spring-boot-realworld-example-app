@@ -43,11 +43,18 @@ public class MyBatisUserRepository implements UserRepository {
 
     @Override
     public void saveRelation(FollowRelation followRelation) {
-        userMapper.saveRelation(followRelation);
+        if (!findRelation(followRelation.getUserId(), followRelation.getTargetId()).isPresent()) {
+            userMapper.saveRelation(followRelation);
+        }
     }
 
     @Override
     public Optional<FollowRelation> findRelation(String userId, String targetId) {
         return Optional.ofNullable(userMapper.findRelation(userId, targetId));
+    }
+
+    @Override
+    public void removeRelation(FollowRelation followRelation) {
+        userMapper.deleteRelation(followRelation);
     }
 }

@@ -25,6 +25,9 @@
           </set>
         where id = #{user.id}
     </update>
+    <delete id="deleteRelation">
+        delete from follows where user_id = #{followRelation.userId} and follow_id = #{followRelation.targetId}
+    </delete>
     <select id="findByUsername" resultMap="user">
         select * from users where username = #{username}
     </select>

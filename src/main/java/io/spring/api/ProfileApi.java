@@ -9,6 +9,7 @@ import io.spring.core.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "profiles/{username}")
@@ -45,6 +47,22 @@ public class ProfileApi {
             userRepository.saveRelation(followRelation);
             return profileResponse(profileQueryService.findByUsername(username, user).get());
         }).orElseThrow(ResourceNotFoundException::new);
+    }
+
+    @DeleteMapping(path = "follow")
+    public ResponseEntity unfollow(@PathVariable("username") String username,
+                                   @AuthenticationPrincipal User user) {
+        Optional<User> userOptional = userRepository.findByUsername(username);
+        if (userOptional.isPresent()) {
+            User target = userOptional.get();
+            return userRepository.findRelation(user.getId(), target.getId())
+                .map(relation -> {
+                    userRepository.removeRelation(relation);
+                    return profileResponse(profileQueryService.findByUsername(username, user).get());
+                }).orElseThrow(ResourceNotFoundException::new);
+        } else {
+            throw new ResourceNotFoundException();
+        }
     }
 
     private ResponseEntity profileResponse(ProfileData profile) {

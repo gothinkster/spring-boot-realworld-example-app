@@ -3,7 +3,9 @@ package io.spring.api;
 import io.restassured.RestAssured;
 import io.spring.application.profile.ProfileData;
 import io.spring.application.profile.ProfileQueryService;
+import io.spring.application.profile.UserRelationshipQueryService;
 import io.spring.core.article.Article;
+import io.spring.core.user.FollowRelation;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
 import org.junit.Before;
@@ -18,7 +20,9 @@ import java.util.Optional;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
@@ -40,6 +44,7 @@ public class ProfileApiTest extends TestWithCurrentUser {
         userFixture();
         anotherUser = new User("username@test.com", "username", "123", "", "");
         profileData = new ProfileData(anotherUser.getId(), anotherUser.getUsername(), anotherUser.getBio(), anotherUser.getImage(), false);
+        when(userRepository.findByUsername(eq(anotherUser.getUsername()))).thenReturn(Optional.of(anotherUser));
     }
 
     @Test
@@ -56,7 +61,6 @@ public class ProfileApiTest extends TestWithCurrentUser {
 
     @Test
     public void should_follow_user_success() throws Exception {
-        when(userRepository.findByUsername(eq(anotherUser.getUsername()))).thenReturn(Optional.of(anotherUser));
         when(profileQueryService.findByUsername(eq(profileData.getUsername()), eq(user))).thenReturn(Optional.of(profileData));
         given()
             .header("Authorization", "Token " + token)
@@ -65,6 +69,23 @@ public class ProfileApiTest extends TestWithCurrentUser {
             .prettyPeek()
             .then()
             .statusCode(200);
+        verify(userRepository).saveRelation(new FollowRelation(user.getId(), anotherUser.getId()));
+    }
 
+    @Test
+    public void should_unfollow_user_success() throws Exception {
+        FollowRelation followRelation = new FollowRelation(user.getId(), anotherUser.getId());
+        when(userRepository.findRelation(eq(user.getId()), eq(anotherUser.getId()))).thenReturn(Optional.of(followRelation));
+        when(profileQueryService.findByUsername(eq(profileData.getUsername()), eq(user))).thenReturn(Optional.of(profileData));
+
+        given()
+            .header("Authorization", "Token " + token)
+            .when()
+            .delete("/profiles/{username}/follow", anotherUser.getUsername())
+            .prettyPeek()
+            .then()
+            .statusCode(200);
+
+        verify(userRepository).removeRelation(eq(followRelation));
     }
 }
