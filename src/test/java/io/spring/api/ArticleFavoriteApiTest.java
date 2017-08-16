@@ -3,7 +3,6 @@ package io.spring.api;
 import io.restassured.RestAssured;
 import io.spring.application.article.ArticleData;
 import io.spring.application.article.ArticleQueryService;
-import io.spring.application.article.ArticleReadService;
 import io.spring.application.profile.ProfileData;
 import io.spring.core.article.Article;
 import io.spring.core.article.ArticleRepository;
@@ -56,7 +55,7 @@ public class ArticleFavoriteApiTest extends TestWithCurrentUser {
         email = "john@jacob.com";
         username = "johnjacob";
         defaultAvatar = "https://static.productionready.io/images/smiley-cyrus.jpg";
-        userFixture(email, username, defaultAvatar);
+        userFixture();
         anotherUser = new User("other@test.com", "other", "123", "", "");
         article = new Article("title", "desc", "body", new String[]{"java"}, anotherUser.getId());
         when(articleRepository.findBySlug(eq(article.getSlug()))).thenReturn(Optional.of(article));

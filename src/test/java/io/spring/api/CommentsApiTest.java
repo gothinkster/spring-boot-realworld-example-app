@@ -58,7 +58,7 @@ public class CommentsApiTest extends TestWithCurrentUser {
         email = "john@jacob.com";
         username = "johnjacob";
         defaultAvatar = "https://static.productionready.io/images/smiley-cyrus.jpg";
-        userFixture(email, username, defaultAvatar);
+        userFixture();
 
         article = new Article("title", "desc", "body", new String[]{"test", "java"}, user.getId());
         when(articleRepository.findBySlug(eq(article.getSlug()))).thenReturn(Optional.of(article));
@@ -126,7 +126,7 @@ public class CommentsApiTest extends TestWithCurrentUser {
 
     @Test
     public void should_delete_comment_success() throws Exception {
-        when(commentRepository.findById(article.getId(), eq(comment.getId()))).thenReturn(Optional.of(comment));
+        when(commentRepository.findById(eq(article.getId()), eq(comment.getId()))).thenReturn(Optional.of(comment));
 
         given()
             .header("Authorization", "Token " + token)

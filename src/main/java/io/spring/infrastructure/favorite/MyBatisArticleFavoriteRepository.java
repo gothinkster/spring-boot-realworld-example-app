@@ -18,7 +18,7 @@ public class MyBatisArticleFavoriteRepository implements ArticleFavoriteReposito
 
     @Override
     public void save(ArticleFavorite articleFavorite) {
-        if (mapper.find(articleFavorite.getArticleId(), articleFavorite.getUserId()) != null) {
+        if (mapper.find(articleFavorite.getArticleId(), articleFavorite.getUserId()) == null) {
             mapper.insert(articleFavorite);
         }
     }

@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
@@ -26,7 +27,7 @@ public class MyBatisArticleFavoriteRepositoryTest {
     public void should_save_and_fetch_articleFavorite_success() throws Exception {
         ArticleFavorite articleFavorite = new ArticleFavorite("123", "456");
         articleFavoriteRepository.save(articleFavorite);
-        assertThat(articleFavoriteMapper.find(articleFavorite.getArticleId(), articleFavorite.getUserId()), is(true));
+        assertThat(articleFavoriteMapper.find(articleFavorite.getArticleId(), articleFavorite.getUserId()), notNullValue());
     }
 
     @Test

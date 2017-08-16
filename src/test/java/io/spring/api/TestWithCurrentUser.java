@@ -23,11 +23,18 @@ class TestWithCurrentUser {
     protected User user;
     protected UserData userData;
     protected String token;
+    protected String email;
+    protected String username;
+    protected String defaultAvatar;
 
     @Autowired
     protected JwtService jwtService;
 
-    protected void userFixture(String email, String username, String defaultAvatar) {
+    protected void userFixture() {
+        email = "john@jacob.com";
+        username = "johnjacob";
+        defaultAvatar = "https://static.productionready.io/images/smiley-cyrus.jpg";
+
         user = new User(email, username, "123", "", defaultAvatar);
         when(userRepository.findByUsername(eq(username))).thenReturn(Optional.of(user));
 

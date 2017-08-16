@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.anyOf;
@@ -61,6 +62,7 @@ public class ArticleQueryServiceTest {
         assertThat(fetched.isFavorited(), is(false));
         assertThat(fetched.getCreatedAt(), notNullValue());
         assertThat(fetched.getUpdatedAt(), notNullValue());
+        assertThat(fetched.getTagList().contains("java"), is(true));
     }
 
     @Test

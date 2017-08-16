@@ -34,7 +34,7 @@ public class CurrentUserApiTest extends TestWithCurrentUser {
         email = "john@jacob.com";
         username = "johnjacob";
         defaultAvatar = "https://static.productionready.io/images/smiley-cyrus.jpg";
-        userFixture(email, username, defaultAvatar);
+        userFixture();
     }
 
     @Test
