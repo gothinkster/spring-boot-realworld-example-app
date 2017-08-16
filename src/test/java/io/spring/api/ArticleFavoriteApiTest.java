@@ -8,6 +8,7 @@ import io.spring.application.profile.ProfileData;
 import io.spring.core.article.Article;
 import io.spring.core.article.ArticleRepository;
 import io.spring.core.article.Tag;
+import io.spring.core.favorite.ArticleFavorite;
 import io.spring.core.favorite.ArticleFavoriteRepository;
 import io.spring.core.user.User;
 import org.junit.Before;
@@ -23,7 +24,9 @@ import java.util.stream.Collectors;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -86,7 +89,23 @@ public class ArticleFavoriteApiTest extends TestWithCurrentUser {
             .post("/articles/{slug}/favorite", article.getSlug())
             .prettyPeek()
             .then()
-            .statusCode(201)
+            .statusCode(200)
             .body("article.id", equalTo(article.getId()));
+
+        verify(articleFavoriteRepository).save(any());
+    }
+
+    @Test
+    public void should_unfavorite_an_article_success() throws Exception {
+        when(articleFavoriteRepository.find(eq(article.getId()), eq(user.getId()))).thenReturn(Optional.of(new ArticleFavorite(article.getId(), user.getId())));
+        given()
+            .header("Authorization", "Token " + token)
+            .when()
+            .delete("/articles/{slug}/favorite", article.getSlug())
+            .prettyPeek()
+            .then()
+            .statusCode(200)
+            .body("article.id", equalTo(article.getId()));
+        verify(articleFavoriteRepository).remove(new ArticleFavorite(article.getId(), user.getId()));
     }
 }

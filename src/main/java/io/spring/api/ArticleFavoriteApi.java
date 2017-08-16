@@ -11,6 +11,7 @@ import io.spring.core.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,8 +44,18 @@ public class ArticleFavoriteApi {
         return responseArticleData(articleQueryService.findBySlug(slug, user).get());
     }
 
+    @DeleteMapping
+    public ResponseEntity unfavoriteArticle(@PathVariable("slug") String slug,
+                                            @AuthenticationPrincipal User user) {
+        Article article = getArticle(slug);
+        articleFavoriteRepository.find(article.getId(), user.getId()).ifPresent(favorite -> {
+            articleFavoriteRepository.remove(favorite);
+        });
+        return responseArticleData(articleQueryService.findBySlug(slug, user).get());
+    }
+
     private ResponseEntity<HashMap<String, Object>> responseArticleData(final ArticleData articleData) {
-        return ResponseEntity.status(201).body(new HashMap<String, Object>() {{
+        return ResponseEntity.ok(new HashMap<String, Object>() {{
             put("article", articleData);
         }});
     }

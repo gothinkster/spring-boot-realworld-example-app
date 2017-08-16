@@ -26,6 +26,14 @@ public class MyBatisArticleFavoriteRepositoryTest {
     public void should_save_and_fetch_articleFavorite_success() throws Exception {
         ArticleFavorite articleFavorite = new ArticleFavorite("123", "456");
         articleFavoriteRepository.save(articleFavorite);
-        assertThat(articleFavoriteMapper.find(articleFavorite), is(true));
+        assertThat(articleFavoriteMapper.find(articleFavorite.getArticleId(), articleFavorite.getUserId()), is(true));
+    }
+
+    @Test
+    public void should_remove_favorite_success() throws Exception {
+        ArticleFavorite articleFavorite = new ArticleFavorite("123", "456");
+        articleFavoriteRepository.save(articleFavorite);
+        articleFavoriteRepository.remove(articleFavorite);
+        assertThat(articleFavoriteRepository.find("123", "456").isPresent(), is(false));
     }
 }
