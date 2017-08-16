@@ -11,6 +11,9 @@
           #{user.image}
         )
     </insert>
+    <insert id="saveRelation">
+        insert into follows(user_id, follow_id) values (#{followRelation.userId}, #{followRelation.targetId})
+    </insert>
     <update id="update">
         update users
           <set>
@@ -31,6 +34,18 @@
     <select id="findById" resultMap="user">
         select id, username, email, password, bio, image from users where id = #{id}
     </select>
+    <select id="findRelation" resultMap="follow">
+        SELECT
+          F.user_id followUserId,
+          F.follow_id followTargetId
+        from follows F
+        where F.user_id = #{userId} and F.follow_id = #{targetId}
+    </select>
+
+    <resultMap id="follow" type="io.spring.core.user.FollowRelation">
+        <result column="followUserId" property="userId"/>
+        <result column="followTargetId" property="targetId"/>
+    </resultMap>
 
     <resultMap id="user" type="io.spring.core.user.User" >
         <id column="id" property="id"/>

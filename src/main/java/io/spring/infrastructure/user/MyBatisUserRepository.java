@@ -1,5 +1,6 @@
 package io.spring.infrastructure.user;
 
+import io.spring.core.user.FollowRelation;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,5 +39,15 @@ public class MyBatisUserRepository implements UserRepository {
     @Override
     public Optional<User> findByEmail(String email) {
         return Optional.ofNullable(userMapper.findByEmail(email));
+    }
+
+    @Override
+    public void saveRelation(FollowRelation followRelation) {
+        userMapper.saveRelation(followRelation);
+    }
+
+    @Override
+    public Optional<FollowRelation> findRelation(String userId, String targetId) {
+        return Optional.ofNullable(userMapper.findRelation(userId, targetId));
     }
 }

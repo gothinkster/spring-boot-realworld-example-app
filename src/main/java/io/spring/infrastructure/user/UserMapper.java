@@ -1,5 +1,6 @@
 package io.spring.infrastructure.user;
 
+import io.spring.core.user.FollowRelation;
 import io.spring.core.user.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -16,4 +17,8 @@ public interface UserMapper {
     User findById(@Param("id") String id);
 
     void update(@Param("user") User user);
+
+    FollowRelation findRelation(@Param("userId") String userId, @Param("targetId") String targetId);
+
+    void saveRelation(@Param("followRelation") FollowRelation followRelation);
 }
