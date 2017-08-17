@@ -56,13 +56,21 @@ public class ArticlesApi {
         }});
     }
 
+    @GetMapping(path = "feed")
+    public ResponseEntity getFeed(@RequestParam(value = "offset", defaultValue = "0") int offset,
+                                  @RequestParam(value = "limit", defaultValue = "20") int limit,
+                                  @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(articleQueryService.findUserFeed(user, new Page(offset, limit)));
+    }
+
     @GetMapping
     public ResponseEntity getArticles(@RequestParam(value = "offset", defaultValue = "0") int offset,
                                       @RequestParam(value = "limit", defaultValue = "20") int limit,
                                       @RequestParam(value = "tag", required = false) String tag,
                                       @RequestParam(value = "favorited", required = false) String favoritedBy,
-                                      @RequestParam(value = "author", required = false) String author) {
-        return ResponseEntity.ok(articleQueryService.findRecentArticles(tag, author, favoritedBy, new Page(offset, limit)));
+                                      @RequestParam(value = "author", required = false) String author,
+                                      @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(articleQueryService.findRecentArticles(tag, author, favoritedBy, new Page(offset, limit), user));
     }
 }
 

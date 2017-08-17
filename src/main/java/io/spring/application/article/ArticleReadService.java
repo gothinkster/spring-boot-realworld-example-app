@@ -19,4 +19,8 @@ public interface ArticleReadService {
     int countArticle(@Param("tag") String tag, @Param("author") String author, @Param("favoritedBy") String favoritedBy);
 
     List<ArticleData> findArticles(@Param("articleIds") List<String> articleIds);
+
+    List<ArticleData> findArticlesOfAuthors(@Param("authors") List<String> authors, @Param("page") Page page);
+
+    int countFeedSize(@Param("authors") List<String> authors);
 }

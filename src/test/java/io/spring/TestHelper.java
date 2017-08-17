@@ -22,7 +22,6 @@ public class TestHelper {
     }
 
     public static ArticleData getArticleDataFromArticleAndUser(Article article, User user) {
-        DateTime time = new DateTime();
         return new ArticleData(
             article.getId(),
             article.getSlug(),
@@ -31,8 +30,8 @@ public class TestHelper {
             article.getBody(),
             false,
             0,
-            time,
-            time,
+            article.getCreatedAt(),
+            article.getUpdatedAt(),
             Arrays.asList("joda"),
             new ProfileData(user.getId(), user.getUsername(), user.getBio(), user.getImage(), false));
     }

@@ -46,6 +46,7 @@ public class ArticlesApiTest extends TestWithCurrentUser {
     @Before
     public void setUp() throws Exception {
         RestAssured.port = port;
+        userFixture();
     }
 
     @Test
@@ -114,9 +115,8 @@ public class ArticlesApiTest extends TestWithCurrentUser {
     @Test
     public void should_read_article_success() throws Exception {
         String slug = "test-new-article";
-        Article article = new Article("Test New Article", "Desc", "Body", new String[]{"java", "spring", "jpg"}, user.getId());
-
         DateTime time = new DateTime();
+        Article article = new Article("Test New Article", "Desc", "Body", new String[]{"java", "spring", "jpg"}, user.getId(), time);
         ArticleData articleData = TestHelper.getArticleDataFromArticleAndUser(article, user);
 
         when(articleQueryService.findBySlug(eq(slug), eq(null))).thenReturn(Optional.of(articleData));

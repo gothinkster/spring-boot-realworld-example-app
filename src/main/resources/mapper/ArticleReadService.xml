@@ -82,6 +82,20 @@
             #{id}
         </foreach>
     </select>
+    <select id="findArticlesOfAuthors" resultMap="articleData">
+        <include refid="selectArticleData"/>
+        where A.user_id in
+        <foreach index="index" collection="authors" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        limit #{page.offset}, #{page.limit}
+    </select>
+    <select id="countFeedSize" resultType="java.lang.Integer">
+        select count(1) from articles A where A.user_id in
+        <foreach collection="authors" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
 
     <resultMap id="articleId" type="string">
         <id javaType="string" column="articleId"/>

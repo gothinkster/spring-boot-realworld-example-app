@@ -5,6 +5,7 @@ import io.spring.core.article.Article;
 import io.spring.core.article.ArticleRepository;
 import io.spring.core.favorite.ArticleFavorite;
 import io.spring.core.favorite.ArticleFavoriteRepository;
+import io.spring.core.user.FollowRelation;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
 import io.spring.infrastructure.article.MyBatisArticleRepository;
@@ -19,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.anyOf;
@@ -29,7 +29,11 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @MybatisTest
-@Import({ArticleQueryService.class, MyBatisUserRepository.class, MyBatisArticleRepository.class, MyBatisArticleFavoriteRepository.class})
+@Import({
+    ArticleQueryService.class,
+    MyBatisUserRepository.class,
+    MyBatisArticleRepository.class,
+    MyBatisArticleFavoriteRepository.class})
 public class ArticleQueryServiceTest {
     @Autowired
     private ArticleQueryService queryService;
@@ -83,12 +87,12 @@ public class ArticleQueryServiceTest {
         Article anotherArticle = new Article("new article", "desc", "body", new String[]{"test"}, user.getId(), new DateTime().minusHours(1));
         articleRepository.save(anotherArticle);
 
-        ArticleDataList recentArticles = queryService.findRecentArticles(null, null, null, new Page());
+        ArticleDataList recentArticles = queryService.findRecentArticles(null, null, null, new Page(), user);
         assertThat(recentArticles.getCount(), is(2));
         assertThat(recentArticles.getArticleDatas().size(), is(2));
         assertThat(recentArticles.getArticleDatas().get(0).getId(), is(article.getId()));
 
-        ArticleDataList nodata = queryService.findRecentArticles(null, null, null, new Page(2, 10));
+        ArticleDataList nodata = queryService.findRecentArticles(null, null, null, new Page(2, 10), user);
         assertThat(nodata.getCount(), is(2));
         assertThat(nodata.getArticleDatas().size(), is(0));
     }
@@ -101,7 +105,7 @@ public class ArticleQueryServiceTest {
         Article anotherArticle = new Article("new article", "desc", "body", new String[]{"test"}, anotherUser.getId());
         articleRepository.save(anotherArticle);
 
-        ArticleDataList recentArticles = queryService.findRecentArticles(null, user.getId(), null, new Page());
+        ArticleDataList recentArticles = queryService.findRecentArticles(null, user.getId(), null, new Page(), user);
         assertThat(recentArticles.getArticleDatas().size(), is(1));
         assertThat(recentArticles.getCount(), is(1));
     }
@@ -117,10 +121,13 @@ public class ArticleQueryServiceTest {
         ArticleFavorite articleFavorite = new ArticleFavorite(article.getId(), anotherUser.getId());
         articleFavoriteRepository.save(articleFavorite);
 
-        ArticleDataList recentArticles = queryService.findRecentArticles(null, null, anotherUser.getId(), new Page());
+        ArticleDataList recentArticles = queryService.findRecentArticles(null, null, anotherUser.getId(), new Page(), anotherUser);
         assertThat(recentArticles.getArticleDatas().size(), is(1));
         assertThat(recentArticles.getCount(), is(1));
-        assertThat(recentArticles.getArticleDatas().get(0).getId(), is(article.getId()));
+        ArticleData articleData = recentArticles.getArticleDatas().get(0);
+        assertThat(articleData.getId(), is(article.getId()));
+        assertThat(articleData.getFavoritesCount(), is(1));
+        assertThat(articleData.isFavorited(), is(true));
     }
 
     @Test
@@ -128,12 +135,43 @@ public class ArticleQueryServiceTest {
         Article anotherArticle = new Article("new article", "desc", "body", new String[]{"test"}, user.getId());
         articleRepository.save(anotherArticle);
 
-        ArticleDataList recentArticles = queryService.findRecentArticles("spring", null, null, new Page());
+        ArticleDataList recentArticles = queryService.findRecentArticles("spring", null, null, new Page(), user);
         assertThat(recentArticles.getArticleDatas().size(), is(1));
         assertThat(recentArticles.getCount(), is(1));
         assertThat(recentArticles.getArticleDatas().get(0).getId(), is(article.getId()));
 
-        ArticleDataList notag = queryService.findRecentArticles("notag", null, null, new Page());
+        ArticleDataList notag = queryService.findRecentArticles("notag", null, null, new Page(), user);
         assertThat(notag.getCount(), is(0));
+    }
+
+    @Test
+    public void should_show_following_if_user_followed_author() throws Exception {
+        User anotherUser = new User("other@email.com", "other", "123", "", "");
+        userRepository.save(anotherUser);
+
+        FollowRelation followRelation = new FollowRelation(anotherUser.getId(), user.getId());
+        userRepository.saveRelation(followRelation);
+
+        ArticleDataList recentArticles = queryService.findRecentArticles(null, null, null, new Page(), anotherUser);
+        assertThat(recentArticles.getCount(), is(1));
+        ArticleData articleData = recentArticles.getArticleDatas().get(0);
+        assertThat(articleData.getProfileData().isFollowing(), is(true));
+    }
+
+    @Test
+    public void should_get_user_feed() throws Exception {
+        User anotherUser = new User("other@email.com", "other", "123", "", "");
+        userRepository.save(anotherUser);
+
+        FollowRelation followRelation = new FollowRelation(anotherUser.getId(), user.getId());
+        userRepository.saveRelation(followRelation);
+
+        ArticleDataList userFeed = queryService.findUserFeed(user, new Page());
+        assertThat(userFeed.getCount(), is(0));
+
+        ArticleDataList anotherUserFeed = queryService.findUserFeed(anotherUser, new Page());
+        assertThat(anotherUserFeed.getCount(), is(1));
+        ArticleData articleData = anotherUserFeed.getArticleDatas().get(0);
+        assertThat(articleData.getProfileData().isFollowing(), is(true));
     }
 }

@@ -4,4 +4,15 @@
     <select id="isUserFollowing" resultType="java.lang.Boolean">
         select count(1) from follows where user_id = #{userId} and follow_id = #{anotherUserId}
     </select>
+    <select id="followingAuthors" resultType="java.lang.String">
+        select F.follow_id from follows F
+        where F.follow_id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        and F.user_id = #{userId}
+    </select>
+    <select id="followedUsers" resultType="java.lang.String">
+        select F.follow_id from follows F where F.user_id = #{userId}
+    </select>
 </mapper>
