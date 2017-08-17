@@ -27,23 +27,23 @@ public class User {
     }
 
     public void update(String email, String username, String password, String bio, String image) {
-        if (!email.equals("")) {
+        if (!"".equals(email)) {
             this.email = email;
         }
 
-        if (!username.equals("")) {
+        if (!"".equals(username)) {
             this.username = username;
         }
 
-        if (!password.equals("")) {
+        if (!"".equals(password)) {
             this.password = password;
         }
 
-        if (!bio.equals("")) {
+        if (!"".equals(bio)) {
             this.bio = bio;
         }
 
-        if (!image.equals("")) {
+        if (!"".equals(image)) {
             this.image = image;
         }
     }
