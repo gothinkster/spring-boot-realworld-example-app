@@ -27,6 +27,10 @@ public class Article {
     private DateTime updatedAt;
 
     public Article(String title, String description, String body, String[] tagList, String userId) {
+        this(title, description, body, tagList, userId, new DateTime());
+    }
+
+    public Article(String title, String description, String body, String[] tagList, String userId, DateTime createdAt) {
         this.id = UUID.randomUUID().toString();
         this.slug = toSlug(title);
         this.title = title;
@@ -34,8 +38,8 @@ public class Article {
         this.body = body;
         this.tags = Arrays.stream(tagList).collect(toSet()).stream().map(Tag::new).collect(toList());
         this.userId = userId;
-        this.createdAt = new DateTime();
-        this.updatedAt = new DateTime();
+        this.createdAt = createdAt;
+        this.updatedAt = createdAt;
     }
 
     public void update(String title, String description, String body) {

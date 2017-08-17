@@ -1,6 +1,7 @@
 package io.spring.api;
 
 import io.restassured.RestAssured;
+import io.spring.TestHelper;
 import io.spring.application.article.ArticleData;
 import io.spring.application.article.ArticleQueryService;
 import io.spring.application.profile.ProfileData;
@@ -42,17 +43,9 @@ public class ArticlesApiTest extends TestWithCurrentUser {
     @MockBean
     private ArticleQueryService articleQueryService;
 
-    protected String email;
-    protected String username;
-    protected String defaultAvatar;
-
     @Before
     public void setUp() throws Exception {
         RestAssured.port = port;
-        email = "john@jacob.com";
-        username = "johnjacob";
-        defaultAvatar = "https://static.productionready.io/images/smiley-cyrus.jpg";
-        userFixture();
     }
 
     @Test
@@ -124,18 +117,7 @@ public class ArticlesApiTest extends TestWithCurrentUser {
         Article article = new Article("Test New Article", "Desc", "Body", new String[]{"java", "spring", "jpg"}, user.getId());
 
         DateTime time = new DateTime();
-        ArticleData articleData = new ArticleData(
-            article.getId(),
-            article.getSlug(),
-            article.getTitle(),
-            article.getDescription(),
-            article.getBody(),
-            false,
-            0,
-            time,
-            time,
-            Arrays.asList("joda"),
-            new ProfileData(user.getId(), user.getUsername(), user.getBio(), user.getImage(), false));
+        ArticleData articleData = TestHelper.getArticleDataFromArticleAndUser(article, user);
 
         when(articleQueryService.findBySlug(eq(slug), eq(null))).thenReturn(Optional.of(articleData));
 
@@ -168,18 +150,7 @@ public class ArticlesApiTest extends TestWithCurrentUser {
         Article article = new Article(title, description, body, new String[]{"java", "spring", "jpg"}, user.getId());
 
         DateTime time = new DateTime();
-        ArticleData articleData = new ArticleData(
-            article.getId(),
-            article.getSlug(),
-            article.getTitle(),
-            article.getDescription(),
-            article.getBody(),
-            false,
-            0,
-            time,
-            time,
-            Arrays.asList("joda"),
-            new ProfileData(user.getId(), user.getUsername(), user.getBio(), user.getImage(), false));
+        ArticleData articleData = TestHelper.getArticleDataFromArticleAndUser(article, user);
 
         when(articleRepository.findBySlug(eq(article.getSlug()))).thenReturn(Optional.of(article));
         when(articleQueryService.findBySlug(eq(article.getSlug()), eq(user))).thenReturn(Optional.of(articleData));

@@ -33,6 +33,59 @@
         <include refid="selectArticleData"/>
         where A.slug = #{slug}
     </select>
+    <select id="queryArticles" resultMap="articleId">
+        select
+        DISTINCT(A.id) articleId, A.created_at
+        from
+        articles A
+        left join article_tags AT on A.id = AT.article_id
+        left join tags T on T.id = AT.tag_id
+        left join article_favorites AF on AF.article_id = A.id
+        <where>
+            <if test="tag != null">
+                T.name = #{tag}
+            </if>
+            <if test="author != null">
+                AND A.user_id = #{author}
+            </if>
+            <if test="favoritedBy != null">
+                AND AF.user_id = #{favoritedBy}
+            </if>
+        </where>
+        order by A.created_at desc
+        limit #{page.offset}, #{page.limit}
+    </select>
+    <select id="countArticle" resultType="java.lang.Integer">
+        select
+        count(DISTINCT A.id)
+        from
+        articles A
+        left join article_tags AT on A.id = AT.article_id
+        left join tags T on T.id = AT.tag_id
+        left join article_favorites AF on AF.article_id = A.id
+        <where>
+            <if test="tag != null">
+                T.name = #{tag}
+            </if>
+            <if test="author != null">
+                AND A.user_id = #{author}
+            </if>
+            <if test="favoritedBy != null">
+                AND AF.user_id = #{favoritedBy}
+            </if>
+        </where>
+    </select>
+    <select id="findArticles" resultMap="articleData">
+        <include refid="selectArticleData"/>
+        where A.id in
+        <foreach index="index" collection="articleIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <resultMap id="articleId" type="string">
+        <id javaType="string" column="articleId"/>
+    </resultMap>
 
     <resultMap id="articleData" type="io.spring.application.article.ArticleData">
         <id column="articleId" property="id"/>

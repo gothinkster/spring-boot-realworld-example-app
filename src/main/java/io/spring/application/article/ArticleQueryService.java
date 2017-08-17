@@ -1,10 +1,13 @@
 package io.spring.application.article;
 
+import io.spring.application.Page;
 import io.spring.application.profile.UserRelationshipQueryService;
 import io.spring.core.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -53,5 +56,13 @@ public class ArticleQueryService {
             userRelationshipQueryService.isUserFollowing(
                 user.getId(),
                 articleData.getProfileData().getId()));
+    }
+
+    public ArticleDataList findRecentArticles(String tag, String author, String favoritedBy, Page page) {
+        List<String> articleIds = articleReadService.queryArticles(tag, author, favoritedBy, page);
+        int articleCount = articleReadService.countArticle(tag, author, favoritedBy);
+        return new ArticleDataList(
+            articleIds.size() == 0 ? new ArrayList<>() : articleReadService.findArticles(articleIds),
+            articleCount);
     }
 }
