@@ -1,8 +1,6 @@
 package io.spring.application.user;
 
-import com.fasterxml.jackson.annotation.JsonRootName;
 import io.spring.application.JwtService;
-import lombok.Getter;
 import org.springframework.stereotype.Service;
 
 @Service

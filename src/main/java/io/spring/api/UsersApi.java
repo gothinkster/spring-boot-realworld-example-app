@@ -2,7 +2,6 @@ package io.spring.api;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 import io.spring.api.exception.InvalidRequestException;
-import io.spring.application.user.UserData;
 import io.spring.application.user.UserQueryService;
 import io.spring.application.user.UserWithToken;
 import io.spring.core.user.EncryptService;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;

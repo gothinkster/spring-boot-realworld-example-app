@@ -1,6 +1,5 @@
 package io.spring.application.profile;
 
-import io.spring.application.article.ArticleData;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;

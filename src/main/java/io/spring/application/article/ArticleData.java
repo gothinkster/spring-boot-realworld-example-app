@@ -1,7 +1,6 @@
 package io.spring.application.article;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
 import io.spring.application.profile.ProfileData;
 import lombok.AllArgsConstructor;
 import lombok.Data;
