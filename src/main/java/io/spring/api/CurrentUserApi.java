@@ -2,8 +2,9 @@ package io.spring.api;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 import io.spring.api.exception.InvalidRequestException;
-import io.spring.application.user.UserQueryService;
-import io.spring.application.user.UserWithToken;
+import io.spring.application.UserQueryService;
+import io.spring.application.UserWithToken;
+import io.spring.application.data.UserData;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
 import lombok.Getter;
@@ -40,11 +41,15 @@ public class CurrentUserApi {
     @GetMapping
     public ResponseEntity currentUser(@AuthenticationPrincipal User currentUser,
                                       @RequestHeader(value = "Authorization") String authorization) {
-        return ResponseEntity.ok(userResponse(userQueryService.fetchCurrentUser(currentUser.getUsername(), authorization.split(" ")[1])));
+        UserData userData = userQueryService.findById(currentUser.getId()).get();
+        return ResponseEntity.ok(userResponse(
+            new UserWithToken(userData, authorization.split(" ")[1])
+        ));
     }
 
     @PutMapping
     public ResponseEntity updateProfile(@AuthenticationPrincipal User currentUser,
+                                        @RequestHeader("Authorization") String token,
                                         @Valid @RequestBody UpdateUserParam updateUserParam,
                                         BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -59,7 +64,10 @@ public class CurrentUserApi {
             updateUserParam.getBio(),
             updateUserParam.getImage());
         userRepository.save(currentUser);
-        return ResponseEntity.ok(userResponse(userQueryService.fetchNewAuthenticatedUser(currentUser.getUsername())));
+        UserData userData = userQueryService.findById(currentUser.getId()).get();
+        return ResponseEntity.ok(userResponse(
+            new UserWithToken(userData, token.split(" ")[1])
+        ));
     }
 
     private void checkUniquenessOfUsernameAndEmail(User currentUser, UpdateUserParam updateUserParam, BindingResult bindingResult) {

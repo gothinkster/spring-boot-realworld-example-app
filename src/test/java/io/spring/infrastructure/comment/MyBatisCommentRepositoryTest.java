@@ -2,6 +2,7 @@ package io.spring.infrastructure.comment;
 
 import io.spring.core.comment.Comment;
 import io.spring.core.comment.CommentRepository;
+import io.spring.infrastructure.repository.MyBatisCommentRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;

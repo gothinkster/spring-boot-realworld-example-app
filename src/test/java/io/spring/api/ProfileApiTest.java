@@ -1,13 +1,11 @@
 package io.spring.api;
 
 import io.restassured.RestAssured;
-import io.spring.application.profile.ProfileData;
-import io.spring.application.profile.ProfileQueryService;
-import io.spring.application.profile.UserRelationshipQueryService;
+import io.spring.application.data.ProfileData;
+import io.spring.application.ProfileQueryService;
 import io.spring.core.article.Article;
 import io.spring.core.user.FollowRelation;
 import io.spring.core.user.User;
-import io.spring.core.user.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

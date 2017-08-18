@@ -1,7 +1,7 @@
 package io.spring.infrastructure.service;
 
-import io.spring.application.JwtService;
-import io.spring.application.user.UserData;
+import io.spring.core.service.JwtService;
+import io.spring.core.user.User;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,7 +9,7 @@ import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class DefaultJwtServiceTest {
 
@@ -22,14 +22,12 @@ public class DefaultJwtServiceTest {
 
     @Test
     public void should_generate_and_parse_token() throws Exception {
-        String username = "aisensiy";
-
-        UserData userData = new UserData("123", "aisensiy@163.com", username, "", "");
-        String token = jwtService.toToken(userData);
+        User user = new User("email@email.com", "username", "123", "", "");
+        String token = jwtService.toToken(user);
         assertThat(token, notNullValue());
         Optional<String> optional = jwtService.getSubFromToken(token);
         assertThat(optional.isPresent(), is(true));
-        assertThat(optional.get(), is(username));
+        assertThat(optional.get(), is(user.getId()));
     }
 
     @Test

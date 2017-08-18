@@ -1,8 +1,8 @@
 package io.spring.api;
 
-import io.spring.application.JwtService;
-import io.spring.application.user.UserData;
-import io.spring.application.user.UserReadService;
+import io.spring.core.service.JwtService;
+import io.spring.application.data.UserData;
+import io.spring.infrastructure.mybatis.readservice.UserReadService;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,10 +37,11 @@ class TestWithCurrentUser {
 
         user = new User(email, username, "123", "", defaultAvatar);
         when(userRepository.findByUsername(eq(username))).thenReturn(Optional.of(user));
+        when(userRepository.findById(eq(user.getId()))).thenReturn(Optional.of(user));
 
         userData = new UserData(user.getId(), email, username, "", defaultAvatar);
-        when(userReadService.findByUsername(eq(username))).thenReturn(userData);
+        when(userReadService.findById(eq(user.getId()))).thenReturn(userData);
 
-        token = jwtService.toToken(userData);
+        token = jwtService.toToken(user);
     }
 }

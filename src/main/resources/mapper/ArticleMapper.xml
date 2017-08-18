@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="io.spring.infrastructure.article.ArticleMapper">
+<mapper namespace="io.spring.infrastructure.mybatis.mapper.ArticleMapper">
     <insert id="insert">
         insert into articles(id, slug, title, description, body, user_id, created_at, updated_at)
         values(

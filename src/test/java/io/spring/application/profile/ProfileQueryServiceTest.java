@@ -1,8 +1,10 @@
 package io.spring.application.profile;
 
+import io.spring.application.ProfileQueryService;
+import io.spring.application.data.ProfileData;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
-import io.spring.infrastructure.user.MyBatisUserRepository;
+import io.spring.infrastructure.repository.MyBatisUserRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;

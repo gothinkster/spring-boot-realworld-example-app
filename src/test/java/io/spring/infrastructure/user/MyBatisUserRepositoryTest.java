@@ -3,6 +3,7 @@ package io.spring.infrastructure.user;
 import io.spring.core.user.FollowRelation;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
+import io.spring.infrastructure.repository.MyBatisUserRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

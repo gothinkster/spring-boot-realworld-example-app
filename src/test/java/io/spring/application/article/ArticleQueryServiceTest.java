@@ -1,6 +1,9 @@
 package io.spring.application.article;
 
+import io.spring.application.ArticleQueryService;
 import io.spring.application.Page;
+import io.spring.application.data.ArticleData;
+import io.spring.application.data.ArticleDataList;
 import io.spring.core.article.Article;
 import io.spring.core.article.ArticleRepository;
 import io.spring.core.favorite.ArticleFavorite;
@@ -8,9 +11,9 @@ import io.spring.core.favorite.ArticleFavoriteRepository;
 import io.spring.core.user.FollowRelation;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
-import io.spring.infrastructure.article.MyBatisArticleRepository;
-import io.spring.infrastructure.favorite.MyBatisArticleFavoriteRepository;
-import io.spring.infrastructure.user.MyBatisUserRepository;
+import io.spring.infrastructure.repository.MyBatisArticleRepository;
+import io.spring.infrastructure.repository.MyBatisArticleFavoriteRepository;
+import io.spring.infrastructure.repository.MyBatisUserRepository;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,10 +25,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
 
-import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
 @MybatisTest
@@ -54,7 +56,7 @@ public class ArticleQueryServiceTest {
     public void setUp() throws Exception {
         user = new User("aisensiy@gmail.com", "aisensiy", "123", "", "");
         userRepository.save(user);
-        article = new Article("test", "desc", "body", new String[]{"java", "spring"}, user.getId());
+        article = new Article("test", "desc", "body", new String[]{"java", "spring"}, user.getId(), new DateTime());
         articleRepository.save(article);
     }
 

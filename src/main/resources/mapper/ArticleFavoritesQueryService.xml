@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="io.spring.application.article.ArticleFavoritesQueryService">
+<mapper namespace="io.spring.application.ArticleFavoritesQueryService">
     <select id="isUserFavorite" resultType="java.lang.Boolean">
         select count(1) from article_favorites where user_id = #{userId} and article_id = #{articleId}
     </select>
@@ -28,7 +28,7 @@
         and AF.user_id = #{currentUser.id}
     </select>
 
-    <resultMap id="favoriteCount" type="io.spring.application.article.ArticleFavoriteCount">
+    <resultMap id="favoriteCount" type="io.spring.application.ArticleFavoriteCount">
         <id column="id" property="id"/>
         <result column="favoriteCount" property="count"/>
     </resultMap>

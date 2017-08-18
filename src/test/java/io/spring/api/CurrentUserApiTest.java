@@ -1,16 +1,13 @@
 package io.spring.api;
 
 import io.restassured.RestAssured;
-import io.spring.application.JwtService;
-import io.spring.application.user.UserData;
+import io.spring.application.data.UserData;
 import io.spring.core.user.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.HashMap;
@@ -18,9 +15,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
@@ -93,6 +87,9 @@ public class CurrentUserApiTest extends TestWithCurrentUser {
             }});
         }};
 
+        when(userRepository.findByUsername(eq(newUsername))).thenReturn(Optional.empty());
+        when(userRepository.findByEmail(eq(newEmail))).thenReturn(Optional.empty());
+
         when(userReadService.findByUsername(eq(newUsername))).thenReturn(new UserData(user.getId(), newEmail, newUsername, newBio, user.getImage()));
 
         given()
@@ -102,8 +99,7 @@ public class CurrentUserApiTest extends TestWithCurrentUser {
             .when()
             .put("/user")
             .then()
-            .statusCode(200)
-            .body("user.token", not(token));
+            .statusCode(200);
     }
 
     @Test

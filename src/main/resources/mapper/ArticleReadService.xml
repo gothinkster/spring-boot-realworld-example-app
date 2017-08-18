@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="io.spring.application.article.ArticleReadService">
+<mapper namespace="io.spring.infrastructure.mybatis.readservice.ArticleReadService">
     <sql id="profileColumns">
         U.id userId,
         U.username userUsername,
@@ -81,6 +81,7 @@
         <foreach index="index" collection="articleIds" item="id" open="(" separator="," close=")">
             #{id}
         </foreach>
+        order by A.created_at desc
     </select>
     <select id="findArticlesOfAuthors" resultMap="articleData">
         <include refid="selectArticleData"/>
@@ -101,7 +102,7 @@
         <id javaType="string" column="articleId"/>
     </resultMap>
 
-    <resultMap id="articleData" type="io.spring.application.article.ArticleData">
+    <resultMap id="articleData" type="io.spring.application.data.ArticleData">
         <id column="articleId" property="id"/>
         <result column="articleSlug" property="slug"/>
         <result column="articleTitle" property="title"/>
@@ -115,7 +116,7 @@
         </collection>
     </resultMap>
 
-    <resultMap id="profileData" type="io.spring.application.profile.ProfileData">
+    <resultMap id="profileData" type="io.spring.application.data.ProfileData">
         <id column="userId" property="id"/>
         <result column="userUsername" property="username"/>
         <result column="userBio" property="bio"/>

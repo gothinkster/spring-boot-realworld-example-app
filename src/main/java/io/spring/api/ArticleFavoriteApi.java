@@ -1,8 +1,8 @@
 package io.spring.api;
 
 import io.spring.api.exception.ResourceNotFoundException;
-import io.spring.application.article.ArticleData;
-import io.spring.application.article.ArticleQueryService;
+import io.spring.application.data.ArticleData;
+import io.spring.application.ArticleQueryService;
 import io.spring.core.article.Article;
 import io.spring.core.article.ArticleRepository;
 import io.spring.core.favorite.ArticleFavorite;

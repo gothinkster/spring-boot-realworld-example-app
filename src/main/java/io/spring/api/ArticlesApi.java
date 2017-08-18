@@ -3,7 +3,7 @@ package io.spring.api;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import io.spring.api.exception.InvalidRequestException;
 import io.spring.application.Page;
-import io.spring.application.article.ArticleQueryService;
+import io.spring.application.ArticleQueryService;
 import io.spring.core.article.Article;
 import io.spring.core.article.ArticleRepository;
 import io.spring.core.user.User;

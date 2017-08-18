@@ -1,5 +1,7 @@
 package io.spring.application.comment;
 
+import io.spring.application.CommentQueryService;
+import io.spring.application.data.CommentData;
 import io.spring.core.article.Article;
 import io.spring.core.article.ArticleRepository;
 import io.spring.core.comment.Comment;
@@ -7,9 +9,9 @@ import io.spring.core.comment.CommentRepository;
 import io.spring.core.user.FollowRelation;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
-import io.spring.infrastructure.article.MyBatisArticleRepository;
-import io.spring.infrastructure.comment.MyBatisCommentRepository;
-import io.spring.infrastructure.user.MyBatisUserRepository;
+import io.spring.infrastructure.repository.MyBatisArticleRepository;
+import io.spring.infrastructure.repository.MyBatisCommentRepository;
+import io.spring.infrastructure.repository.MyBatisUserRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

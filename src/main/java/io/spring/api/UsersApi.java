@@ -2,8 +2,10 @@ package io.spring.api;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 import io.spring.api.exception.InvalidRequestException;
-import io.spring.application.user.UserQueryService;
-import io.spring.application.user.UserWithToken;
+import io.spring.application.UserQueryService;
+import io.spring.application.UserWithToken;
+import io.spring.application.data.UserData;
+import io.spring.core.service.JwtService;
 import io.spring.core.user.EncryptService;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
@@ -32,32 +34,25 @@ public class UsersApi {
     private UserQueryService userQueryService;
     private String defaultImage;
     private EncryptService encryptService;
+    private JwtService jwtService;
 
     @Autowired
     public UsersApi(UserRepository userRepository,
                     UserQueryService userQueryService,
                     EncryptService encryptService,
-                    @Value("${image.default}") String defaultImage) {
+                    @Value("${image.default}") String defaultImage,
+                    JwtService jwtService) {
         this.userRepository = userRepository;
         this.userQueryService = userQueryService;
         this.encryptService = encryptService;
         this.defaultImage = defaultImage;
+        this.jwtService = jwtService;
     }
 
     @RequestMapping(path = "/users", method = POST)
     public ResponseEntity createUser(@Valid @RequestBody RegisterParam registerParam, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            throw new InvalidRequestException(bindingResult);
-        }
-        if (userRepository.findByUsername(registerParam.getUsername()).isPresent()) {
-            bindingResult.rejectValue("username", "DUPLICATED", "duplicated username");
-            throw new InvalidRequestException(bindingResult);
-        }
+        checkInput(registerParam, bindingResult);
 
-        if (userRepository.findByEmail(registerParam.getEmail()).isPresent()) {
-            bindingResult.rejectValue("email", "DUPLICATED", "duplicated email");
-            throw new InvalidRequestException(bindingResult);
-        }
         User user = new User(
             registerParam.getEmail(),
             registerParam.getUsername(),
@@ -65,14 +60,33 @@ public class UsersApi {
             "",
             defaultImage);
         userRepository.save(user);
-        return ResponseEntity.status(201).body(userResponse(userQueryService.fetchNewAuthenticatedUser(user.getUsername())));
+        UserData userData = userQueryService.findById(user.getId()).get();
+        return ResponseEntity.status(201).body(userResponse(new UserWithToken(userData, jwtService.toToken(user))));
+    }
+
+    private void checkInput(@Valid @RequestBody RegisterParam registerParam, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new InvalidRequestException(bindingResult);
+        }
+        if (userRepository.findByUsername(registerParam.getUsername()).isPresent()) {
+            bindingResult.rejectValue("username", "DUPLICATED", "duplicated username");
+        }
+
+        if (userRepository.findByEmail(registerParam.getEmail()).isPresent()) {
+            bindingResult.rejectValue("email", "DUPLICATED", "duplicated email");
+        }
+
+        if (bindingResult.hasErrors()) {
+            throw new InvalidRequestException(bindingResult);
+        }
     }
 
     @RequestMapping(path = "/users/login", method = POST)
     public ResponseEntity userLogin(@Valid @RequestBody LoginParam loginParam, BindingResult bindingResult) {
         Optional<User> optional = userRepository.findByEmail(loginParam.getEmail());
         if (optional.isPresent() && encryptService.check(loginParam.getPassword(), optional.get().getPassword())) {
-            return ResponseEntity.ok(userResponse(userQueryService.fetchNewAuthenticatedUser(optional.get().getUsername())));
+            UserData userData = userQueryService.findById(optional.get().getId()).get();
+            return ResponseEntity.ok(userResponse(new UserWithToken(userData, jwtService.toToken(optional.get()))));
         } else {
             bindingResult.rejectValue("password", "INVALID", "invalid email or password");
             throw new InvalidRequestException(bindingResult);

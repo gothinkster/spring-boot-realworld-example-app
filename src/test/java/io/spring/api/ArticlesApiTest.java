@@ -2,13 +2,14 @@ package io.spring.api;
 
 import io.restassured.RestAssured;
 import io.spring.TestHelper;
-import io.spring.application.article.ArticleData;
-import io.spring.application.article.ArticleQueryService;
-import io.spring.application.profile.ProfileData;
+import io.spring.application.data.ArticleData;
+import io.spring.application.ArticleQueryService;
+import io.spring.application.data.ProfileData;
 import io.spring.core.article.Article;
 import io.spring.core.article.ArticleRepository;
 import io.spring.core.user.User;
 import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -127,7 +128,7 @@ public class ArticlesApiTest extends TestWithCurrentUser {
             .statusCode(200)
             .body("article.slug", equalTo(slug))
             .body("article.body", equalTo(articleData.getBody()))
-            .body("article.createdAt", equalTo(time.toDateTimeISO().toString()));
+            .body("article.createdAt", equalTo(ISODateTimeFormat.dateTime().withZoneUTC().print(time)));
 
     }
 

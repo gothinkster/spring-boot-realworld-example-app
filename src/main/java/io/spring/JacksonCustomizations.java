@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -36,7 +37,7 @@ public class JacksonCustomizations {
             if (value == null) {
                 gen.writeNull();
             } else {
-                gen.writeString(value.toString());
+                gen.writeString(ISODateTimeFormat.dateTime().withZoneUTC().print(value));
             }
         }
     }

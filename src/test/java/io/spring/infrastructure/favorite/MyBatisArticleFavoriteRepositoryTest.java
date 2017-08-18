@@ -2,6 +2,7 @@ package io.spring.infrastructure.favorite;
 
 import io.spring.core.favorite.ArticleFavorite;
 import io.spring.core.favorite.ArticleFavoriteRepository;
+import io.spring.infrastructure.repository.MyBatisArticleFavoriteRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
@@ -21,7 +22,7 @@ public class MyBatisArticleFavoriteRepositoryTest {
     private ArticleFavoriteRepository articleFavoriteRepository;
 
     @Autowired
-    private ArticleFavoriteMapper articleFavoriteMapper;
+    private io.spring.infrastructure.mybatis.mapper.ArticleFavoriteMapper articleFavoriteMapper;
 
     @Test
     public void should_save_and_fetch_articleFavorite_success() throws Exception {

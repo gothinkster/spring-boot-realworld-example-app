@@ -1,10 +1,9 @@
 package io.spring.api;
 
 import io.restassured.RestAssured;
-import io.spring.application.comment.CommentData;
-import io.spring.application.comment.CommentQueryService;
-import io.spring.application.profile.ProfileData;
-import io.spring.application.user.UserData;
+import io.spring.application.CommentQueryService;
+import io.spring.application.data.CommentData;
+import io.spring.application.data.ProfileData;
 import io.spring.core.article.Article;
 import io.spring.core.article.ArticleRepository;
 import io.spring.core.comment.Comment;
@@ -142,13 +141,8 @@ public class CommentsApiTest extends TestWithCurrentUser {
         when(userRepository.findByUsername(eq(anotherUser.getUsername()))).thenReturn(Optional.of(anotherUser));
 
         when(commentRepository.findById(eq(article.getId()), eq(comment.getId()))).thenReturn(Optional.of(comment));
-        String token = jwtService.toToken(
-            new UserData(
-                anotherUser.getId(),
-                anotherUser.getEmail(),
-                anotherUser.getUsername(),
-                anotherUser.getBio(),
-                anotherUser.getImage()));
+        String token = jwtService.toToken(anotherUser);
+        when(userRepository.findById(eq(anotherUser.getId()))).thenReturn(Optional.of(anotherUser));
         given()
             .header("Authorization", "Token " + token)
             .when()

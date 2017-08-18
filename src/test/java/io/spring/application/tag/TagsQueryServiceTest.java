@@ -1,8 +1,9 @@
 package io.spring.application.tag;
 
+import io.spring.application.TagsQueryService;
 import io.spring.core.article.Article;
 import io.spring.core.article.ArticleRepository;
-import io.spring.infrastructure.article.MyBatisArticleRepository;
+import io.spring.infrastructure.repository.MyBatisArticleRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;

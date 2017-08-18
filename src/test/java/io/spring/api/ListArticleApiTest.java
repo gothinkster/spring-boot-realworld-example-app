@@ -2,8 +2,8 @@ package io.spring.api;
 
 import io.restassured.RestAssured;
 import io.spring.application.Page;
-import io.spring.application.article.ArticleDataList;
-import io.spring.application.article.ArticleQueryService;
+import io.spring.application.data.ArticleDataList;
+import io.spring.application.ArticleQueryService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,6 +1,6 @@
 package io.spring.api;
 
-import io.spring.application.tag.TagsQueryService;
+import io.spring.application.TagsQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -4,8 +4,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.spring.application.JwtService;
-import io.spring.application.user.UserData;
+import io.spring.core.service.JwtService;
+import io.spring.core.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -26,9 +26,9 @@ public class DefaultJwtService implements JwtService {
     }
 
     @Override
-    public String toToken(UserData userData) {
+    public String toToken(User user) {
         return Jwts.builder()
-            .setSubject(userData.getId())
+            .setSubject(user.getId())
             .setExpiration(expireTimeFromNow())
             .signWith(SignatureAlgorithm.HS512, secret)
             .compact();

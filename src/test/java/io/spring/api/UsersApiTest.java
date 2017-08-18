@@ -1,9 +1,9 @@
 package io.spring.api;
 
 import io.restassured.RestAssured;
-import io.spring.application.JwtService;
-import io.spring.application.user.UserData;
-import io.spring.application.user.UserReadService;
+import io.spring.core.service.JwtService;
+import io.spring.application.data.UserData;
+import io.spring.infrastructure.mybatis.readservice.UserReadService;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
 import org.junit.Before;
@@ -54,8 +54,9 @@ public class UsersApiTest {
         String username = "johnjacob";
 
         when(jwtService.toToken(any())).thenReturn("123");
-        UserData userData = new UserData("123", email, username, "", defaultAvatar);
-        when(userReadService.findByUsername(eq(username))).thenReturn(userData);
+        User user = new User(email, username, "123", "", defaultAvatar);
+        UserData userData = new UserData(user.getId(), email, username, "", defaultAvatar);
+        when(userReadService.findById(any())).thenReturn(userData);
 
         when(userRepository.findByUsername(eq(username))).thenReturn(Optional.empty());
         when(userRepository.findByEmail(eq(email))).thenReturn(Optional.empty());
@@ -122,6 +123,7 @@ public class UsersApiTest {
         when(userRepository.findByUsername(eq(username))).thenReturn(Optional.of(new User(
             email, username, "123", "bio", ""
         )));
+        when(userRepository.findByEmail(any())).thenReturn(Optional.empty());
 
         Map<String, Object> param = prepareRegisterParameter(email, username);
 
@@ -179,6 +181,7 @@ public class UsersApiTest {
 
         when(userRepository.findByEmail(eq(email))).thenReturn(Optional.of(user));
         when(userReadService.findByUsername(eq(username))).thenReturn(userData);
+        when(userReadService.findById(eq(user.getId()))).thenReturn(userData);
         when(jwtService.toToken(any())).thenReturn("123");
 
         Map<String, Object> param = new HashMap<String, Object>() {{
