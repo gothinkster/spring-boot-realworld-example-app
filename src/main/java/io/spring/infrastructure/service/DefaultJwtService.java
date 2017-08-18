@@ -28,7 +28,7 @@ public class DefaultJwtService implements JwtService {
     @Override
     public String toToken(UserData userData) {
         return Jwts.builder()
-            .setSubject(userData.getUsername())
+            .setSubject(userData.getId())
             .setExpiration(expireTimeFromNow())
             .signWith(SignatureAlgorithm.HS512, secret)
             .compact();

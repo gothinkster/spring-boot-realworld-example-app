@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import javax.xml.ws.Response;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +66,7 @@ public class CommentsApi {
     public ResponseEntity getComments(@PathVariable("slug") String slug,
                                       @AuthenticationPrincipal User user) {
         Article article = findArticle(slug);
-        List<CommentData> comments = commentQueryService.findByArticleSlug(article.getSlug(), user);
+        List<CommentData> comments = commentQueryService.findByArticleId(article.getId(), user);
         return ResponseEntity.ok(new HashMap<String, Object>() {{
             put("comments", comments);
         }});

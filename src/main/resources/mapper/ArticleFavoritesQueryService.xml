@@ -8,7 +8,7 @@
         select count(1) from article_favorites where article_id = #{articleId}
     </select>
     <select id="articlesFavoriteCount" resultMap="favoriteCount">
-        select A.id, count(A.id) as favoriteCount from articles A
+        select A.id, count(AF.user_id) as favoriteCount from articles A
         left join article_favorites AF on A.id = AF.article_id
         where id in
         <foreach collection="ids" item="item" separator="," open="(" close=")">

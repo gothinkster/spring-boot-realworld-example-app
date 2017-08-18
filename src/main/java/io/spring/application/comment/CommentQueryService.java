@@ -4,9 +4,10 @@ import io.spring.application.profile.UserRelationshipQueryService;
 import io.spring.core.user.User;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class CommentQueryService {
@@ -31,7 +32,16 @@ public class CommentQueryService {
         return Optional.ofNullable(commentData);
     }
 
-    public List<CommentData> findByArticleSlug(String slug, User user) {
-        return new ArrayList<>();
+    public List<CommentData> findByArticleId(String articleId, User user) {
+        List<CommentData> comments = commentReadService.findByArticleId(articleId);
+        if (comments.size() > 0) {
+            Set<String> followingAuthors = userRelationshipQueryService.followingAuthors(user.getId(), comments.stream().map(commentData -> commentData.getProfileData().getId()).collect(Collectors.toList()));
+            comments.forEach(commentData -> {
+                if (followingAuthors.contains(commentData.getProfileData().getId())) {
+                    commentData.getProfileData().setFollowing(true);
+                }
+            });
+        }
+        return comments;
     }
 }

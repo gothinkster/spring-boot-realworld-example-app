@@ -53,6 +53,7 @@ public class Article {
         if (!"".equals(body)) {
             this.body = body;
         }
+        this.updatedAt = new DateTime();
     }
 
     private String toSlug(String title) {

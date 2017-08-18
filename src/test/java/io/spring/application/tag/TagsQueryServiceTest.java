@@ -2,8 +2,6 @@ package io.spring.application.tag;
 
 import io.spring.core.article.Article;
 import io.spring.core.article.ArticleRepository;
-import io.spring.core.article.Tag;
-import io.spring.infrastructure.article.ArticleMapper;
 import io.spring.infrastructure.article.MyBatisArticleRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;

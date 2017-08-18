@@ -1,6 +1,7 @@
 package io.spring.api;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
+import io.spring.api.exception.InvalidRequestException;
 import io.spring.application.user.UserQueryService;
 import io.spring.application.user.UserWithToken;
 import io.spring.core.user.User;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/user")
@@ -43,9 +45,13 @@ public class CurrentUserApi {
 
     @PutMapping
     public ResponseEntity updateProfile(@AuthenticationPrincipal User currentUser,
-                                        @RequestHeader(value = "Authorization") String authorization,
                                         @Valid @RequestBody UpdateUserParam updateUserParam,
                                         BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new InvalidRequestException(bindingResult);
+        }
+        checkUniquenessOfUsernameAndEmail(currentUser, updateUserParam, bindingResult);
+
         currentUser.update(
             updateUserParam.getEmail(),
             updateUserParam.getUsername(),
@@ -53,7 +59,27 @@ public class CurrentUserApi {
             updateUserParam.getBio(),
             updateUserParam.getImage());
         userRepository.save(currentUser);
-        return ResponseEntity.ok(userResponse(userQueryService.fetchCurrentUser(currentUser.getUsername(), authorization.split(" ")[1])));
+        return ResponseEntity.ok(userResponse(userQueryService.fetchNewAuthenticatedUser(currentUser.getUsername())));
+    }
+
+    private void checkUniquenessOfUsernameAndEmail(User currentUser, UpdateUserParam updateUserParam, BindingResult bindingResult) {
+        if (!"".equals(updateUserParam.getUsername())) {
+            Optional<User> byUsername = userRepository.findByUsername(updateUserParam.getUsername());
+            if (byUsername.isPresent() && !byUsername.get().equals(currentUser)) {
+                bindingResult.rejectValue("username", "DUPLICATED", "username already exist");
+            }
+        }
+
+        if (!"".equals(updateUserParam.getEmail())) {
+            Optional<User> byEmail = userRepository.findByEmail(updateUserParam.getEmail());
+            if (byEmail.isPresent() && !byEmail.get().equals(currentUser)) {
+                bindingResult.rejectValue("email", "DUPLICATED", "email already exist");
+            }
+        }
+
+        if (bindingResult.hasErrors()) {
+            throw new InvalidRequestException(bindingResult);
+        }
     }
 
     private Map<String, Object> userResponse(UserWithToken userWithToken) {
