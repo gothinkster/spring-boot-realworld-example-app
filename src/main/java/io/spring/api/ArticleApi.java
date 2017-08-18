@@ -39,7 +39,7 @@ public class ArticleApi {
 
     @GetMapping
     public ResponseEntity<?> article(@PathVariable("slug") String slug,
-                                               @AuthenticationPrincipal User user) {
+                                     @AuthenticationPrincipal User user) {
         return articleQueryService.findBySlug(slug, user)
             .map(articleData -> ResponseEntity.ok(articleResponse(articleData)))
             .orElseThrow(ResourceNotFoundException::new);
@@ -47,8 +47,8 @@ public class ArticleApi {
 
     @PutMapping
     public ResponseEntity<?> updateArticle(@PathVariable("slug") String slug,
-                                                     @AuthenticationPrincipal User user,
-                                                     @Valid @RequestBody UpdateArticleParam updateArticleParam) {
+                                           @AuthenticationPrincipal User user,
+                                           @Valid @RequestBody UpdateArticleParam updateArticleParam) {
         return articleRepository.findBySlug(slug).map(article -> {
             if (!AuthorizationService.canWriteArticle(user, article)) {
                 throw new NoAuthorizationException();
