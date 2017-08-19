@@ -107,7 +107,7 @@ public class ArticleQueryServiceTest {
         Article anotherArticle = new Article("new article", "desc", "body", new String[]{"test"}, anotherUser.getId());
         articleRepository.save(anotherArticle);
 
-        ArticleDataList recentArticles = queryService.findRecentArticles(null, user.getId(), null, new Page(), user);
+        ArticleDataList recentArticles = queryService.findRecentArticles(null, user.getUsername(), null, new Page(), user);
         assertThat(recentArticles.getArticleDatas().size(), is(1));
         assertThat(recentArticles.getCount(), is(1));
     }
@@ -123,7 +123,7 @@ public class ArticleQueryServiceTest {
         ArticleFavorite articleFavorite = new ArticleFavorite(article.getId(), anotherUser.getId());
         articleFavoriteRepository.save(articleFavorite);
 
-        ArticleDataList recentArticles = queryService.findRecentArticles(null, null, anotherUser.getId(), new Page(), anotherUser);
+        ArticleDataList recentArticles = queryService.findRecentArticles(null, null, anotherUser.getUsername(), new Page(), anotherUser);
         assertThat(recentArticles.getArticleDatas().size(), is(1));
         assertThat(recentArticles.getCount(), is(1));
         ArticleData articleData = recentArticles.getArticleDatas().get(0);

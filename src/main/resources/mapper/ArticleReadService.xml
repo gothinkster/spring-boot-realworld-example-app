@@ -41,15 +41,17 @@
         left join article_tags AT on A.id = AT.article_id
         left join tags T on T.id = AT.tag_id
         left join article_favorites AF on AF.article_id = A.id
+        left join users AU on AU.id = A.user_id
+        left join users AFU on AFU.id = AF.user_id
         <where>
             <if test="tag != null">
                 T.name = #{tag}
             </if>
             <if test="author != null">
-                AND A.user_id = #{author}
+                AND AU.username = #{author}
             </if>
             <if test="favoritedBy != null">
-                AND AF.user_id = #{favoritedBy}
+                AND AFU.username = #{favoritedBy}
             </if>
         </where>
         order by A.created_at desc
@@ -63,15 +65,17 @@
         left join article_tags AT on A.id = AT.article_id
         left join tags T on T.id = AT.tag_id
         left join article_favorites AF on AF.article_id = A.id
+        left join users AU on AU.id = A.user_id
+        left join users AFU on AFU.id = AF.user_id
         <where>
             <if test="tag != null">
                 T.name = #{tag}
             </if>
             <if test="author != null">
-                AND A.user_id = #{author}
+                AND AU.username = #{author}
             </if>
             <if test="favoritedBy != null">
-                AND AF.user_id = #{favoritedBy}
+                AND AFU.username = #{favoritedBy}
             </if>
         </where>
     </select>
