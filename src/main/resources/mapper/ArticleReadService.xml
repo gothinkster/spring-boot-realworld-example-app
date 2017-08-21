@@ -25,11 +25,11 @@
         left join users U on U.id = A.user_id
     </sql>
 
-    <select id="findById" resultMap="articleData">
+    <select id="findById" resultMap="transfer.data.articleData">
         <include refid="selectArticleData"/>
         where A.id = #{id}
     </select>
-    <select id="findBySlug" resultMap="articleData">
+    <select id="findBySlug" resultMap="transfer.data.articleData">
         <include refid="selectArticleData"/>
         where A.slug = #{slug}
     </select>
@@ -79,7 +79,7 @@
             </if>
         </where>
     </select>
-    <select id="findArticles" resultMap="articleData">
+    <select id="findArticles" resultMap="transfer.data.articleData">
         <include refid="selectArticleData"/>
         where A.id in
         <foreach index="index" collection="articleIds" item="id" open="(" separator="," close=")">
@@ -87,7 +87,7 @@
         </foreach>
         order by A.created_at desc
     </select>
-    <select id="findArticlesOfAuthors" resultMap="articleData">
+    <select id="findArticlesOfAuthors" resultMap="transfer.data.articleData">
         <include refid="selectArticleData"/>
         where A.user_id in
         <foreach index="index" collection="authors" item="id" open="(" separator="," close=")">
@@ -104,26 +104,5 @@
 
     <resultMap id="articleId" type="string">
         <id javaType="string" column="articleId"/>
-    </resultMap>
-
-    <resultMap id="articleData" type="io.spring.application.data.ArticleData">
-        <id column="articleId" property="id"/>
-        <result column="articleSlug" property="slug"/>
-        <result column="articleTitle" property="title"/>
-        <result column="articleDescription" property="description"/>
-        <result column="articleBody" property="body"/>
-        <result column="articleCreatedAt" property="createdAt"/>
-        <result column="articleUpdatedAt" property="updatedAt"/>
-        <association property="profileData" resultMap="profileData"/>
-        <collection property="tagList" javaType="list" ofType="string">
-            <result column="tagName"/>
-        </collection>
-    </resultMap>
-
-    <resultMap id="profileData" type="io.spring.application.data.ProfileData">
-        <id column="userId" property="id"/>
-        <result column="userUsername" property="username"/>
-        <result column="userBio" property="bio"/>
-        <result column="userImage" property="image"/>
     </resultMap>
 </mapper>

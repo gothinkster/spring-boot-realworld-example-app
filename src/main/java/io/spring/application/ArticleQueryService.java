@@ -2,11 +2,10 @@ package io.spring.application;
 
 import io.spring.application.data.ArticleData;
 import io.spring.application.data.ArticleDataList;
-import io.spring.infrastructure.mybatis.readservice.UserRelationshipQueryService;
 import io.spring.core.user.User;
 import io.spring.infrastructure.mybatis.readservice.ArticleReadService;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import io.spring.infrastructure.mybatis.readservice.UserRelationshipQueryService;
+import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -130,9 +129,8 @@ public class ArticleQueryService {
     }
 }
 
-@Data
-@NoArgsConstructor
+@Value
 class ArticleFavoriteCount {
     private String id;
-    private int count;
+    private Integer count;
 }

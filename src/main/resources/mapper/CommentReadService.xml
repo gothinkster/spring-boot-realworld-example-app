@@ -12,20 +12,12 @@
         on C.user_id = U.id
     </sql>
 
-    <select id="findById" resultMap="commentData">
+    <select id="findById" resultMap="transfer.data.commentData">
         <include refid="selectCommentData"/>
         where C.id = #{id}
     </select>
-    <select id="findByArticleId" resultMap="commentData">
+    <select id="findByArticleId" resultMap="transfer.data.commentData">
         <include refid="selectCommentData"/>
         where C.article_id = #{articleId}
     </select>
-
-    <resultMap id="commentData" type="io.spring.application.data.CommentData">
-        <id column="commentId" property="id"/>
-        <result column="commentBody" property="body"/>
-        <result column="commentCreatedAt" property="createdAt"/>
-        <result column="commentCreatedAt" property="updatedAt"/>
-        <association property="profileData" resultMap="io.spring.infrastructure.mybatis.readservice.ArticleReadService.profileData"/>
-    </resultMap>
 </mapper>

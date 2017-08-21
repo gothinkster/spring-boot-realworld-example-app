@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="transfer.data">
+    <resultMap id="favoriteCount" type="io.spring.application.ArticleFavoriteCount">
+        <constructor>
+            <idArg column="id" javaType="string"/>
+            <arg column="favoriteCount" javaType="integer"/>
+        </constructor>
+    </resultMap>
+
+    <resultMap id="profileData" type="io.spring.application.data.ProfileData">
+        <id column="userId" property="id"/>
+        <result column="userUsername" property="username"/>
+        <result column="userBio" property="bio"/>
+        <result column="userImage" property="image"/>
+    </resultMap>
+
+    <resultMap id="articleData" type="io.spring.application.data.ArticleData">
+        <id column="articleId" property="id"/>
+        <result column="articleSlug" property="slug"/>
+        <result column="articleTitle" property="title"/>
+        <result column="articleDescription" property="description"/>
+        <result column="articleBody" property="body"/>
+        <result column="articleCreatedAt" property="createdAt"/>
+        <result column="articleUpdatedAt" property="updatedAt"/>
+        <association property="profileData" resultMap="transfer.data.profileData"/>
+        <collection property="tagList" javaType="list" ofType="string">
+            <result column="tagName"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="commentData" type="io.spring.application.data.CommentData">
+        <id column="commentId" property="id"/>
+        <result column="commentBody" property="body"/>
+        <result column="commentCreatedAt" property="createdAt"/>
+        <result column="commentCreatedAt" property="updatedAt"/>
+        <association property="profileData" resultMap="profileData"/>
+    </resultMap>
+</mapper>

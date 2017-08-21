@@ -7,7 +7,7 @@
     <select id="articleFavoriteCount" resultType="java.lang.Integer">
         select count(1) from article_favorites where article_id = #{articleId}
     </select>
-    <select id="articlesFavoriteCount" resultMap="favoriteCount">
+    <select id="articlesFavoriteCount" resultMap="transfer.data.favoriteCount">
         select A.id, count(AF.user_id) as favoriteCount from articles A
         left join article_favorites AF on A.id = AF.article_id
         where id in
@@ -27,10 +27,4 @@
         </foreach>
         and AF.user_id = #{currentUser.id}
     </select>
-
-    <resultMap id="favoriteCount" type="io.spring.application.ArticleFavoriteCount">
-        <id column="id" property="id"/>
-        <result column="favoriteCount" property="count"/>
-    </resultMap>
-
 </mapper>
