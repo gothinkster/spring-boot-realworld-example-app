@@ -30,6 +30,7 @@ public class MyBatisArticleRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
+
     private User user;
     private Article article;
 

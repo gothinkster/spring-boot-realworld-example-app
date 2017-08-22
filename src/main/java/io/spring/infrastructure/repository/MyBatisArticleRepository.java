@@ -5,6 +5,7 @@ import io.spring.core.article.ArticleRepository;
 import io.spring.core.article.Tag;
 import io.spring.infrastructure.mybatis.mapper.ArticleMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -17,6 +18,7 @@ public class MyBatisArticleRepository implements ArticleRepository {
     }
 
     @Override
+    @Transactional
     public void save(Article article) {
         if (articleMapper.findById(article.getId()) == null) {
             createNew(article);
@@ -26,13 +28,13 @@ public class MyBatisArticleRepository implements ArticleRepository {
     }
 
     private void createNew(Article article) {
-        articleMapper.insert(article);
         for (Tag tag : article.getTags()) {
             if (!articleMapper.findTag(tag.getName())) {
                 articleMapper.insertTag(tag);
             }
             articleMapper.insertArticleTagRelation(article.getId(), tag.getId());
         }
+        articleMapper.insert(article);
     }
 
     @Override
