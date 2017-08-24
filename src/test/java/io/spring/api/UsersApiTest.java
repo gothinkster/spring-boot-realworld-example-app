@@ -9,7 +9,7 @@ import io.spring.core.service.JwtService;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
 import io.spring.infrastructure.mybatis.readservice.UserReadService;
-import io.spring.infrastructure.user.NaiveEncryptService;
+import io.spring.infrastructure.service.NaiveEncryptService;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
