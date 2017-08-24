@@ -1,36 +1,43 @@
 package io.spring.api;
 
-import io.restassured.RestAssured;
+import io.restassured.module.mockmvc.RestAssuredMockMvc;
+import io.spring.JacksonCustomizations;
+import io.spring.api.security.WebSecurityConfig;
+import io.spring.application.ArticleQueryService;
 import io.spring.application.Page;
 import io.spring.application.data.ArticleDataList;
-import io.spring.application.ArticleQueryService;
+import io.spring.core.article.ArticleRepository;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.context.embedded.LocalServerPort;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.web.servlet.MockMvc;
 
-import static io.restassured.RestAssured.given;
+import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static io.spring.TestHelper.articleDataFixture;
 import static java.util.Arrays.asList;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@RunWith(SpringRunner.class)
+@WebMvcTest(ArticlesApi.class)
+@Import({WebSecurityConfig.class, JacksonCustomizations.class})
 public class ListArticleApiTest extends TestWithCurrentUser {
+    @MockBean
+    private ArticleRepository articleRepository;
+
     @MockBean
     private ArticleQueryService articleQueryService;
 
-    @LocalServerPort
-    private int port;
+    @Autowired
+    private MockMvc mvc;
 
+    @Override
     @Before
     public void setUp() throws Exception {
-        RestAssured.port = port;
-        userFixture();
+        super.setUp();
+        RestAssuredMockMvc.mockMvc(mvc);
     }
 
     @Test
@@ -38,7 +45,7 @@ public class ListArticleApiTest extends TestWithCurrentUser {
         ArticleDataList articleDataList = new ArticleDataList(
             asList(articleDataFixture("1", user), articleDataFixture("2", user)), 2);
         when(articleQueryService.findRecentArticles(eq(null), eq(null), eq(null), eq(new Page(0, 20)), eq(null))).thenReturn(articleDataList);
-        RestAssured.when()
+        RestAssuredMockMvc.when()
             .get("/articles")
             .prettyPeek()
             .then()
@@ -47,7 +54,7 @@ public class ListArticleApiTest extends TestWithCurrentUser {
 
     @Test
     public void should_get_feeds_401_without_login() throws Exception {
-        RestAssured.when()
+        RestAssuredMockMvc.when()
             .get("/articles/feed")
             .prettyPeek()
             .then()

@@ -1,11 +1,11 @@
 package io.spring.api;
 
-import io.spring.core.service.JwtService;
 import io.spring.application.data.UserData;
-import io.spring.infrastructure.mybatis.readservice.UserReadService;
+import io.spring.core.service.JwtService;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.spring.infrastructure.mybatis.readservice.UserReadService;
+import org.junit.Before;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Optional;
@@ -13,7 +13,7 @@ import java.util.Optional;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
-class TestWithCurrentUser {
+abstract class TestWithCurrentUser extends ApiTestBase {
     @MockBean
     protected UserRepository userRepository;
 
@@ -27,7 +27,7 @@ class TestWithCurrentUser {
     protected String username;
     protected String defaultAvatar;
 
-    @Autowired
+    @MockBean
     protected JwtService jwtService;
 
     protected void userFixture() {
@@ -42,6 +42,14 @@ class TestWithCurrentUser {
         userData = new UserData(user.getId(), email, username, "", defaultAvatar);
         when(userReadService.findById(eq(user.getId()))).thenReturn(userData);
 
-        token = jwtService.toToken(user);
+        token = "token";
+        when(jwtService.getSubFromToken(eq(token))).thenReturn(Optional.of(user.getId()));
+    }
+
+    @Override
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+        userFixture();
     }
 }

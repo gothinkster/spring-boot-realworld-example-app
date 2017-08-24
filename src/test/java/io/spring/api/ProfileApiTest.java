@@ -1,35 +1,37 @@
 package io.spring.api;
 
-import io.restassured.RestAssured;
-import io.spring.application.data.ProfileData;
+import io.restassured.module.mockmvc.RestAssuredMockMvc;
+import io.spring.JacksonCustomizations;
+import io.spring.api.security.WebSecurityConfig;
 import io.spring.application.ProfileQueryService;
+import io.spring.application.data.ProfileData;
 import io.spring.core.article.Article;
 import io.spring.core.user.FollowRelation;
 import io.spring.core.user.User;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.context.embedded.LocalServerPort;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Optional;
 
-import static io.restassured.RestAssured.given;
+import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@WebMvcTest(ProfileApi.class)
+@Import({WebSecurityConfig.class, JacksonCustomizations.class})
 public class ProfileApiTest extends TestWithCurrentUser {
-    @LocalServerPort
-    private int port;
     private Article article;
     private User anotherUser;
+
+    @Autowired
+    private MockMvc mvc;
 
     @MockBean
     private ProfileQueryService profileQueryService;
@@ -38,8 +40,8 @@ public class ProfileApiTest extends TestWithCurrentUser {
 
     @Before
     public void setUp() throws Exception {
-        RestAssured.port = port;
-        userFixture();
+        super.setUp();
+        RestAssuredMockMvc.mockMvc(mvc);
         anotherUser = new User("username@test.com", "username", "123", "", "");
         profileData = new ProfileData(anotherUser.getId(), anotherUser.getUsername(), anotherUser.getBio(), anotherUser.getImage(), false);
         when(userRepository.findByUsername(eq(anotherUser.getUsername()))).thenReturn(Optional.of(anotherUser));
@@ -49,7 +51,7 @@ public class ProfileApiTest extends TestWithCurrentUser {
     public void should_get_user_profile_success() throws Exception {
         when(profileQueryService.findByUsername(eq(profileData.getUsername()), eq(null)))
             .thenReturn(Optional.of(profileData));
-        RestAssured.when()
+        RestAssuredMockMvc.when()
             .get("/profiles/{username}", profileData.getUsername())
             .prettyPeek()
             .then()

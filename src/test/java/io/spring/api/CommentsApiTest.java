@@ -1,6 +1,8 @@
 package io.spring.api;
 
-import io.restassured.RestAssured;
+import io.restassured.module.mockmvc.RestAssuredMockMvc;
+import io.spring.JacksonCustomizations;
+import io.spring.api.security.WebSecurityConfig;
 import io.spring.application.CommentQueryService;
 import io.spring.application.data.CommentData;
 import io.spring.application.data.ProfileData;
@@ -11,33 +13,27 @@ import io.spring.core.comment.CommentRepository;
 import io.spring.core.user.User;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.context.embedded.LocalServerPort;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static io.restassured.RestAssured.given;
+import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
-@SpringBootTest(webEnvironment = RANDOM_PORT)
-@RunWith(SpringRunner.class)
+@WebMvcTest(CommentsApi.class)
+@Import({WebSecurityConfig.class, JacksonCustomizations.class})
 public class CommentsApiTest extends TestWithCurrentUser {
-    @LocalServerPort
-    private int port;
-
-    protected String email;
-    protected String username;
-    protected String defaultAvatar;
 
     @MockBean
     private ArticleRepository articleRepository;
@@ -50,15 +46,13 @@ public class CommentsApiTest extends TestWithCurrentUser {
     private Article article;
     private CommentData commentData;
     private Comment comment;
+    @Autowired
+    private MockMvc mvc;
 
     @Before
     public void setUp() throws Exception {
-        RestAssured.port = port;
-        email = "john@jacob.com";
-        username = "johnjacob";
-        defaultAvatar = "https://static.productionready.io/images/smiley-cyrus.jpg";
-        userFixture();
-
+        RestAssuredMockMvc.mockMvc(mvc);
+        super.setUp();
         article = new Article("title", "desc", "body", new String[]{"test", "java"}, user.getId());
         when(articleRepository.findBySlug(eq(article.getSlug()))).thenReturn(Optional.of(article));
         comment = new Comment("comment", user.getId(), article.getId());
@@ -115,7 +109,7 @@ public class CommentsApiTest extends TestWithCurrentUser {
     @Test
     public void should_get_comments_of_article_success() throws Exception {
         when(commentQueryService.findByArticleId(anyString(), eq(null))).thenReturn(Arrays.asList(commentData));
-        RestAssured.when()
+        RestAssuredMockMvc.when()
             .get("/articles/{slug}/comments", article.getSlug())
             .prettyPeek()
             .then()
@@ -139,6 +133,8 @@ public class CommentsApiTest extends TestWithCurrentUser {
     public void should_get_403_if_not_author_of_article_or_author_of_comment_when_delete_comment() throws Exception {
         User anotherUser = new User("other@example.com", "other", "123", "", "");
         when(userRepository.findByUsername(eq(anotherUser.getUsername()))).thenReturn(Optional.of(anotherUser));
+        when(jwtService.getSubFromToken(any())).thenReturn(Optional.of(anotherUser.getId()));
+        when(userRepository.findById(eq(anotherUser.getId()))).thenReturn(Optional.ofNullable(anotherUser));
 
         when(commentRepository.findById(eq(article.getId()), eq(comment.getId()))).thenReturn(Optional.of(comment));
         String token = jwtService.toToken(anotherUser);

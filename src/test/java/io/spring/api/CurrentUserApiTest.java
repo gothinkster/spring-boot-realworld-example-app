@@ -1,41 +1,48 @@
 package io.spring.api;
 
-import io.restassured.RestAssured;
-import io.spring.application.data.UserData;
+import io.restassured.module.mockmvc.RestAssuredMockMvc;
+import io.spring.JacksonCustomizations;
+import io.spring.api.security.WebSecurityConfig;
+import io.spring.application.UserQueryService;
 import io.spring.core.user.User;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.context.embedded.LocalServerPort;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static io.restassured.RestAssured.given;
+import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
-@SpringBootTest(webEnvironment = RANDOM_PORT)
-@RunWith(SpringRunner.class)
+@WebMvcTest(CurrentUserApi.class)
+@Import({WebSecurityConfig.class, JacksonCustomizations.class})
 public class CurrentUserApiTest extends TestWithCurrentUser {
 
-    @LocalServerPort
-    private int port;
+    @Autowired
+    private MockMvc mvc;
 
+    @MockBean
+    private UserQueryService userQueryService;
+
+    @Override
     @Before
     public void setUp() throws Exception {
-        RestAssured.port = port;
-        userFixture();
+        super.setUp();
+        RestAssuredMockMvc.mockMvc(mvc);
     }
 
     @Test
     public void should_get_current_user_with_token() throws Exception {
-
+        when(userQueryService.findById(any())).thenReturn(Optional.of(userData));
 
         given()
             .header("Authorization", "Token " + token)
@@ -64,9 +71,11 @@ public class CurrentUserApiTest extends TestWithCurrentUser {
 
     @Test
     public void should_get_401_with_invalid_token() throws Exception {
+        String invalidToken = "asdfasd";
+        when(jwtService.getSubFromToken(eq(invalidToken))).thenReturn(Optional.empty());
         given()
             .contentType("application/json")
-            .header("Authorization", "Token asdfasd")
+            .header("Authorization", "Token " + invalidToken)
             .when()
             .get("/user")
             .then()
@@ -90,7 +99,7 @@ public class CurrentUserApiTest extends TestWithCurrentUser {
         when(userRepository.findByUsername(eq(newUsername))).thenReturn(Optional.empty());
         when(userRepository.findByEmail(eq(newEmail))).thenReturn(Optional.empty());
 
-        when(userReadService.findByUsername(eq(newUsername))).thenReturn(new UserData(user.getId(), newEmail, newUsername, newBio, user.getImage()));
+        when(userQueryService.findById(eq(user.getId()))).thenReturn(Optional.of(userData));
 
         given()
             .contentType("application/json")
@@ -113,7 +122,7 @@ public class CurrentUserApiTest extends TestWithCurrentUser {
         when(userRepository.findByEmail(eq(newEmail))).thenReturn(Optional.of(new User(newEmail, "username", "123", "", "")));
         when(userRepository.findByUsername(eq(newUsername))).thenReturn(Optional.empty());
 
-        when(userReadService.findByUsername(eq(newUsername))).thenReturn(new UserData(user.getId(), newEmail, newUsername, newBio, user.getImage()));
+        when(userQueryService.findById(eq(user.getId()))).thenReturn(Optional.of(userData));
 
         given()
             .contentType("application/json")

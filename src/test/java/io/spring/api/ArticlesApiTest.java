@@ -1,9 +1,11 @@
 package io.spring.api;
 
-import io.restassured.RestAssured;
+import io.restassured.module.mockmvc.RestAssuredMockMvc;
+import io.spring.JacksonCustomizations;
 import io.spring.TestHelper;
-import io.spring.application.data.ArticleData;
+import io.spring.api.security.WebSecurityConfig;
 import io.spring.application.ArticleQueryService;
+import io.spring.application.data.ArticleData;
 import io.spring.application.data.ProfileData;
 import io.spring.core.article.Article;
 import io.spring.core.article.ArticleRepository;
@@ -12,31 +14,30 @@ import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.context.embedded.LocalServerPort;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static io.restassured.RestAssured.given;
+import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = RANDOM_PORT)
+@WebMvcTest({ArticlesApi.class, ArticleApi.class})
+@Import({WebSecurityConfig.class, JacksonCustomizations.class})
 public class ArticlesApiTest extends TestWithCurrentUser {
-    @LocalServerPort
-    private int port;
+    @Autowired
+    private MockMvc mvc;
 
     @MockBean
     private ArticleRepository articleRepository;
@@ -44,10 +45,11 @@ public class ArticlesApiTest extends TestWithCurrentUser {
     @MockBean
     private ArticleQueryService articleQueryService;
 
+    @Override
     @Before
     public void setUp() throws Exception {
-        RestAssured.port = port;
-        userFixture();
+        super.setUp();
+        RestAssuredMockMvc.mockMvc(mvc);
     }
 
     @Test
@@ -122,7 +124,7 @@ public class ArticlesApiTest extends TestWithCurrentUser {
 
         when(articleQueryService.findBySlug(eq(slug), eq(null))).thenReturn(Optional.of(articleData));
 
-        RestAssured.when()
+        RestAssuredMockMvc.when()
             .get("/articles/{slug}", slug)
             .then()
             .statusCode(200)
@@ -135,7 +137,7 @@ public class ArticlesApiTest extends TestWithCurrentUser {
     @Test
     public void should_404_if_article_not_found() throws Exception {
         when(articleQueryService.findBySlug(anyString(), any())).thenReturn(Optional.empty());
-        RestAssured.when()
+        RestAssuredMockMvc.when()
             .get("/articles/not-exists")
             .then()
             .statusCode(404);

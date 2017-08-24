@@ -1,8 +1,10 @@
 package io.spring.api;
 
-import io.restassured.RestAssured;
-import io.spring.application.data.ArticleData;
+import io.restassured.module.mockmvc.RestAssuredMockMvc;
+import io.spring.JacksonCustomizations;
+import io.spring.api.security.WebSecurityConfig;
 import io.spring.application.ArticleQueryService;
+import io.spring.application.data.ArticleData;
 import io.spring.application.data.ProfileData;
 import io.spring.core.article.Article;
 import io.spring.core.article.ArticleRepository;
@@ -12,25 +14,28 @@ import io.spring.core.favorite.ArticleFavoriteRepository;
 import io.spring.core.user.User;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.context.embedded.LocalServerPort;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static io.restassured.RestAssured.given;
+import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@RunWith(SpringRunner.class)
+@WebMvcTest(ArticleFavoriteApi.class)
+@Import({WebSecurityConfig.class, JacksonCustomizations.class})
 public class ArticleFavoriteApiTest extends TestWithCurrentUser {
+    @Autowired
+    private MockMvc mvc;
+
     @MockBean
     private ArticleFavoriteRepository articleFavoriteRepository;
 
@@ -40,22 +45,13 @@ public class ArticleFavoriteApiTest extends TestWithCurrentUser {
     @MockBean
     private ArticleQueryService articleQueryService;
 
-    protected String email;
-    protected String username;
-    protected String defaultAvatar;
-
-    @LocalServerPort
-    private int port;
     private Article article;
     private User anotherUser;
 
     @Before
     public void setUp() throws Exception {
-        RestAssured.port = port;
-        email = "john@jacob.com";
-        username = "johnjacob";
-        defaultAvatar = "https://static.productionready.io/images/smiley-cyrus.jpg";
-        userFixture();
+        super.setUp();
+        RestAssuredMockMvc.mockMvc(mvc);
         anotherUser = new User("other@test.com", "other", "123", "", "");
         article = new Article("title", "desc", "body", new String[]{"java"}, anotherUser.getId());
         when(articleRepository.findBySlug(eq(article.getSlug()))).thenReturn(Optional.of(article));
