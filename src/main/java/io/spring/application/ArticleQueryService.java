@@ -2,10 +2,11 @@ package io.spring.application;
 
 import io.spring.application.data.ArticleData;
 import io.spring.application.data.ArticleDataList;
+import io.spring.application.data.ArticleFavoriteCount;
 import io.spring.core.user.User;
+import io.spring.infrastructure.mybatis.readservice.ArticleFavoritesReadService;
 import io.spring.infrastructure.mybatis.readservice.ArticleReadService;
 import io.spring.infrastructure.mybatis.readservice.UserRelationshipQueryService;
-import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,15 +23,15 @@ import static java.util.stream.Collectors.toList;
 public class ArticleQueryService {
     private ArticleReadService articleReadService;
     private UserRelationshipQueryService userRelationshipQueryService;
-    private ArticleFavoritesQueryService articleFavoritesQueryService;
+    private ArticleFavoritesReadService articleFavoritesReadService;
 
     @Autowired
     public ArticleQueryService(ArticleReadService articleReadService,
                                UserRelationshipQueryService userRelationshipQueryService,
-                               ArticleFavoritesQueryService articleFavoritesQueryService) {
+                               ArticleFavoritesReadService articleFavoritesReadService) {
         this.articleReadService = articleReadService;
         this.userRelationshipQueryService = userRelationshipQueryService;
-        this.articleFavoritesQueryService = articleFavoritesQueryService;
+        this.articleFavoritesReadService = articleFavoritesReadService;
     }
 
     public Optional<ArticleData> findById(String id, User user) {
@@ -89,7 +90,7 @@ public class ArticleQueryService {
     }
 
     private void setFavoriteCount(List<ArticleData> articles) {
-        List<ArticleFavoriteCount> favoritesCounts = articleFavoritesQueryService.articlesFavoriteCount(articles.stream().map(ArticleData::getId).collect(toList()));
+        List<ArticleFavoriteCount> favoritesCounts = articleFavoritesReadService.articlesFavoriteCount(articles.stream().map(ArticleData::getId).collect(toList()));
         Map<String, Integer> countMap = new HashMap<>();
         favoritesCounts.forEach(item -> {
             countMap.put(item.getId(), item.getCount());
@@ -98,7 +99,7 @@ public class ArticleQueryService {
     }
 
     private void setIsFavorite(List<ArticleData> articles, User currentUser) {
-        Set<String> favoritedArticles = articleFavoritesQueryService.userFavorites(articles.stream().map(articleData -> articleData.getId()).collect(toList()), currentUser);
+        Set<String> favoritedArticles = articleFavoritesReadService.userFavorites(articles.stream().map(articleData -> articleData.getId()).collect(toList()), currentUser);
 
         articles.forEach(articleData -> {
             if (favoritedArticles.contains(articleData.getId())) {
@@ -108,8 +109,8 @@ public class ArticleQueryService {
     }
 
     private void fillExtraInfo(String id, User user, ArticleData articleData) {
-        articleData.setFavorited(articleFavoritesQueryService.isUserFavorite(user.getId(), id));
-        articleData.setFavoritesCount(articleFavoritesQueryService.articleFavoriteCount(id));
+        articleData.setFavorited(articleFavoritesReadService.isUserFavorite(user.getId(), id));
+        articleData.setFavoritesCount(articleFavoritesReadService.articleFavoriteCount(id));
         articleData.getProfileData().setFollowing(
             userRelationshipQueryService.isUserFollowing(
                 user.getId(),
@@ -129,8 +130,3 @@ public class ArticleQueryService {
     }
 }
 
-@Value
-class ArticleFavoriteCount {
-    private String id;
-    private Integer count;
-}

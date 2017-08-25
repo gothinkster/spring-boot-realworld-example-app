@@ -13,7 +13,7 @@ import java.util.Optional;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
-abstract class TestWithCurrentUser extends ApiTestBase {
+abstract class TestWithCurrentUser {
     @MockBean
     protected UserRepository userRepository;
 
@@ -46,10 +46,8 @@ abstract class TestWithCurrentUser extends ApiTestBase {
         when(jwtService.getSubFromToken(eq(token))).thenReturn(Optional.of(user.getId()));
     }
 
-    @Override
     @Before
     public void setUp() throws Exception {
-        super.setUp();
         userFixture();
     }
 }

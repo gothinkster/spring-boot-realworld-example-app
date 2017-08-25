@@ -3,7 +3,7 @@ package io.spring.api;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import io.spring.api.exception.InvalidRequestException;
 import io.spring.application.UserQueryService;
-import io.spring.application.UserWithToken;
+import io.spring.application.data.UserWithToken;
 import io.spring.application.data.UserData;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;

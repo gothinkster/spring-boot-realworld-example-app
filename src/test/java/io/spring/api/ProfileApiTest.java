@@ -5,7 +5,6 @@ import io.spring.JacksonCustomizations;
 import io.spring.api.security.WebSecurityConfig;
 import io.spring.application.ProfileQueryService;
 import io.spring.application.data.ProfileData;
-import io.spring.core.article.Article;
 import io.spring.core.user.FollowRelation;
 import io.spring.core.user.User;
 import org.junit.Before;
@@ -27,7 +26,6 @@ import static org.mockito.Mockito.when;
 @WebMvcTest(ProfileApi.class)
 @Import({WebSecurityConfig.class, JacksonCustomizations.class})
 public class ProfileApiTest extends TestWithCurrentUser {
-    private Article article;
     private User anotherUser;
 
     @Autowired

@@ -1,5 +1,6 @@
-package io.spring.application;
+package io.spring.infrastructure.mybatis.readservice;
 
+import io.spring.application.data.ArticleFavoriteCount;
 import io.spring.core.user.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -10,7 +11,7 @@ import java.util.Set;
 
 @Mapper
 @Component
-public interface ArticleFavoritesQueryService {
+public interface ArticleFavoritesReadService {
     boolean isUserFavorite(@Param("userId") String userId, @Param("articleId") String articleId);
 
     int articleFavoriteCount(@Param("articleId") String articleId);

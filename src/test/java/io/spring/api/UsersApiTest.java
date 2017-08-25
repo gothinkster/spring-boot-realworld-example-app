@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
 
 @WebMvcTest(UsersApi.class)
 @Import({WebSecurityConfig.class, UserQueryService.class, NaiveEncryptService.class, JacksonCustomizations.class})
-public class UsersApiTest extends ApiTestBase {
+public class UsersApiTest {
     @Autowired
     private MockMvc mvc;
 

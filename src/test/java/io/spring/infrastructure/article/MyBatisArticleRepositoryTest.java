@@ -31,13 +31,12 @@ public class MyBatisArticleRepositoryTest {
     @Autowired
     private UserRepository userRepository;
 
-    private User user;
     private Article article;
 
 
     @Before
     public void setUp() throws Exception {
-        user = new User("aisensiy@gmail.com", "aisensiy", "123", "bio", "default");
+        User user = new User("aisensiy@gmail.com", "aisensiy", "123", "bio", "default");
         userRepository.save(user);
         article = new Article("test", "desc", "body", new String[]{"java", "spring"}, user.getId());
     }

@@ -89,7 +89,6 @@ public class ArticleApiTest extends TestWithCurrentUser {
 
         Article article = new Article(title, description, body, new String[]{"java", "spring", "jpg"}, user.getId());
 
-        DateTime time = new DateTime();
         ArticleData articleData = TestHelper.getArticleDataFromArticleAndUser(article, user);
 
         when(articleRepository.findBySlug(eq(article.getSlug()))).thenReturn(Optional.of(article));
@@ -168,7 +167,6 @@ public class ArticleApiTest extends TestWithCurrentUser {
         String title = "new-title";
         String body = "new body";
         String description = "new description";
-        Map<String, Object> updateParam = prepareUpdateParam(title, body, description);
 
         User anotherUser = new User("test@test.com", "test", "123123", "", "");
 

@@ -1,6 +1,5 @@
-package io.spring.application;
+package io.spring.application.data;
 
-import io.spring.application.data.UserData;
 import lombok.Getter;
 
 @Getter
