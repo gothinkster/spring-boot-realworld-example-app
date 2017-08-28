@@ -38,6 +38,12 @@ You need Java installed.
     ./gradlew bootRun
     open http://localhost:8080
 
+# Run test
+
+The repository contains a lot of test cases to cover both api test and repository test.
+
+    ./gradlew test
+
 # Help
 
 Please fork and PR to improve the code.
