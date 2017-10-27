@@ -12,10 +12,12 @@ import io.spring.infrastructure.mybatis.readservice.UserReadService;
 import io.spring.infrastructure.service.NaiveEncryptService;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.HashMap;
@@ -29,6 +31,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@RunWith(SpringRunner.class)
 @WebMvcTest(UsersApi.class)
 @Import({WebSecurityConfig.class, UserQueryService.class, NaiveEncryptService.class, JacksonCustomizations.class})
 public class UsersApiTest {
@@ -48,7 +51,6 @@ public class UsersApiTest {
 
     @Before
     public void setUp() throws Exception {
-        super.setUp();
         RestAssuredMockMvc.mockMvc(mvc);
         defaultAvatar = "https://static.productionready.io/images/smiley-cyrus.jpg";
     }
