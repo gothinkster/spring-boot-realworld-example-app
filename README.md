@@ -38,12 +38,11 @@ You need Java installed.
     ./gradlew bootRun
     open http://localhost:8080
 
-# Try with [Docker](https://www.docker.com/)
+# Try it out with [Docker](https://www.docker.com/)
 
 You need Docker installed.
 	
-	docker build -t spring-boot-realworld-example-app .
-	docker run -p 8080:8080 -d spring-boot-realworld-example-app
+	docker run -p 8080:8080 -d --name spring-boot-realworld-example-app allthethings/spring-boot-realworld-example-app
 
 # Run test
 
