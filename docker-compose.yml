@@ -1,0 +1,16 @@
+version: '3'
+services:
+  spring_boot_realworld_example_app:
+    image: allthethings/spring-boot-realworld-example-app
+    ports: 
+      - "8080:8080"
+    depends_on: 
+      - db
+
+  db:
+    image: mysql
+    environment:
+      - "MYSQL_ALLOW_EMPTY_PASSWORD=true"
+    ports: 
+      - "3306:3306"
+

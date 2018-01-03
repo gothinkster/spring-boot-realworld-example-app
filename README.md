@@ -42,7 +42,7 @@ You need Java installed.
 
 You need Docker installed.
 	
-	docker run -p 8080:8080 -d --name spring-boot-realworld-example-app allthethings/spring-boot-realworld-example-app
+	docker-compose up -d
 
 # Run test
 
