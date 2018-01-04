@@ -38,6 +38,12 @@ You need Java installed.
     ./gradlew bootRun
     open http://localhost:8080
 
+# Try it out with [Docker](https://www.docker.com/)
+
+You need Docker installed.
+	
+	docker-compose up -d
+
 # Run test
 
 The repository contains a lot of test cases to cover both api test and repository test.
