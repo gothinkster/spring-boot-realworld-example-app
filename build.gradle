@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		springBootVersion = '1.5.6.RELEASE'
+		springBootVersion = '2.0.2.RELEASE'
 	}
 	repositories {
 		mavenCentral()
@@ -14,6 +14,14 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+dependencyManagement {
+    imports {
+        mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+    }
+    applyMavenExclusions = false
+}
 
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
@@ -33,17 +41,17 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	compile('org.flywaydb:flyway-core')
 	compile('org.springframework.boot:spring-boot-starter-hateoas')
-	compile('org.mybatis.spring.boot:mybatis-spring-boot-starter:1.3.0')
+	compile('org.mybatis.spring.boot:mybatis-spring-boot-starter:1.3.2')
 	compile('org.springframework.boot:spring-boot-starter-web')
-	compile('io.jsonwebtoken:jjwt:0.7.0')
+	compile('io.jsonwebtoken:jjwt:0.9.0')
     compile('org.springframework.boot:spring-boot-starter-security')
 	compile('joda-time:joda-time:2.9.9')
     compileOnly('org.projectlombok:lombok')
 	runtime('com.h2database:h2')
-    testCompile 'io.rest-assured:rest-assured:3.0.2'
-	testCompile 'io.rest-assured:spring-mock-mvc:3.0.2'
-	testCompile 'org.springframework.security:spring-security-test:4.0.4.RELEASE'
+    testCompile 'io.rest-assured:rest-assured:3.1.0'
+	testCompile 'io.rest-assured:spring-mock-mvc:3.1.0'
+	testCompile 'org.springframework.security:spring-security-test'
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	testCompile('org.springframework.restdocs:spring-restdocs-mockmvc')
-    testCompile('org.mybatis.spring.boot:mybatis-spring-boot-starter-test:1.3.0')
+    testCompile('org.mybatis.spring.boot:mybatis-spring-boot-starter-test:1.3.2')
 }
