@@ -3,8 +3,8 @@ package io.spring.core.user;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @NoArgsConstructor
+@Data
 public class FollowRelation {
     private String userId;
     private String targetId;
