@@ -6,8 +6,8 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-@Data
 @NoArgsConstructor
+@Data
 @EqualsAndHashCode(of = "name")
 public class Tag {
     private String id;

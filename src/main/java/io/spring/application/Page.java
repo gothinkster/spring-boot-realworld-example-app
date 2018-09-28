@@ -4,9 +4,9 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @Data
 @Getter
-@NoArgsConstructor
 public class Page {
     private static final int MAX_LIMIT = 100;
     private int offset = 0;
