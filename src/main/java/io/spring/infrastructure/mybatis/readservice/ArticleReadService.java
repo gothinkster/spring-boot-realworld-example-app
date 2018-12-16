@@ -4,11 +4,9 @@ import io.spring.application.Page;
 import io.spring.application.data.ArticleData;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
 @Mapper
 public interface ArticleReadService {
     ArticleData findById(@Param("id") String id);

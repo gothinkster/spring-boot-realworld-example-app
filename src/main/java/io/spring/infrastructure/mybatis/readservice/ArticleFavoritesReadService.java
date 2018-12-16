@@ -4,13 +4,11 @@ import io.spring.application.data.ArticleFavoriteCount;
 import io.spring.core.user.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Set;
 
 @Mapper
-@Component
 public interface ArticleFavoritesReadService {
     boolean isUserFavorite(@Param("userId") String userId, @Param("articleId") String articleId);
 
