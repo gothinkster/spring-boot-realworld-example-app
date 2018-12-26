@@ -4,9 +4,7 @@ import io.spring.core.user.FollowRelation;
 import io.spring.core.user.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Component;
 
-@Component
 @Mapper
 public interface UserMapper {
     void insert(@Param("user") User user);
