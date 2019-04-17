@@ -75,10 +75,6 @@ public class UsersApi {
         if (userRepository.findByEmail(registerParam.getEmail()).isPresent()) {
             bindingResult.rejectValue("email", "DUPLICATED", "duplicated email");
         }
-
-        if (bindingResult.hasErrors()) {
-            throw new InvalidRequestException(bindingResult);
-        }
     }
 
     @RequestMapping(path = "/users/login", method = POST)
