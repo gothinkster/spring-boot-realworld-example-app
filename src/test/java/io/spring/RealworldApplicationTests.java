@@ -19,4 +19,8 @@ public class RealworldApplicationTests {
 	public void contextLoads2() {
 	}
 
+
+	@Test
+	public void contextLoads3() {
+	}
 }
