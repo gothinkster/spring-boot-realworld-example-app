@@ -15,5 +15,8 @@ public class RealworldApplicationTests {
 		Assert.fail();
 	}
 
+	@Test
+	public void contextLoads2() {
+	}
 
 }
