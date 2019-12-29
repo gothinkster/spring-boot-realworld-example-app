@@ -1,24 +1,20 @@
-FROM gradle:jdk-alpine
+FROM openjdk:11-slim-buster AS builder
+RUN apt-get update       && \
+    apt-get dist-upgrade
+WORKDIR /build
+# init gradle version defined by build and load dependencies
+ADD gradle gradle
+ADD *.gradle gradlew ./
+RUN ./gradlew clean --no-daemon --refresh-dependencies -q
+# build app
+ADD src src
+RUN ./gradlew build --no-daemon -q
 
-WORKDIR /home/gradle/project
-
+FROM fabric8/java-alpine-openjdk11-jre
+RUN apk --no-cache add ca-certificates
+USER nobody
+WORKDIR /deployments
+COPY --from=builder /build/build/libs/*.jar ./app.jar
 EXPOSE 8080
-
-USER root
-
-RUN apk update
-
-ENV GRADLE_USER_HOME /home/gradle/project
-
-COPY . /home/gradle/project
-
-RUN gradle build
-
-
-FROM java:jre-alpine
-
-WORKDIR /home/gradle/project
-
-COPY --from=0 /home/gradle/project/build/libs/project-0.0.1-SNAPSHOT.jar .
-
-ENTRYPOINT java -jar project-0.0.1-SNAPSHOT.jar
+ENV JAVA_OPTIONS=""
+ENTRYPOINT [ "./run-java.sh" ]
