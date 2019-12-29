@@ -5,7 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.joda.time.DateTime;
+
+import java.time.Instant;
 
 @Data
 @NoArgsConstructor
@@ -15,8 +16,8 @@ public class CommentData {
     private String body;
     @JsonIgnore
     private String articleId;
-    private DateTime createdAt;
-    private DateTime updatedAt;
+    private Instant createdAt;
+    private Instant updatedAt;
     @JsonProperty("author")
     private ProfileData profileData;
 }

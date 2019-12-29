@@ -1,7 +1,6 @@
 package io.spring.api;
 
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
-import io.spring.JacksonCustomizations;
 import io.spring.api.security.WebSecurityConfig;
 import io.spring.application.CommentQueryService;
 import io.spring.application.data.CommentData;
@@ -30,7 +29,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @WebMvcTest(CommentsApi.class)
-@Import({WebSecurityConfig.class, JacksonCustomizations.class})
+@Import({WebSecurityConfig.class})
 public class CommentsApiTest extends TestWithCurrentUser {
 
     @MockBean

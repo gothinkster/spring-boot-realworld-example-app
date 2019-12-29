@@ -1,7 +1,6 @@
 package io.spring.api;
 
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
-import io.spring.JacksonCustomizations;
 import io.spring.api.security.WebSecurityConfig;
 import io.spring.application.ProfileQueryService;
 import io.spring.application.data.ProfileData;
@@ -24,7 +23,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @WebMvcTest(ProfileApi.class)
-@Import({WebSecurityConfig.class, JacksonCustomizations.class})
+@Import({WebSecurityConfig.class})
 public class ProfileApiTest extends TestWithCurrentUser {
     private User anotherUser;
 

@@ -1,13 +1,11 @@
 package io.spring.api;
 
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
-import io.spring.JacksonCustomizations;
 import io.spring.api.security.WebSecurityConfig;
 import io.spring.application.ArticleQueryService;
 import io.spring.application.data.ArticleData;
 import io.spring.application.data.ProfileData;
 import io.spring.core.article.ArticleRepository;
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +27,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @WebMvcTest({ArticlesApi.class})
-@Import({WebSecurityConfig.class, JacksonCustomizations.class})
+@Import({WebSecurityConfig.class})
 public class ArticlesApiTest extends TestWithCurrentUser {
     @Autowired
     private MockMvc mvc;
@@ -63,8 +62,8 @@ public class ArticlesApiTest extends TestWithCurrentUser {
                 body,
                 false,
                 0,
-                new DateTime(),
-                new DateTime(),
+                Instant.now(),
+                Instant.now(),
                 Arrays.asList(tagList),
                 new ProfileData("userid", user.getUsername(), user.getBio(), user.getImage(), false));
 

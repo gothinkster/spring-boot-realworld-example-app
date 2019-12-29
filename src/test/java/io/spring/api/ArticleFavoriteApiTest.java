@@ -1,7 +1,6 @@
 package io.spring.api;
 
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
-import io.spring.JacksonCustomizations;
 import io.spring.api.security.WebSecurityConfig;
 import io.spring.application.ArticleQueryService;
 import io.spring.application.data.ArticleData;
@@ -31,7 +30,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @WebMvcTest(ArticleFavoriteApi.class)
-@Import({WebSecurityConfig.class, JacksonCustomizations.class})
+@Import({WebSecurityConfig.class})
 public class ArticleFavoriteApiTest extends TestWithCurrentUser {
     @Autowired
     private MockMvc mvc;

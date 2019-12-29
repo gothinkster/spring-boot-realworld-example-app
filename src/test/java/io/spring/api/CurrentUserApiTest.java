@@ -1,7 +1,6 @@
 package io.spring.api;
 
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
-import io.spring.JacksonCustomizations;
 import io.spring.api.security.WebSecurityConfig;
 import io.spring.application.UserQueryService;
 import io.spring.core.user.User;
@@ -24,7 +23,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @WebMvcTest(CurrentUserApi.class)
-@Import({WebSecurityConfig.class, JacksonCustomizations.class})
+@Import({WebSecurityConfig.class})
 public class CurrentUserApiTest extends TestWithCurrentUser {
 
     @Autowired

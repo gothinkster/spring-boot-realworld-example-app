@@ -1,7 +1,6 @@
 package io.spring.api;
 
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
-import io.spring.JacksonCustomizations;
 import io.spring.api.security.WebSecurityConfig;
 import io.spring.application.UserQueryService;
 import io.spring.application.data.UserData;
@@ -33,7 +32,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(UsersApi.class)
-@Import({WebSecurityConfig.class, UserQueryService.class, NaiveEncryptService.class, JacksonCustomizations.class})
+@Import({WebSecurityConfig.class, UserQueryService.class, NaiveEncryptService.class})
 public class UsersApiTest {
     @Autowired
     private MockMvc mvc;

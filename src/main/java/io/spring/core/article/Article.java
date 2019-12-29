@@ -3,8 +3,8 @@ package io.spring.core.article;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.joda.time.DateTime;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -23,14 +23,14 @@ public class Article {
     private String description;
     private String body;
     private List<Tag> tags;
-    private DateTime createdAt;
-    private DateTime updatedAt;
+    private Instant createdAt;
+    private Instant updatedAt;
 
     public Article(String title, String description, String body, String[] tagList, String userId) {
-        this(title, description, body, tagList, userId, new DateTime());
+        this(title, description, body, tagList, userId, Instant.now());
     }
 
-    public Article(String title, String description, String body, String[] tagList, String userId, DateTime createdAt) {
+    public Article(String title, String description, String body, String[] tagList, String userId, Instant createdAt) {
         this.id = UUID.randomUUID().toString();
         this.slug = toSlug(title);
         this.title = title;
@@ -53,7 +53,7 @@ public class Article {
         if (!"".equals(body)) {
             this.body = body;
         }
-        this.updatedAt = new DateTime();
+        this.updatedAt = Instant.now();
     }
 
     private String toSlug(String title) {

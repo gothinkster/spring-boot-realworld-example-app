@@ -14,7 +14,6 @@ import io.spring.core.user.UserRepository;
 import io.spring.infrastructure.repository.MyBatisArticleFavoriteRepository;
 import io.spring.infrastructure.repository.MyBatisArticleRepository;
 import io.spring.infrastructure.repository.MyBatisUserRepository;
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -56,7 +57,7 @@ public class ArticleQueryServiceTest {
     public void setUp() throws Exception {
         user = new User("aisensiy@gmail.com", "aisensiy", "123", "", "");
         userRepository.save(user);
-        article = new Article("test", "desc", "body", new String[]{"java", "spring"}, user.getId(), new DateTime());
+        article = new Article("test", "desc", "body", new String[]{"java", "spring"}, user.getId(), Instant.now());
         articleRepository.save(article);
     }
 
@@ -86,7 +87,7 @@ public class ArticleQueryServiceTest {
 
     @Test
     public void should_get_default_article_list() throws Exception {
-        Article anotherArticle = new Article("new article", "desc", "body", new String[]{"test"}, user.getId(), new DateTime().minusHours(1));
+        Article anotherArticle = new Article("new article", "desc", "body", new String[]{"test"}, user.getId(), Instant.now().minus(1, ChronoUnit.HOURS));
         articleRepository.save(anotherArticle);
 
         ArticleDataList recentArticles = queryService.findRecentArticles(null, null, null, new Page(), user);

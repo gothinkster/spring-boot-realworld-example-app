@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.joda.time.DateTime;
 
+import java.time.Instant;
 import java.util.List;
 
 @Data
@@ -19,8 +19,8 @@ public class ArticleData {
     private String body;
     private boolean favorited;
     private int favoritesCount;
-    private DateTime createdAt;
-    private DateTime updatedAt;
+    private Instant createdAt;
+    private Instant updatedAt;
     private List<String> tagList;
     @JsonProperty("author")
     private ProfileData profileData;

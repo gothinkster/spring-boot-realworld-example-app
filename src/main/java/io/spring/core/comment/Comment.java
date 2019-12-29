@@ -3,8 +3,8 @@ package io.spring.core.comment;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.joda.time.DateTime;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Getter
@@ -15,13 +15,13 @@ public class Comment {
     private String body;
     private String userId;
     private String articleId;
-    private DateTime createdAt;
+    private Instant createdAt;
 
     public Comment(String body, String userId, String articleId) {
         this.id = UUID.randomUUID().toString();
         this.body = body;
         this.userId = userId;
         this.articleId = articleId;
-        this.createdAt = new DateTime();
+        this.createdAt = Instant.now();
     }
 }
