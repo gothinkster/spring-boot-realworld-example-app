@@ -1,0 +1,1 @@
+docker run --rm --name spring-boot-realworld-example-app -t -p 8080:8080 integrational/spring-boot-realworld-example-app

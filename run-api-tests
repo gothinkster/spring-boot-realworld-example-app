@@ -1,0 +1,5 @@
+#!/bin/bash
+
+pushd ../realworld/api/
+APIURL=http://localhost:8080 ./run-api-tests.sh
+popd
