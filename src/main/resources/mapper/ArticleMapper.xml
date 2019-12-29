@@ -4,14 +4,14 @@
     <insert id="insert">
         insert into articles(id, slug, title, description, body, user_id, created_at, updated_at)
         values(
-          #{article.id},
-          #{article.slug},
-          #{article.title},
-          #{article.description},
-          #{article.body},
-          #{article.userId},
-          #{article.createdAt},
-          #{article.updatedAt})
+        #{article.id},
+        #{article.slug},
+        #{article.title},
+        #{article.description},
+        #{article.body},
+        #{article.userId},
+        #{article.createdAt},
+        #{article.updatedAt})
     </insert>
     <insert id="insertTag">
         insert into tags (id, name) values (#{tag.id}, #{tag.name})
@@ -21,12 +21,12 @@
     </insert>
     <update id="update">
         update articles
-          <set>
-              <if test="article.title != ''">title = #{article.title},</if>
-              <if test="article.title != ''">slug = #{article.slug},</if>
-              <if test="article.description != ''">description = #{article.description},</if>
-              <if test="article.body != ''">body = #{article.body}</if>
-          </set>
+        <set>
+            <if test="article.title != ''">title = #{article.title},</if>
+            <if test="article.title != ''">slug = #{article.slug},</if>
+            <if test="article.description != ''">description = #{article.description},</if>
+            <if test="article.body != ''">body = #{article.body}</if>
+        </set>
         where id = #{article.id}
     </update>
     <delete id="delete">

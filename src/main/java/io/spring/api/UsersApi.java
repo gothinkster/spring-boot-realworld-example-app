@@ -3,16 +3,14 @@ package io.spring.api;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import io.spring.api.exception.InvalidRequestException;
 import io.spring.application.UserQueryService;
-import io.spring.application.data.UserWithToken;
 import io.spring.application.data.UserData;
+import io.spring.application.data.UserWithToken;
 import io.spring.core.service.JwtService;
 import io.spring.core.user.EncryptService;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -54,11 +54,11 @@ public class UsersApi {
         checkInput(registerParam, bindingResult);
 
         User user = new User(
-            registerParam.getEmail(),
-            registerParam.getUsername(),
-            encryptService.encrypt(registerParam.getPassword()),
-            "",
-            defaultImage);
+                registerParam.getEmail(),
+                registerParam.getUsername(),
+                encryptService.encrypt(registerParam.getPassword()),
+                "",
+                defaultImage);
         userRepository.save(user);
         UserData userData = userQueryService.findById(user.getId()).get();
         return ResponseEntity.status(201).body(userResponse(new UserWithToken(userData, jwtService.toToken(user))));

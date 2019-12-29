@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class UserQueryService  {
+public class UserQueryService {
     private UserReadService userReadService;
 
     public UserQueryService(UserReadService userReadService) {

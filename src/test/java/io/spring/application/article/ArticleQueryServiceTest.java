@@ -11,8 +11,8 @@ import io.spring.core.favorite.ArticleFavoriteRepository;
 import io.spring.core.user.FollowRelation;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
-import io.spring.infrastructure.repository.MyBatisArticleRepository;
 import io.spring.infrastructure.repository.MyBatisArticleFavoriteRepository;
+import io.spring.infrastructure.repository.MyBatisArticleRepository;
 import io.spring.infrastructure.repository.MyBatisUserRepository;
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -32,10 +32,10 @@ import static org.junit.Assert.assertThat;
 @RunWith(SpringRunner.class)
 @MybatisTest
 @Import({
-    ArticleQueryService.class,
-    MyBatisUserRepository.class,
-    MyBatisArticleRepository.class,
-    MyBatisArticleFavoriteRepository.class})
+        ArticleQueryService.class,
+        MyBatisUserRepository.class,
+        MyBatisArticleRepository.class,
+        MyBatisArticleFavoriteRepository.class})
 public class ArticleQueryServiceTest {
     @Autowired
     private ArticleQueryService queryService;

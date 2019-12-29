@@ -45,27 +45,27 @@ public class CurrentUserApiTest extends TestWithCurrentUser {
         when(userQueryService.findById(any())).thenReturn(Optional.of(userData));
 
         given()
-            .header("Authorization", "Token " + token)
-            .contentType("application/json")
-            .when()
-            .get("/user")
-            .then()
-            .statusCode(200)
-            .body("user.email", equalTo(email))
-            .body("user.username", equalTo(username))
-            .body("user.bio", equalTo(""))
-            .body("user.image", equalTo(defaultAvatar))
-            .body("user.token", equalTo(token));
+                .header("Authorization", "Token " + token)
+                .contentType("application/json")
+                .when()
+                .get("/user")
+                .then()
+                .statusCode(200)
+                .body("user.email", equalTo(email))
+                .body("user.username", equalTo(username))
+                .body("user.bio", equalTo(""))
+                .body("user.image", equalTo(defaultAvatar))
+                .body("user.token", equalTo(token));
     }
 
     @Test
     public void should_get_401_without_token() throws Exception {
         given()
-            .contentType("application/json")
-            .when()
-            .get("/user")
-            .then()
-            .statusCode(401);
+                .contentType("application/json")
+                .when()
+                .get("/user")
+                .then()
+                .statusCode(401);
 
     }
 
@@ -74,12 +74,12 @@ public class CurrentUserApiTest extends TestWithCurrentUser {
         String invalidToken = "asdfasd";
         when(jwtService.getSubFromToken(eq(invalidToken))).thenReturn(Optional.empty());
         given()
-            .contentType("application/json")
-            .header("Authorization", "Token " + invalidToken)
-            .when()
-            .get("/user")
-            .then()
-            .statusCode(401);
+                .contentType("application/json")
+                .header("Authorization", "Token " + invalidToken)
+                .when()
+                .get("/user")
+                .then()
+                .statusCode(401);
     }
 
     @Test
@@ -102,13 +102,13 @@ public class CurrentUserApiTest extends TestWithCurrentUser {
         when(userQueryService.findById(eq(user.getId()))).thenReturn(Optional.of(userData));
 
         given()
-            .contentType("application/json")
-            .header("Authorization", "Token " + token)
-            .body(param)
-            .when()
-            .put("/user")
-            .then()
-            .statusCode(200);
+                .contentType("application/json")
+                .header("Authorization", "Token " + token)
+                .body(param)
+                .when()
+                .put("/user")
+                .then()
+                .statusCode(200);
     }
 
     @Test
@@ -125,15 +125,15 @@ public class CurrentUserApiTest extends TestWithCurrentUser {
         when(userQueryService.findById(eq(user.getId()))).thenReturn(Optional.of(userData));
 
         given()
-            .contentType("application/json")
-            .header("Authorization", "Token " + token)
-            .body(param)
-            .when()
-            .put("/user")
-            .prettyPeek()
-            .then()
-            .statusCode(422)
-            .body("errors.email[0]", equalTo("email already exist"));
+                .contentType("application/json")
+                .header("Authorization", "Token " + token)
+                .body(param)
+                .when()
+                .put("/user")
+                .prettyPeek()
+                .then()
+                .statusCode(422)
+                .body("errors.email[0]", equalTo("email already exist"));
 
     }
 
@@ -150,12 +150,12 @@ public class CurrentUserApiTest extends TestWithCurrentUser {
     @Test
     public void should_get_401_if_not_login() throws Exception {
         given()
-            .contentType("application/json")
-            .body(new HashMap<String, Object>() {{
-                put("user", new HashMap<String, Object>());
-            }})
-            .when()
-            .put("/user")
-            .then().statusCode(401);
+                .contentType("application/json")
+                .body(new HashMap<String, Object>() {{
+                    put("user", new HashMap<String, Object>());
+                }})
+                .when()
+                .put("/user")
+                .then().statusCode(401);
     }
 }

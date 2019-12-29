@@ -71,17 +71,17 @@ public class UsersApiTest {
         Map<String, Object> param = prepareRegisterParameter(email, username);
 
         given()
-            .contentType("application/json")
-            .body(param)
-            .when()
-            .post("/users")
-            .then()
-            .statusCode(201)
-            .body("user.email", equalTo(email))
-            .body("user.username", equalTo(username))
-            .body("user.bio", equalTo(""))
-            .body("user.image", equalTo(defaultAvatar))
-            .body("user.token", equalTo("123"));
+                .contentType("application/json")
+                .body(param)
+                .when()
+                .post("/users")
+                .then()
+                .statusCode(201)
+                .body("user.email", equalTo(email))
+                .body("user.username", equalTo(username))
+                .body("user.bio", equalTo(""))
+                .body("user.image", equalTo(defaultAvatar))
+                .body("user.token", equalTo("123"));
 
         verify(userRepository).save(any());
     }
@@ -95,13 +95,13 @@ public class UsersApiTest {
         Map<String, Object> param = prepareRegisterParameter(email, username);
 
         given()
-            .contentType("application/json")
-            .body(param)
-            .when()
-            .post("/users")
-            .then()
-            .statusCode(422)
-            .body("errors.username[0]", equalTo("can't be empty"));
+                .contentType("application/json")
+                .body(param)
+                .when()
+                .post("/users")
+                .then()
+                .statusCode(422)
+                .body("errors.username[0]", equalTo("can't be empty"));
     }
 
     @Test
@@ -112,13 +112,13 @@ public class UsersApiTest {
         Map<String, Object> param = prepareRegisterParameter(email, username);
 
         given()
-            .contentType("application/json")
-            .body(param)
-            .when()
-            .post("/users")
-            .then()
-            .statusCode(422)
-            .body("errors.email[0]", equalTo("should be an email"));
+                .contentType("application/json")
+                .body(param)
+                .when()
+                .post("/users")
+                .then()
+                .statusCode(422)
+                .body("errors.email[0]", equalTo("should be an email"));
 
     }
 
@@ -128,20 +128,20 @@ public class UsersApiTest {
         String username = "johnjacob";
 
         when(userRepository.findByUsername(eq(username))).thenReturn(Optional.of(new User(
-            email, username, "123", "bio", ""
+                email, username, "123", "bio", ""
         )));
         when(userRepository.findByEmail(any())).thenReturn(Optional.empty());
 
         Map<String, Object> param = prepareRegisterParameter(email, username);
 
         given()
-            .contentType("application/json")
-            .body(param)
-            .when()
-            .post("/users")
-            .then()
-            .statusCode(422)
-            .body("errors.username[0]", equalTo("duplicated username"));
+                .contentType("application/json")
+                .body(param)
+                .when()
+                .post("/users")
+                .then()
+                .statusCode(422)
+                .body("errors.username[0]", equalTo("duplicated username"));
     }
 
     @Test
@@ -150,7 +150,7 @@ public class UsersApiTest {
         String username = "johnjacob2";
 
         when(userRepository.findByEmail(eq(email))).thenReturn(Optional.of(new User(
-            email, username, "123", "bio", ""
+                email, username, "123", "bio", ""
         )));
 
         when(userRepository.findByUsername(eq(username))).thenReturn(Optional.empty());
@@ -158,13 +158,13 @@ public class UsersApiTest {
         Map<String, Object> param = prepareRegisterParameter(email, username);
 
         given()
-            .contentType("application/json")
-            .body(param)
-            .when()
-            .post("/users")
-            .then()
-            .statusCode(422)
-            .body("errors.email[0]", equalTo("duplicated email"));
+                .contentType("application/json")
+                .body(param)
+                .when()
+                .post("/users")
+                .then()
+                .statusCode(422)
+                .body("errors.email[0]", equalTo("duplicated email"));
     }
 
     private HashMap<String, Object> prepareRegisterParameter(final String email, final String username) {
@@ -199,17 +199,17 @@ public class UsersApiTest {
         }};
 
         given()
-            .contentType("application/json")
-            .body(param)
-            .when()
-            .post("/users/login")
-            .then()
-            .statusCode(200)
-            .body("user.email", equalTo(email))
-            .body("user.username", equalTo(username))
-            .body("user.bio", equalTo(""))
-            .body("user.image", equalTo(defaultAvatar))
-            .body("user.token", equalTo("123"));;
+                .contentType("application/json")
+                .body(param)
+                .when()
+                .post("/users/login")
+                .then()
+                .statusCode(200)
+                .body("user.email", equalTo(email))
+                .body("user.username", equalTo(username))
+                .body("user.bio", equalTo(""))
+                .body("user.image", equalTo(defaultAvatar))
+                .body("user.token", equalTo("123"));
     }
 
     @Test
@@ -232,12 +232,12 @@ public class UsersApiTest {
         }};
 
         given()
-            .contentType("application/json")
-            .body(param)
-            .when()
-            .post("/users/login")
-            .then()
-            .statusCode(422)
-            .body("errors.password[0]", equalTo("invalid email or password"));
+                .contentType("application/json")
+                .body(param)
+                .when()
+                .post("/users/login")
+                .then()
+                .statusCode(422)
+                .body("errors.password[0]", equalTo("invalid email or password"));
     }
 }

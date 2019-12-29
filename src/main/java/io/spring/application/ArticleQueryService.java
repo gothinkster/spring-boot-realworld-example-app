@@ -10,12 +10,7 @@ import io.spring.infrastructure.mybatis.readservice.UserRelationshipQueryService
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 
@@ -80,8 +75,8 @@ public class ArticleQueryService {
 
     private void setIsFollowingAuthor(List<ArticleData> articles, User currentUser) {
         Set<String> followingAuthors = userRelationshipQueryService.followingAuthors(
-            currentUser.getId(),
-            articles.stream().map(articleData1 -> articleData1.getProfileData().getId()).collect(toList()));
+                currentUser.getId(),
+                articles.stream().map(articleData1 -> articleData1.getProfileData().getId()).collect(toList()));
         articles.forEach(articleData -> {
             if (followingAuthors.contains(articleData.getProfileData().getId())) {
                 articleData.getProfileData().setFollowing(true);
@@ -112,9 +107,9 @@ public class ArticleQueryService {
         articleData.setFavorited(articleFavoritesReadService.isUserFavorite(user.getId(), id));
         articleData.setFavoritesCount(articleFavoritesReadService.articleFavoriteCount(id));
         articleData.getProfileData().setFollowing(
-            userRelationshipQueryService.isUserFollowing(
-                user.getId(),
-                articleData.getProfileData().getId()));
+                userRelationshipQueryService.isUserFollowing(
+                        user.getId(),
+                        articleData.getProfileData().getId()));
     }
 
     public ArticleDataList findUserFeed(User user, Page page) {

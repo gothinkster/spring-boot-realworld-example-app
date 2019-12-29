@@ -4,12 +4,12 @@
     <insert id="insert">
         insert into comments(id, body, user_id, article_id, created_at, updated_at)
         values (
-          #{comment.id},
-          #{comment.body},
-          #{comment.userId},
-          #{comment.articleId},
-          #{comment.createdAt},
-          #{comment.createdAt}
+        #{comment.id},
+        #{comment.body},
+        #{comment.userId},
+        #{comment.articleId},
+        #{comment.createdAt},
+        #{comment.createdAt}
         )
     </insert>
     <delete id="delete">
@@ -17,11 +17,11 @@
     </delete>
     <select id="findById" resultMap="comment">
         select
-          id commentId,
-          body commentBody,
-          user_id commentUserId,
-          article_id commentArticleId,
-          created_at commentCreatedAt
+        id commentId,
+        body commentBody,
+        user_id commentUserId,
+        article_id commentArticleId,
+        created_at commentCreatedAt
         from comments
         where id = #{id} and article_id = #{articleId}
     </select>

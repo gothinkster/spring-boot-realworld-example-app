@@ -33,9 +33,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 if (SecurityContextHolder.getContext().getAuthentication() == null) {
                     userRepository.findById(id).ifPresent(user -> {
                         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                            user,
-                            null,
-                            Collections.emptyList()
+                                user,
+                                null,
+                                Collections.emptyList()
                         );
                         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(authenticationToken);

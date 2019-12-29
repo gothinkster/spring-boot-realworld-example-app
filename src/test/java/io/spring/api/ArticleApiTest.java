@@ -27,9 +27,7 @@ import java.util.Optional;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -62,12 +60,12 @@ public class ArticleApiTest extends TestWithCurrentUser {
         when(articleQueryService.findBySlug(eq(slug), eq(null))).thenReturn(Optional.of(articleData));
 
         RestAssuredMockMvc.when()
-            .get("/articles/{slug}", slug)
-            .then()
-            .statusCode(200)
-            .body("article.slug", equalTo(slug))
-            .body("article.body", equalTo(articleData.getBody()))
-            .body("article.createdAt", equalTo(ISODateTimeFormat.dateTime().withZoneUTC().print(time)));
+                .get("/articles/{slug}", slug)
+                .then()
+                .statusCode(200)
+                .body("article.slug", equalTo(slug))
+                .body("article.body", equalTo(articleData.getBody()))
+                .body("article.createdAt", equalTo(ISODateTimeFormat.dateTime().withZoneUTC().print(time)));
 
     }
 
@@ -75,9 +73,9 @@ public class ArticleApiTest extends TestWithCurrentUser {
     public void should_404_if_article_not_found() throws Exception {
         when(articleQueryService.findBySlug(anyString(), any())).thenReturn(Optional.empty());
         RestAssuredMockMvc.when()
-            .get("/articles/not-exists")
-            .then()
-            .statusCode(404);
+                .get("/articles/not-exists")
+                .then()
+                .statusCode(404);
     }
 
     @Test
@@ -95,14 +93,14 @@ public class ArticleApiTest extends TestWithCurrentUser {
         when(articleQueryService.findBySlug(eq(article.getSlug()), eq(user))).thenReturn(Optional.of(articleData));
 
         given()
-            .contentType("application/json")
-            .header("Authorization", "Token " + token)
-            .body(updateParam)
-            .when()
-            .put("/articles/{slug}", article.getSlug())
-            .then()
-            .statusCode(200)
-            .body("article.slug", equalTo(articleData.getSlug()));
+                .contentType("application/json")
+                .header("Authorization", "Token " + token)
+                .body(updateParam)
+                .when()
+                .put("/articles/{slug}", article.getSlug())
+                .then()
+                .statusCode(200)
+                .body("article.slug", equalTo(articleData.getSlug()));
     }
 
     @Test
@@ -118,29 +116,29 @@ public class ArticleApiTest extends TestWithCurrentUser {
 
         DateTime time = new DateTime();
         ArticleData articleData = new ArticleData(
-            article.getId(),
-            article.getSlug(),
-            article.getTitle(),
-            article.getDescription(),
-            article.getBody(),
-            false,
-            0,
-            time,
-            time,
-            Arrays.asList("joda"),
-            new ProfileData(anotherUser.getId(), anotherUser.getUsername(), anotherUser.getBio(), anotherUser.getImage(), false));
+                article.getId(),
+                article.getSlug(),
+                article.getTitle(),
+                article.getDescription(),
+                article.getBody(),
+                false,
+                0,
+                time,
+                time,
+                Arrays.asList("joda"),
+                new ProfileData(anotherUser.getId(), anotherUser.getUsername(), anotherUser.getBio(), anotherUser.getImage(), false));
 
         when(articleRepository.findBySlug(eq(article.getSlug()))).thenReturn(Optional.of(article));
         when(articleQueryService.findBySlug(eq(article.getSlug()), eq(user))).thenReturn(Optional.of(articleData));
 
         given()
-            .contentType("application/json")
-            .header("Authorization", "Token " + token)
-            .body(updateParam)
-            .when()
-            .put("/articles/{slug}", article.getSlug())
-            .then()
-            .statusCode(403);
+                .contentType("application/json")
+                .header("Authorization", "Token " + token)
+                .body(updateParam)
+                .when()
+                .put("/articles/{slug}", article.getSlug())
+                .then()
+                .statusCode(403);
     }
 
     @Test
@@ -153,11 +151,11 @@ public class ArticleApiTest extends TestWithCurrentUser {
         when(articleRepository.findBySlug(eq(article.getSlug()))).thenReturn(Optional.of(article));
 
         given()
-            .header("Authorization", "Token " + token)
-            .when()
-            .delete("/articles/{slug}", article.getSlug())
-            .then()
-            .statusCode(204);
+                .header("Authorization", "Token " + token)
+                .when()
+                .delete("/articles/{slug}", article.getSlug())
+                .then()
+                .statusCode(204);
 
         verify(articleRepository).remove(eq(article));
     }
@@ -174,11 +172,11 @@ public class ArticleApiTest extends TestWithCurrentUser {
 
         when(articleRepository.findBySlug(eq(article.getSlug()))).thenReturn(Optional.of(article));
         given()
-            .header("Authorization", "Token " + token)
-            .when()
-            .delete("/articles/{slug}", article.getSlug())
-            .then()
-            .statusCode(403);
+                .header("Authorization", "Token " + token)
+                .when()
+                .delete("/articles/{slug}", article.getSlug())
+                .then()
+                .statusCode(403);
     }
 
     private HashMap<String, Object> prepareUpdateParam(final String title, final String body, final String description) {

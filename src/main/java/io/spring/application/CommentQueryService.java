@@ -1,9 +1,9 @@
 package io.spring.application;
 
 import io.spring.application.data.CommentData;
-import io.spring.infrastructure.mybatis.readservice.UserRelationshipQueryService;
 import io.spring.core.user.User;
 import io.spring.infrastructure.mybatis.readservice.CommentReadService;
+import io.spring.infrastructure.mybatis.readservice.UserRelationshipQueryService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,9 +27,9 @@ public class CommentQueryService {
             return Optional.empty();
         } else {
             commentData.getProfileData().setFollowing(
-                userRelationshipQueryService.isUserFollowing(
-                    user.getId(),
-                    commentData.getProfileData().getId()));
+                    userRelationshipQueryService.isUserFollowing(
+                            user.getId(),
+                            commentData.getProfileData().getId()));
         }
         return Optional.ofNullable(commentData);
     }

@@ -3,23 +3,17 @@ package io.spring.api;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import io.spring.api.exception.NoAuthorizationException;
 import io.spring.api.exception.ResourceNotFoundException;
-import io.spring.core.service.AuthorizationService;
-import io.spring.application.data.ArticleData;
 import io.spring.application.ArticleQueryService;
+import io.spring.application.data.ArticleData;
 import io.spring.core.article.ArticleRepository;
+import io.spring.core.service.AuthorizationService;
 import io.spring.core.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.HashMap;
@@ -41,8 +35,8 @@ public class ArticleApi {
     public ResponseEntity<?> article(@PathVariable("slug") String slug,
                                      @AuthenticationPrincipal User user) {
         return articleQueryService.findBySlug(slug, user)
-            .map(articleData -> ResponseEntity.ok(articleResponse(articleData)))
-            .orElseThrow(ResourceNotFoundException::new);
+                .map(articleData -> ResponseEntity.ok(articleResponse(articleData)))
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     @PutMapping
@@ -54,9 +48,9 @@ public class ArticleApi {
                 throw new NoAuthorizationException();
             }
             article.update(
-                updateArticleParam.getTitle(),
-                updateArticleParam.getDescription(),
-                updateArticleParam.getBody());
+                    updateArticleParam.getTitle(),
+                    updateArticleParam.getDescription(),
+                    updateArticleParam.getBody());
             articleRepository.save(article);
             return ResponseEntity.ok(articleResponse(articleQueryService.findBySlug(slug, user).get()));
         }).orElseThrow(ResourceNotFoundException::new);

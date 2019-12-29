@@ -21,11 +21,11 @@ public class CustomizeExceptionHandler extends ResponseEntityExceptionHandler {
         InvalidRequestException ire = (InvalidRequestException) e;
 
         List<FieldErrorResource> errorResources = ire.getErrors().getFieldErrors().stream().map(fieldError ->
-            new FieldErrorResource(
-                fieldError.getObjectName(),
-                fieldError.getField(),
-                fieldError.getCode(),
-                fieldError.getDefaultMessage())).collect(Collectors.toList());
+                new FieldErrorResource(
+                        fieldError.getObjectName(),
+                        fieldError.getField(),
+                        fieldError.getCode(),
+                        fieldError.getDefaultMessage())).collect(Collectors.toList());
 
         ErrorResource error = new ErrorResource(errorResources);
 

@@ -3,25 +3,20 @@ package io.spring.api;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import io.spring.api.exception.InvalidRequestException;
 import io.spring.application.UserQueryService;
-import io.spring.application.data.UserWithToken;
 import io.spring.application.data.UserData;
+import io.spring.application.data.UserWithToken;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import javax.validation.constraints.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -43,7 +38,7 @@ public class CurrentUserApi {
                                       @RequestHeader(value = "Authorization") String authorization) {
         UserData userData = userQueryService.findById(currentUser.getId()).get();
         return ResponseEntity.ok(userResponse(
-            new UserWithToken(userData, authorization.split(" ")[1])
+                new UserWithToken(userData, authorization.split(" ")[1])
         ));
     }
 
@@ -58,15 +53,15 @@ public class CurrentUserApi {
         checkUniquenessOfUsernameAndEmail(currentUser, updateUserParam, bindingResult);
 
         currentUser.update(
-            updateUserParam.getEmail(),
-            updateUserParam.getUsername(),
-            updateUserParam.getPassword(),
-            updateUserParam.getBio(),
-            updateUserParam.getImage());
+                updateUserParam.getEmail(),
+                updateUserParam.getUsername(),
+                updateUserParam.getPassword(),
+                updateUserParam.getBio(),
+                updateUserParam.getImage());
         userRepository.save(currentUser);
         UserData userData = userQueryService.findById(currentUser.getId()).get();
         return ResponseEntity.ok(userResponse(
-            new UserWithToken(userData, token.split(" ")[1])
+                new UserWithToken(userData, token.split(" ")[1])
         ));
     }
 

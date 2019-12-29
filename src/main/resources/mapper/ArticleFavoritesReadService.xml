@@ -18,7 +18,7 @@
     </select>
     <select id="userFavorites" resultType="java.lang.String">
         select
-          A.id
+        A.id
         from articles A
         left join article_favorites AF on A.id = AF.article_id
         where id in
