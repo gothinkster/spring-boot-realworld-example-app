@@ -33,9 +33,9 @@ It uses a H2 in memory database (for now), can be changed easily in the `applica
 
 # Getting started
 
-You need Java 8 installed.
+You need Java 11 installed. To build and run:
 
-    ./gradlew bootRun
+    ./run
 
 To test that it works, open a browser tab at http://localhost:8080/tags .  
 Alternatively, you can run
@@ -46,7 +46,8 @@ Alternatively, you can run
 
 You need Docker installed.
 	
-	docker-compose up -d
+	./build-docker
+	./run-docker
 
 # Try it out with a RealWorld frontend
 
@@ -54,9 +55,13 @@ The entry point address of the backend API is at http://localhost:8080, **not** 
 
 # Run test
 
-The repository contains a lot of test cases to cover both api test and repository test.
+The repository contains a lot of test cases to cover both api test and repository test. These are executed by the `./run` script, or explicitly by:
 
-    ./gradlew test
+    ./gradlew clean test
+
+To run the official integration test suite in the form of a Postman collection against the API:
+
+    ./run-api-tests
 
 # Help
 

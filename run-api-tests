@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Note: this requires a Postman installation
+# Note: this depends on a Git clone of gothinkster/realworld in a parallel directory:
+# pushd ..
+# git clone https://github.com/gothinkster/realworld.git
+# popd
+
 pushd ../realworld/api/
 APIURL=http://localhost:8080 ./run-api-tests.sh
 popd
