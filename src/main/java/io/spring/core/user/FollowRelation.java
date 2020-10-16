@@ -10,7 +10,6 @@ public class FollowRelation {
     private String targetId;
 
     public FollowRelation(String userId, String targetId) {
-
         this.userId = userId;
         this.targetId = targetId;
     }

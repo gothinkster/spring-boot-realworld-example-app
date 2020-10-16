@@ -15,11 +15,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
 @MybatisTest
-@Import({ProfileQueryService.class, MyBatisUserRepository.class})
+@Import({
+        ProfileQueryService.class,
+        MyBatisUserRepository.class
+})
 public class ProfileQueryServiceTest {
     @Autowired
     private ProfileQueryService profileQueryService;

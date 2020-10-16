@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 public class MyBatisArticleFavoriteRepository implements ArticleFavoriteRepository {
-    private ArticleFavoriteMapper mapper;
+    private final ArticleFavoriteMapper mapper;
 
     @Autowired
     public MyBatisArticleFavoriteRepository(ArticleFavoriteMapper mapper) {

@@ -47,7 +47,7 @@ public class ArticlesApiTest extends TestWithCurrentUser {
     }
 
     @Test
-    public void should_create_article_success() throws Exception {
+    public void should_create_article_success() {
         String title = "How to train your dragon";
         String slug = "how-to-train-your-dragon";
         String description = "Ever wonder how?";
@@ -56,40 +56,40 @@ public class ArticlesApiTest extends TestWithCurrentUser {
         Map<String, Object> param = prepareParam(title, description, body, tagList);
 
         ArticleData articleData = new ArticleData(
-            "123",
-            slug,
-            title,
-            description,
-            body,
-            false,
-            0,
-            new DateTime(),
-            new DateTime(),
-            Arrays.asList(tagList),
-            new ProfileData("userid", user.getUsername(), user.getBio(), user.getImage(), false));
+                "123",
+                slug,
+                title,
+                description,
+                body,
+                false,
+                0,
+                new DateTime(),
+                new DateTime(),
+                Arrays.asList(tagList),
+                new ProfileData("userid", user.getUsername(), user.getBio(), user.getImage(), false));
 
         when(articleQueryService.findById(any(), any())).thenReturn(Optional.of(articleData));
 
         given()
-            .contentType("application/json")
-            .header("Authorization", "Token " + token)
-            .body(param)
-            .when()
-            .post("/articles")
-            .then()
-            .statusCode(200)
-            .body("article.title", equalTo(title))
-            .body("article.favorited", equalTo(false))
-            .body("article.body", equalTo(body))
-            .body("article.favoritesCount", equalTo(0))
-            .body("article.author.username", equalTo(user.getUsername()))
-            .body("article.author.id", equalTo(null));
+                .contentType("application/json")
+                .header("Authorization", "Token " + token)
+                .body(param)
+                .when()
+                .post("/articles")
+                .then()
+                .statusCode(200)
+                .body("article.title", equalTo(title))
+                .body("article.favorited", equalTo(false))
+                .body("article.body", equalTo(body))
+                .body("article.favoritesCount", equalTo(0))
+                .body("article.author.username", equalTo(user.getUsername()))
+                .body("article.author.id", equalTo(null));
 
         verify(articleRepository).save(any());
     }
 
     @Test
-    public void should_get_error_message_with_wrong_parameter() throws Exception {
+    public void should_get_error_message_with_wrong_parameter() {
         String title = "How to train your dragon";
         String description = "Ever wonder how?";
         String body = "";
@@ -97,15 +97,15 @@ public class ArticlesApiTest extends TestWithCurrentUser {
         Map<String, Object> param = prepareParam(title, description, body, tagList);
 
         given()
-            .contentType("application/json")
-            .header("Authorization", "Token " + token)
-            .body(param)
-            .when()
-            .post("/articles")
-            .prettyPeek()
-            .then()
-            .statusCode(422)
-            .body("errors.body[0]", equalTo("can't be empty"));
+                .contentType("application/json")
+                .header("Authorization", "Token " + token)
+                .body(param)
+                .when()
+                .post("/articles")
+                .prettyPeek()
+                .then()
+                .statusCode(422)
+                .body("errors.body[0]", equalTo("can't be empty"));
 
     }
 

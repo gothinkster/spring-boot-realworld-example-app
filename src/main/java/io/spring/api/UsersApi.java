@@ -3,45 +3,45 @@ package io.spring.api;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import io.spring.api.exception.InvalidRequestException;
 import io.spring.application.UserQueryService;
-import io.spring.application.data.UserWithToken;
 import io.spring.application.data.UserData;
+import io.spring.application.data.UserWithToken;
 import io.spring.core.service.JwtService;
 import io.spring.core.user.EncryptService;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-
 @RestController
 public class UsersApi {
-    private UserRepository userRepository;
-    private UserQueryService userQueryService;
-    private String defaultImage;
-    private EncryptService encryptService;
-    private JwtService jwtService;
+    private final UserRepository userRepository;
+    private final UserQueryService userQueryService;
+    private final String defaultImage;
+    private final EncryptService encryptService;
+    private final JwtService jwtService;
 
     @Autowired
-    public UsersApi(UserRepository userRepository,
-                    UserQueryService userQueryService,
-                    EncryptService encryptService,
-                    @Value("${image.default}") String defaultImage,
-                    JwtService jwtService) {
+    public UsersApi(
+            UserRepository userRepository,
+            UserQueryService userQueryService,
+            EncryptService encryptService,
+            @Value("${image.default}") String defaultImage,
+            JwtService jwtService
+    ) {
         this.userRepository = userRepository;
         this.userQueryService = userQueryService;
         this.encryptService = encryptService;
@@ -49,22 +49,28 @@ public class UsersApi {
         this.jwtService = jwtService;
     }
 
-    @RequestMapping(path = "/users", method = POST)
-    public ResponseEntity createUser(@Valid @RequestBody RegisterParam registerParam, BindingResult bindingResult) {
+    @PostMapping("/users")
+    public ResponseEntity<?> createUser(
+            @Valid @RequestBody RegisterParam registerParam,
+            BindingResult bindingResult
+    ) {
         checkInput(registerParam, bindingResult);
 
         User user = new User(
-            registerParam.getEmail(),
-            registerParam.getUsername(),
-            encryptService.encrypt(registerParam.getPassword()),
-            "",
-            defaultImage);
+                registerParam.getEmail(),
+                registerParam.getUsername(),
+                encryptService.encrypt(registerParam.getPassword()),
+                "",
+                defaultImage);
         userRepository.save(user);
         UserData userData = userQueryService.findById(user.getId()).get();
         return ResponseEntity.status(201).body(userResponse(new UserWithToken(userData, jwtService.toToken(user))));
     }
 
-    private void checkInput(@Valid @RequestBody RegisterParam registerParam, BindingResult bindingResult) {
+    private void checkInput(
+            @Valid @RequestBody RegisterParam registerParam,
+            BindingResult bindingResult
+    ) {
         if (bindingResult.hasErrors()) {
             throw new InvalidRequestException(bindingResult);
         }
@@ -81,8 +87,11 @@ public class UsersApi {
         }
     }
 
-    @RequestMapping(path = "/users/login", method = POST)
-    public ResponseEntity userLogin(@Valid @RequestBody LoginParam loginParam, BindingResult bindingResult) {
+    @PostMapping("/users/login")
+    public ResponseEntity<?> userLogin(
+            @Valid @RequestBody LoginParam loginParam,
+            BindingResult bindingResult
+    ) {
         Optional<User> optional = userRepository.findByEmail(loginParam.getEmail());
         if (optional.isPresent() && encryptService.check(loginParam.getPassword(), optional.get().getPassword())) {
             UserData userData = userQueryService.findById(optional.get().getId()).get();

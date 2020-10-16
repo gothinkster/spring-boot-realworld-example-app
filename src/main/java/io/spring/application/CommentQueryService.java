@@ -1,9 +1,9 @@
 package io.spring.application;
 
 import io.spring.application.data.CommentData;
-import io.spring.infrastructure.mybatis.readservice.UserRelationshipQueryService;
 import io.spring.core.user.User;
 import io.spring.infrastructure.mybatis.readservice.CommentReadService;
+import io.spring.infrastructure.mybatis.readservice.UserRelationshipQueryService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,10 +13,13 @@ import java.util.stream.Collectors;
 
 @Service
 public class CommentQueryService {
-    private CommentReadService commentReadService;
-    private UserRelationshipQueryService userRelationshipQueryService;
+    private final CommentReadService commentReadService;
+    private final UserRelationshipQueryService userRelationshipQueryService;
 
-    public CommentQueryService(CommentReadService commentReadService, UserRelationshipQueryService userRelationshipQueryService) {
+    public CommentQueryService(
+            CommentReadService commentReadService,
+            UserRelationshipQueryService userRelationshipQueryService
+    ) {
         this.commentReadService = commentReadService;
         this.userRelationshipQueryService = userRelationshipQueryService;
     }
@@ -27,11 +30,12 @@ public class CommentQueryService {
             return Optional.empty();
         } else {
             commentData.getProfileData().setFollowing(
-                userRelationshipQueryService.isUserFollowing(
-                    user.getId(),
-                    commentData.getProfileData().getId()));
+                    userRelationshipQueryService.isUserFollowing(
+                            user.getId(),
+                            commentData.getProfileData().getId())
+            );
         }
-        return Optional.ofNullable(commentData);
+        return Optional.of(commentData);
     }
 
     public List<CommentData> findByArticleId(String articleId, User user) {

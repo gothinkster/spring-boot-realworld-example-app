@@ -3,25 +3,20 @@ package io.spring.api;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import io.spring.api.exception.InvalidRequestException;
 import io.spring.application.UserQueryService;
-import io.spring.application.data.UserWithToken;
 import io.spring.application.data.UserData;
+import io.spring.application.data.UserWithToken;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import javax.validation.constraints.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -29,8 +24,8 @@ import java.util.Optional;
 @RestController
 @RequestMapping(path = "/user")
 public class CurrentUserApi {
-    private UserQueryService userQueryService;
-    private UserRepository userRepository;
+    private final UserQueryService userQueryService;
+    private final UserRepository userRepository;
 
     @Autowired
     public CurrentUserApi(UserQueryService userQueryService, UserRepository userRepository) {
@@ -39,38 +34,46 @@ public class CurrentUserApi {
     }
 
     @GetMapping
-    public ResponseEntity currentUser(@AuthenticationPrincipal User currentUser,
-                                      @RequestHeader(value = "Authorization") String authorization) {
+    public ResponseEntity<?> currentUser(
+            @AuthenticationPrincipal User currentUser,
+            @RequestHeader(value = "Authorization"
+            ) String authorization) {
         UserData userData = userQueryService.findById(currentUser.getId()).get();
         return ResponseEntity.ok(userResponse(
-            new UserWithToken(userData, authorization.split(" ")[1])
+                new UserWithToken(userData, authorization.split(" ")[1])
         ));
     }
 
     @PutMapping
-    public ResponseEntity updateProfile(@AuthenticationPrincipal User currentUser,
-                                        @RequestHeader("Authorization") String token,
-                                        @Valid @RequestBody UpdateUserParam updateUserParam,
-                                        BindingResult bindingResult) {
+    public ResponseEntity<?> updateProfile(
+            @AuthenticationPrincipal User currentUser,
+            @RequestHeader("Authorization") String token,
+            @Valid @RequestBody UpdateUserParam updateUserParam,
+            BindingResult bindingResult
+    ) {
         if (bindingResult.hasErrors()) {
             throw new InvalidRequestException(bindingResult);
         }
         checkUniquenessOfUsernameAndEmail(currentUser, updateUserParam, bindingResult);
 
         currentUser.update(
-            updateUserParam.getEmail(),
-            updateUserParam.getUsername(),
-            updateUserParam.getPassword(),
-            updateUserParam.getBio(),
-            updateUserParam.getImage());
+                updateUserParam.getEmail(),
+                updateUserParam.getUsername(),
+                updateUserParam.getPassword(),
+                updateUserParam.getBio(),
+                updateUserParam.getImage());
         userRepository.save(currentUser);
         UserData userData = userQueryService.findById(currentUser.getId()).get();
         return ResponseEntity.ok(userResponse(
-            new UserWithToken(userData, token.split(" ")[1])
+                new UserWithToken(userData, token.split(" ")[1])
         ));
     }
 
-    private void checkUniquenessOfUsernameAndEmail(User currentUser, UpdateUserParam updateUserParam, BindingResult bindingResult) {
+    private void checkUniquenessOfUsernameAndEmail(
+            User currentUser,
+            UpdateUserParam updateUserParam,
+            BindingResult bindingResult
+    ) {
         if (!"".equals(updateUserParam.getUsername())) {
             Optional<User> byUsername = userRepository.findByUsername(updateUserParam.getUsername());
             if (byUsername.isPresent() && !byUsername.get().equals(currentUser)) {
@@ -97,6 +100,7 @@ public class CurrentUserApi {
     }
 }
 
+@SuppressWarnings("FieldMayBeFinal")
 @Getter
 @JsonRootName("user")
 @NoArgsConstructor

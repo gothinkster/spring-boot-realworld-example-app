@@ -12,7 +12,7 @@ import java.util.HashMap;
 @RestController
 @RequestMapping(path = "tags")
 public class TagsApi {
-    private TagsQueryService tagsQueryService;
+    private final TagsQueryService tagsQueryService;
 
     @Autowired
     public TagsApi(TagsQueryService tagsQueryService) {
@@ -20,7 +20,7 @@ public class TagsApi {
     }
 
     @GetMapping
-    public ResponseEntity getTags() {
+    public ResponseEntity<?> getTags() {
         return ResponseEntity.ok(new HashMap<String, Object>() {{
             put("tags", tagsQueryService.allTags());
         }});

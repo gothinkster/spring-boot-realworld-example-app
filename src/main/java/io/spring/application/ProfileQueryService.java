@@ -2,8 +2,8 @@ package io.spring.application;
 
 import io.spring.application.data.ProfileData;
 import io.spring.application.data.UserData;
-import io.spring.infrastructure.mybatis.readservice.UserReadService;
 import io.spring.core.user.User;
+import io.spring.infrastructure.mybatis.readservice.UserReadService;
 import io.spring.infrastructure.mybatis.readservice.UserRelationshipQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,8 +12,8 @@ import java.util.Optional;
 
 @Component
 public class ProfileQueryService {
-    private UserReadService userReadService;
-    private UserRelationshipQueryService userRelationshipQueryService;
+    private final UserReadService userReadService;
+    private final UserRelationshipQueryService userRelationshipQueryService;
 
     @Autowired
     public ProfileQueryService(UserReadService userReadService, UserRelationshipQueryService userRelationshipQueryService) {
@@ -27,11 +27,11 @@ public class ProfileQueryService {
             return Optional.empty();
         } else {
             ProfileData profileData = new ProfileData(
-                userData.getId(),
-                userData.getUsername(),
-                userData.getBio(),
-                userData.getImage(),
-                userRelationshipQueryService.isUserFollowing(currentUser.getId(), userData.getId()));
+                    userData.getId(),
+                    userData.getUsername(),
+                    userData.getBio(),
+                    userData.getImage(),
+                    userRelationshipQueryService.isUserFollowing(currentUser.getId(), userData.getId()));
             return Optional.of(profileData);
         }
     }

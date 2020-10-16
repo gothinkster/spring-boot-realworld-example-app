@@ -41,38 +41,43 @@ public class ListArticleApiTest extends TestWithCurrentUser {
     }
 
     @Test
-    public void should_get_default_article_list() throws Exception {
+    public void should_get_default_article_list() {
         ArticleDataList articleDataList = new ArticleDataList(
-            asList(articleDataFixture("1", user), articleDataFixture("2", user)), 2);
-        when(articleQueryService.findRecentArticles(eq(null), eq(null), eq(null), eq(new Page(0, 20)), eq(null))).thenReturn(articleDataList);
+                asList(articleDataFixture("1", user), articleDataFixture("2", user)), 2);
+
+        when(articleQueryService.findRecentArticles(eq(null), eq(null), eq(null), eq(new Page(0, 20)), eq(null)))
+                .thenReturn(articleDataList);
+
         RestAssuredMockMvc.when()
-            .get("/articles")
-            .prettyPeek()
-            .then()
-            .statusCode(200);
+                .get("/articles")
+                .prettyPeek()
+                .then()
+                .statusCode(200);
     }
 
     @Test
-    public void should_get_feeds_401_without_login() throws Exception {
+    public void should_get_feeds_401_without_login() {
         RestAssuredMockMvc.when()
-            .get("/articles/feed")
-            .prettyPeek()
-            .then()
-            .statusCode(401);
+                .get("/articles/feed")
+                .prettyPeek()
+                .then()
+                .statusCode(401);
     }
 
     @Test
-    public void should_get_feeds_success() throws Exception {
+    public void should_get_feeds_success() {
         ArticleDataList articleDataList = new ArticleDataList(
-            asList(articleDataFixture("1", user), articleDataFixture("2", user)), 2);
-        when(articleQueryService.findUserFeed(eq(user), eq(new Page(0, 20)))).thenReturn(articleDataList);
+                asList(articleDataFixture("1", user), articleDataFixture("2", user)), 2);
+
+        when(articleQueryService.findUserFeed(eq(user), eq(new Page(0, 20))))
+                .thenReturn(articleDataList);
 
         given()
-            .header("Authorization", "Token " + token)
-            .when()
-            .get("/articles/feed")
-            .prettyPeek()
-            .then()
-            .statusCode(200);
+                .header("Authorization", "Token " + token)
+                .when()
+                .get("/articles/feed")
+                .prettyPeek()
+                .then()
+                .statusCode(200);
     }
 }

@@ -10,25 +10,22 @@ import io.spring.infrastructure.mybatis.readservice.UserRelationshipQueryService
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 
 @Service
 public class ArticleQueryService {
-    private ArticleReadService articleReadService;
-    private UserRelationshipQueryService userRelationshipQueryService;
-    private ArticleFavoritesReadService articleFavoritesReadService;
+    private final ArticleReadService articleReadService;
+    private final UserRelationshipQueryService userRelationshipQueryService;
+    private final ArticleFavoritesReadService articleFavoritesReadService;
 
     @Autowired
-    public ArticleQueryService(ArticleReadService articleReadService,
-                               UserRelationshipQueryService userRelationshipQueryService,
-                               ArticleFavoritesReadService articleFavoritesReadService) {
+    public ArticleQueryService(
+            ArticleReadService articleReadService,
+            UserRelationshipQueryService userRelationshipQueryService,
+            ArticleFavoritesReadService articleFavoritesReadService
+    ) {
         this.articleReadService = articleReadService;
         this.userRelationshipQueryService = userRelationshipQueryService;
         this.articleFavoritesReadService = articleFavoritesReadService;
@@ -58,7 +55,13 @@ public class ArticleQueryService {
         }
     }
 
-    public ArticleDataList findRecentArticles(String tag, String author, String favoritedBy, Page page, User currentUser) {
+    public ArticleDataList findRecentArticles(
+            String tag,
+            String author,
+            String favoritedBy,
+            Page page,
+            User currentUser
+    ) {
         List<String> articleIds = articleReadService.queryArticles(tag, author, favoritedBy, page);
         int articleCount = articleReadService.countArticle(tag, author, favoritedBy);
         if (articleIds.size() == 0) {
@@ -80,8 +83,8 @@ public class ArticleQueryService {
 
     private void setIsFollowingAuthor(List<ArticleData> articles, User currentUser) {
         Set<String> followingAuthors = userRelationshipQueryService.followingAuthors(
-            currentUser.getId(),
-            articles.stream().map(articleData1 -> articleData1.getProfileData().getId()).collect(toList()));
+                currentUser.getId(),
+                articles.stream().map(articleData1 -> articleData1.getProfileData().getId()).collect(toList()));
         articles.forEach(articleData -> {
             if (followingAuthors.contains(articleData.getProfileData().getId())) {
                 articleData.getProfileData().setFollowing(true);
@@ -90,16 +93,24 @@ public class ArticleQueryService {
     }
 
     private void setFavoriteCount(List<ArticleData> articles) {
-        List<ArticleFavoriteCount> favoritesCounts = articleFavoritesReadService.articlesFavoriteCount(articles.stream().map(ArticleData::getId).collect(toList()));
+        List<ArticleFavoriteCount> favoritesCounts = articleFavoritesReadService
+                .articlesFavoriteCount(articles.stream()
+                        .map(ArticleData::getId)
+                        .collect(toList())
+                );
         Map<String, Integer> countMap = new HashMap<>();
-        favoritesCounts.forEach(item -> {
-            countMap.put(item.getId(), item.getCount());
-        });
+        favoritesCounts.forEach(item -> countMap.put(item.getId(), item.getCount()));
         articles.forEach(articleData -> articleData.setFavoritesCount(countMap.get(articleData.getId())));
     }
 
     private void setIsFavorite(List<ArticleData> articles, User currentUser) {
-        Set<String> favoritedArticles = articleFavoritesReadService.userFavorites(articles.stream().map(articleData -> articleData.getId()).collect(toList()), currentUser);
+        Set<String> favoritedArticles = articleFavoritesReadService
+                .userFavorites(
+                        articles.stream()
+                                .map(ArticleData::getId)
+                                .collect(toList()),
+                        currentUser
+                );
 
         articles.forEach(articleData -> {
             if (favoritedArticles.contains(articleData.getId())) {
@@ -112,9 +123,9 @@ public class ArticleQueryService {
         articleData.setFavorited(articleFavoritesReadService.isUserFavorite(user.getId(), id));
         articleData.setFavoritesCount(articleFavoritesReadService.articleFavoriteCount(id));
         articleData.getProfileData().setFollowing(
-            userRelationshipQueryService.isUserFollowing(
-                user.getId(),
-                articleData.getProfileData().getId()));
+                userRelationshipQueryService.isUserFollowing(
+                        user.getId(),
+                        articleData.getProfileData().getId()));
     }
 
     public ArticleDataList findUserFeed(User user, Page page) {

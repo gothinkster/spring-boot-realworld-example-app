@@ -30,7 +30,7 @@ public class ArticleRepositoryTransactionTest {
 
 
     @Test
-    public void transactional_test() throws Exception {
+    public void transactional_test() {
         User user = new User("aisensiy@gmail.com", "aisensiy", "123", "bio", "default");
         userRepository.save(user);
         Article article = new Article("test", "desc", "body", new String[]{"java", "spring"}, user.getId());

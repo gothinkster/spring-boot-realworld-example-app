@@ -15,12 +15,14 @@ import java.util.Optional;
 
 @Component
 public class DefaultJwtService implements JwtService {
-    private String secret;
-    private int sessionTime;
+    private final String secret;
+    private final int sessionTime;
 
     @Autowired
-    public DefaultJwtService(@Value("${jwt.secret}") String secret,
-                             @Value("${jwt.sessionTime}") int sessionTime) {
+    public DefaultJwtService(
+            @Value("${jwt.secret}") String secret,
+            @Value("${jwt.sessionTime}") int sessionTime
+    ) {
         this.secret = secret;
         this.sessionTime = sessionTime;
     }
@@ -28,10 +30,10 @@ public class DefaultJwtService implements JwtService {
     @Override
     public String toToken(User user) {
         return Jwts.builder()
-            .setSubject(user.getId())
-            .setExpiration(expireTimeFromNow())
-            .signWith(SignatureAlgorithm.HS512, secret)
-            .compact();
+                .setSubject(user.getId())
+                .setExpiration(expireTimeFromNow())
+                .signWith(SignatureAlgorithm.HS512, secret)
+                .compact();
     }
 
     @Override

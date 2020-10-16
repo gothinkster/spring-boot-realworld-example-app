@@ -7,7 +7,7 @@ import java.util.List;
 
 @Service
 public class TagsQueryService {
-    private TagReadService tagReadService;
+    private final TagReadService tagReadService;
 
     public TagsQueryService(TagReadService tagReadService) {
         this.tagReadService = tagReadService;

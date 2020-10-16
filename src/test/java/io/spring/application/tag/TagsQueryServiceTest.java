@@ -16,7 +16,10 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
 @MybatisTest
-@Import({TagsQueryService.class, MyBatisArticleRepository.class})
+@Import({
+        TagsQueryService.class,
+        MyBatisArticleRepository.class
+})
 public class TagsQueryServiceTest {
     @Autowired
     private TagsQueryService tagsQueryService;
@@ -25,7 +28,7 @@ public class TagsQueryServiceTest {
     private ArticleRepository articleRepository;
 
     @Test
-    public void should_get_all_tags() throws Exception {
+    public void should_get_all_tags() {
         articleRepository.save(new Article("test", "test", "test", new String[]{"java"}, "123"));
         assertThat(tagsQueryService.allTags().contains("java"), is(true));
     }

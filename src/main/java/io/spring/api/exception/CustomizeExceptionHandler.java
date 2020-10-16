@@ -20,12 +20,16 @@ public class CustomizeExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleInvalidRequest(RuntimeException e, WebRequest request) {
         InvalidRequestException ire = (InvalidRequestException) e;
 
-        List<FieldErrorResource> errorResources = ire.getErrors().getFieldErrors().stream().map(fieldError ->
-            new FieldErrorResource(
-                fieldError.getObjectName(),
-                fieldError.getField(),
-                fieldError.getCode(),
-                fieldError.getDefaultMessage())).collect(Collectors.toList());
+        List<FieldErrorResource> errorResources = ire.getErrors()
+                .getFieldErrors()
+                .stream()
+                .map(fieldError ->
+                        new FieldErrorResource(
+                                fieldError.getObjectName(),
+                                fieldError.getField(),
+                                fieldError.getCode(),
+                                fieldError.getDefaultMessage())).collect(Collectors.toList()
+                );
 
         ErrorResource error = new ErrorResource(errorResources);
 

@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Repository
 public class MyBatisArticleRepository implements ArticleRepository {
-    private ArticleMapper articleMapper;
+    private final ArticleMapper articleMapper;
 
     public MyBatisArticleRepository(ArticleMapper articleMapper) {
         this.articleMapper = articleMapper;

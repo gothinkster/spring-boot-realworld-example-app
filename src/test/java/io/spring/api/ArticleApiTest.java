@@ -20,16 +20,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -53,7 +51,7 @@ public class ArticleApiTest extends TestWithCurrentUser {
     }
 
     @Test
-    public void should_read_article_success() throws Exception {
+    public void should_read_article_success() {
         String slug = "test-new-article";
         DateTime time = new DateTime();
         Article article = new Article("Test New Article", "Desc", "Body", new String[]{"java", "spring", "jpg"}, user.getId(), time);
@@ -62,26 +60,26 @@ public class ArticleApiTest extends TestWithCurrentUser {
         when(articleQueryService.findBySlug(eq(slug), eq(null))).thenReturn(Optional.of(articleData));
 
         RestAssuredMockMvc.when()
-            .get("/articles/{slug}", slug)
-            .then()
-            .statusCode(200)
-            .body("article.slug", equalTo(slug))
-            .body("article.body", equalTo(articleData.getBody()))
-            .body("article.createdAt", equalTo(ISODateTimeFormat.dateTime().withZoneUTC().print(time)));
+                .get("/articles/{slug}", slug)
+                .then()
+                .statusCode(200)
+                .body("article.slug", equalTo(slug))
+                .body("article.body", equalTo(articleData.getBody()))
+                .body("article.createdAt", equalTo(ISODateTimeFormat.dateTime().withZoneUTC().print(time)));
 
     }
 
     @Test
-    public void should_404_if_article_not_found() throws Exception {
+    public void should_404_if_article_not_found() {
         when(articleQueryService.findBySlug(anyString(), any())).thenReturn(Optional.empty());
         RestAssuredMockMvc.when()
-            .get("/articles/not-exists")
-            .then()
-            .statusCode(404);
+                .get("/articles/not-exists")
+                .then()
+                .statusCode(404);
     }
 
     @Test
-    public void should_update_article_content_success() throws Exception {
+    public void should_update_article_content_success() {
         String title = "new-title";
         String body = "new body";
         String description = "new description";
@@ -95,18 +93,18 @@ public class ArticleApiTest extends TestWithCurrentUser {
         when(articleQueryService.findBySlug(eq(article.getSlug()), eq(user))).thenReturn(Optional.of(articleData));
 
         given()
-            .contentType("application/json")
-            .header("Authorization", "Token " + token)
-            .body(updateParam)
-            .when()
-            .put("/articles/{slug}", article.getSlug())
-            .then()
-            .statusCode(200)
-            .body("article.slug", equalTo(articleData.getSlug()));
+                .contentType("application/json")
+                .header("Authorization", "Token " + token)
+                .body(updateParam)
+                .when()
+                .put("/articles/{slug}", article.getSlug())
+                .then()
+                .statusCode(200)
+                .body("article.slug", equalTo(articleData.getSlug()));
     }
 
     @Test
-    public void should_get_403_if_not_author_to_update_article() throws Exception {
+    public void should_get_403_if_not_author_to_update_article() {
         String title = "new-title";
         String body = "new body";
         String description = "new description";
@@ -118,33 +116,33 @@ public class ArticleApiTest extends TestWithCurrentUser {
 
         DateTime time = new DateTime();
         ArticleData articleData = new ArticleData(
-            article.getId(),
-            article.getSlug(),
-            article.getTitle(),
-            article.getDescription(),
-            article.getBody(),
-            false,
-            0,
-            time,
-            time,
-            Arrays.asList("joda"),
-            new ProfileData(anotherUser.getId(), anotherUser.getUsername(), anotherUser.getBio(), anotherUser.getImage(), false));
+                article.getId(),
+                article.getSlug(),
+                article.getTitle(),
+                article.getDescription(),
+                article.getBody(),
+                false,
+                0,
+                time,
+                time,
+                Collections.singletonList("joda"),
+                new ProfileData(anotherUser.getId(), anotherUser.getUsername(), anotherUser.getBio(), anotherUser.getImage(), false));
 
         when(articleRepository.findBySlug(eq(article.getSlug()))).thenReturn(Optional.of(article));
         when(articleQueryService.findBySlug(eq(article.getSlug()), eq(user))).thenReturn(Optional.of(articleData));
 
         given()
-            .contentType("application/json")
-            .header("Authorization", "Token " + token)
-            .body(updateParam)
-            .when()
-            .put("/articles/{slug}", article.getSlug())
-            .then()
-            .statusCode(403);
+                .contentType("application/json")
+                .header("Authorization", "Token " + token)
+                .body(updateParam)
+                .when()
+                .put("/articles/{slug}", article.getSlug())
+                .then()
+                .statusCode(403);
     }
 
     @Test
-    public void should_delete_article_success() throws Exception {
+    public void should_delete_article_success() {
         String title = "title";
         String body = "body";
         String description = "description";
@@ -153,17 +151,17 @@ public class ArticleApiTest extends TestWithCurrentUser {
         when(articleRepository.findBySlug(eq(article.getSlug()))).thenReturn(Optional.of(article));
 
         given()
-            .header("Authorization", "Token " + token)
-            .when()
-            .delete("/articles/{slug}", article.getSlug())
-            .then()
-            .statusCode(204);
+                .header("Authorization", "Token " + token)
+                .when()
+                .delete("/articles/{slug}", article.getSlug())
+                .then()
+                .statusCode(204);
 
         verify(articleRepository).remove(eq(article));
     }
 
     @Test
-    public void should_403_if_not_author_delete_article() throws Exception {
+    public void should_403_if_not_author_delete_article() {
         String title = "new-title";
         String body = "new body";
         String description = "new description";
@@ -174,11 +172,11 @@ public class ArticleApiTest extends TestWithCurrentUser {
 
         when(articleRepository.findBySlug(eq(article.getSlug()))).thenReturn(Optional.of(article));
         given()
-            .header("Authorization", "Token " + token)
-            .when()
-            .delete("/articles/{slug}", article.getSlug())
-            .then()
-            .statusCode(403);
+                .header("Authorization", "Token " + token)
+                .when()
+                .delete("/articles/{slug}", article.getSlug())
+                .then()
+                .statusCode(403);
     }
 
     private HashMap<String, Object> prepareUpdateParam(final String title, final String body, final String description) {

@@ -19,15 +19,18 @@ import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 @MybatisTest
 @RunWith(SpringRunner.class)
-@Import({MyBatisArticleRepository.class, MyBatisUserRepository.class})
+@Import({
+        MyBatisArticleRepository.class,
+        MyBatisUserRepository.class
+})
 public class MyBatisArticleRepositoryTest {
+
     @Autowired
     private ArticleRepository articleRepository;
-
     @Autowired
     private UserRepository userRepository;
 
@@ -35,14 +38,14 @@ public class MyBatisArticleRepositoryTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         User user = new User("aisensiy@gmail.com", "aisensiy", "123", "bio", "default");
         userRepository.save(user);
         article = new Article("test", "desc", "body", new String[]{"java", "spring"}, user.getId());
     }
 
     @Test
-    public void should_create_and_fetch_article_success() throws Exception {
+    public void should_create_and_fetch_article_success() {
         articleRepository.save(article);
         Optional<Article> optional = articleRepository.findById(article.getId());
         assertThat(optional.isPresent(), is(true));
@@ -52,7 +55,7 @@ public class MyBatisArticleRepositoryTest {
     }
 
     @Test
-    public void should_update_and_fetch_article_success() throws Exception {
+    public void should_update_and_fetch_article_success() {
         articleRepository.save(article);
 
         String newTitle = "new test 2";

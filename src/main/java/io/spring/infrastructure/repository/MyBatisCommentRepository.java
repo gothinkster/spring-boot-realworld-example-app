@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Component
 public class MyBatisCommentRepository implements CommentRepository {
-    private CommentMapper commentMapper;
+    private final CommentMapper commentMapper;
 
     @Autowired
     public MyBatisCommentRepository(CommentMapper commentMapper) {

@@ -15,7 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
 @MybatisTest
@@ -26,12 +26,12 @@ public class MyBatisUserRepositoryTest {
     private User user;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         user = new User("aisensiy@163.com", "aisensiy", "123", "", "default");
     }
 
     @Test
-    public void should_save_and_fetch_user_success() throws Exception {
+    public void should_save_and_fetch_user_success() {
         userRepository.save(user);
         Optional<User> userOptional = userRepository.findByUsername("aisensiy");
         assertThat(userOptional.get(), is(user));
@@ -40,7 +40,7 @@ public class MyBatisUserRepositoryTest {
     }
 
     @Test
-    public void should_update_user_success() throws Exception {
+    public void should_update_user_success() {
         String newEmail = "newemail@email.com";
         user.update(newEmail, "", "", "", "");
         userRepository.save(user);
@@ -58,7 +58,7 @@ public class MyBatisUserRepositoryTest {
     }
 
     @Test
-    public void should_create_new_user_follow_success() throws Exception {
+    public void should_create_new_user_follow_success() {
         User other = new User("other@example.com", "other", "123", "", "");
         userRepository.save(other);
 
@@ -68,7 +68,7 @@ public class MyBatisUserRepositoryTest {
     }
 
     @Test
-    public void should_unfollow_user_success() throws Exception {
+    public void should_unfollow_user_success() {
         User other = new User("other@example.com", "other", "123", "", "");
         userRepository.save(other);
 

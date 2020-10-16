@@ -24,11 +24,17 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
+@SuppressWarnings("deprecation")
 @MybatisTest
 @RunWith(SpringRunner.class)
-@Import({MyBatisCommentRepository.class, MyBatisUserRepository.class, CommentQueryService.class, MyBatisArticleRepository.class})
+@Import({
+        MyBatisCommentRepository.class,
+        MyBatisUserRepository.class,
+        CommentQueryService.class,
+        MyBatisArticleRepository.class
+})
 public class CommentQueryServiceTest {
     @Autowired
     private CommentRepository commentRepository;
@@ -45,13 +51,13 @@ public class CommentQueryServiceTest {
     private User user;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         user = new User("aisensiy@test.com", "aisensiy", "123", "", "");
         userRepository.save(user);
     }
 
     @Test
-    public void should_read_comment_success() throws Exception {
+    public void should_read_comment_success() {
         Comment comment = new Comment("content", user.getId(), "123");
         commentRepository.save(comment);
 
@@ -62,7 +68,7 @@ public class CommentQueryServiceTest {
     }
 
     @Test
-    public void should_read_comments_of_article() throws Exception {
+    public void should_read_comments_of_article() {
         Article article = new Article("title", "desc", "body", new String[]{"java"}, user.getId());
         articleRepository.save(article);
 

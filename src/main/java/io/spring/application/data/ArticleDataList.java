@@ -13,7 +13,6 @@ public class ArticleDataList {
     private final int count;
 
     public ArticleDataList(List<ArticleData> articleDatas, int count) {
-
         this.articleDatas = articleDatas;
         this.count = count;
     }

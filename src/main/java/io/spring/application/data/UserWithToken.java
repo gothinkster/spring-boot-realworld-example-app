@@ -17,5 +17,4 @@ public class UserWithToken {
         this.image = userData.getImage();
         this.token = token;
     }
-
 }

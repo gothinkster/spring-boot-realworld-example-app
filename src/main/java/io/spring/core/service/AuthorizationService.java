@@ -5,6 +5,7 @@ import io.spring.core.comment.Comment;
 import io.spring.core.user.User;
 
 public class AuthorizationService {
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean canWriteArticle(User user, Article article) {
         return user.getId().equals(article.getUserId());
     }
