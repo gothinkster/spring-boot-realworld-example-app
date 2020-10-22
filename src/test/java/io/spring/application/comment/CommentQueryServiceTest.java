@@ -23,8 +23,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.List;
 import java.util.Optional;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @MybatisTest
 @RunWith(SpringRunner.class)
@@ -45,24 +45,24 @@ public class CommentQueryServiceTest {
     private User user;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         user = new User("aisensiy@test.com", "aisensiy", "123", "", "");
         userRepository.save(user);
     }
 
     @Test
-    public void should_read_comment_success() throws Exception {
+    public void should_read_comment_success() {
         Comment comment = new Comment("content", user.getId(), "123");
         commentRepository.save(comment);
 
         Optional<CommentData> optional = commentQueryService.findById(comment.getId(), user);
-        assertThat(optional.isPresent(), is(true));
+        assertTrue(optional.isPresent());
         CommentData commentData = optional.get();
-        assertThat(commentData.getProfileData().getUsername(), is(user.getUsername()));
+        assertEquals(commentData.getProfileData().getUsername(), user.getUsername());
     }
 
     @Test
-    public void should_read_comments_of_article() throws Exception {
+    public void should_read_comments_of_article() {
         Article article = new Article("title", "desc", "body", new String[]{"java"}, user.getId());
         articleRepository.save(article);
 
@@ -76,7 +76,7 @@ public class CommentQueryServiceTest {
         commentRepository.save(comment2);
 
         List<CommentData> comments = commentQueryService.findByArticleId(article.getId(), user);
-        assertThat(comments.size(), is(2));
+        assertEquals(comments.size(), 2);
 
     }
 }

@@ -7,38 +7,39 @@ import org.junit.Test;
 
 import java.util.Optional;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class DefaultJwtServiceTest {
 
     private JwtService jwtService;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         jwtService = new DefaultJwtService("123123", 3600);
     }
 
     @Test
-    public void should_generate_and_parse_token() throws Exception {
+    public void should_generate_and_parse_token() {
         User user = new User("email@email.com", "username", "123", "", "");
         String token = jwtService.toToken(user);
-        assertThat(token, notNullValue());
+        assertNotNull(token);
         Optional<String> optional = jwtService.getSubFromToken(token);
-        assertThat(optional.isPresent(), is(true));
-        assertThat(optional.get(), is(user.getId()));
+        assertTrue(optional.isPresent());
+        assertEquals(optional.get(), user.getId());
     }
 
     @Test
-    public void should_get_null_with_wrong_jwt() throws Exception {
+    public void should_get_null_with_wrong_jwt() {
         Optional<String> optional = jwtService.getSubFromToken("123");
-        assertThat(optional.isPresent(), is(false));
+        assertFalse(optional.isPresent());
     }
 
     @Test
-    public void should_get_null_with_expired_jwt() throws Exception {
+    public void should_get_null_with_expired_jwt() {
         String token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhaXNlbnNpeSIsImV4cCI6MTUwMjE2MTIwNH0.SJB-U60WzxLYNomqLo4G3v3LzFxJKuVrIud8D8Lz3-mgpo9pN1i7C8ikU_jQPJGm8HsC1CquGMI-rSuM7j6LDA";
-        assertThat(jwtService.getSubFromToken(token).isPresent(), is(false));
+        assertFalse(jwtService.getSubFromToken(token).isPresent());
     }
 }

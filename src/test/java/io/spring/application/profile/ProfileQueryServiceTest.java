@@ -14,8 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @MybatisTest
@@ -27,12 +26,12 @@ public class ProfileQueryServiceTest {
     private UserRepository userRepository;
 
     @Test
-    public void should_fetch_profile_success() throws Exception {
+    public void should_fetch_profile_success() {
         User currentUser = new User("a@test.com", "a", "123", "", "");
         User profileUser = new User("p@test.com", "p", "123", "", "");
         userRepository.save(profileUser);
 
         Optional<ProfileData> optional = profileQueryService.findByUsername(profileUser.getUsername(), currentUser);
-        assertThat(optional.isPresent(), is(true));
+        assertTrue(optional.isPresent());
     }
 }

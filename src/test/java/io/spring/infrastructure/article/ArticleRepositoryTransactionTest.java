@@ -12,8 +12,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertFalse;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -30,7 +29,7 @@ public class ArticleRepositoryTransactionTest {
 
 
     @Test
-    public void transactional_test() throws Exception {
+    public void transactional_test() {
         User user = new User("aisensiy@gmail.com", "aisensiy", "123", "bio", "default");
         userRepository.save(user);
         Article article = new Article("test", "desc", "body", new String[]{"java", "spring"}, user.getId());
@@ -39,7 +38,7 @@ public class ArticleRepositoryTransactionTest {
         try {
             articleRepository.save(anotherArticle);
         } catch (Exception e) {
-            assertThat(articleMapper.findTag("other"), is(false));
+            assertFalse(articleMapper.findTag("other"));
         }
     }
 

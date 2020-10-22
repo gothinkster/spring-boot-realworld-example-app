@@ -17,9 +17,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 @MybatisTest
 @RunWith(SpringRunner.class)
@@ -35,24 +36,24 @@ public class MyBatisArticleRepositoryTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         User user = new User("aisensiy@gmail.com", "aisensiy", "123", "bio", "default");
         userRepository.save(user);
         article = new Article("test", "desc", "body", new String[]{"java", "spring"}, user.getId());
     }
 
     @Test
-    public void should_create_and_fetch_article_success() throws Exception {
+    public void should_create_and_fetch_article_success() {
         articleRepository.save(article);
         Optional<Article> optional = articleRepository.findById(article.getId());
-        assertThat(optional.isPresent(), is(true));
-        assertThat(optional.get(), is(article));
-        assertThat(optional.get().getTags().contains(new Tag("java")), is(true));
-        assertThat(optional.get().getTags().contains(new Tag("spring")), is(true));
+        assertTrue(optional.isPresent());
+        assertEquals(optional.get(), article);
+        assertTrue(optional.get().getTags().contains(new Tag("java")));
+        assertTrue(optional.get().getTags().contains(new Tag("spring")));
     }
 
     @Test
-    public void should_update_and_fetch_article_success() throws Exception {
+    public void should_update_and_fetch_article_success() {
         articleRepository.save(article);
 
         String newTitle = "new test 2";
@@ -60,17 +61,17 @@ public class MyBatisArticleRepositoryTest {
         articleRepository.save(article);
         System.out.println(article.getSlug());
         Optional<Article> optional = articleRepository.findBySlug(article.getSlug());
-        assertThat(optional.isPresent(), is(true));
+        assertTrue(optional.isPresent());
         Article fetched = optional.get();
-        assertThat(fetched.getTitle(), is(newTitle));
-        assertThat(fetched.getBody(), not(""));
+        assertEquals(fetched.getTitle(), newTitle);
+        assertNotEquals(fetched.getBody(), "");
     }
 
     @Test
-    public void should_delete_article() throws Exception {
+    public void should_delete_article() {
         articleRepository.save(article);
 
         articleRepository.remove(article);
-        assertThat(articleRepository.findById(article.getId()).isPresent(), is(false));
+        assertFalse(articleRepository.findById(article.getId()).isPresent());
     }
 }
