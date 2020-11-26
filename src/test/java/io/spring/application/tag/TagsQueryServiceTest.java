@@ -11,8 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @MybatisTest
@@ -25,8 +24,8 @@ public class TagsQueryServiceTest {
     private ArticleRepository articleRepository;
 
     @Test
-    public void should_get_all_tags() throws Exception {
+    public void should_get_all_tags() {
         articleRepository.save(new Article("test", "test", "test", new String[]{"java"}, "123"));
-        assertThat(tagsQueryService.allTags().contains("java"), is(true));
+        assertTrue(tagsQueryService.allTags().contains("java"));
     }
 }

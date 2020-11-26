@@ -10,9 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringRunner.class)
 @MybatisTest
@@ -25,17 +24,17 @@ public class MyBatisArticleFavoriteRepositoryTest {
     private io.spring.infrastructure.mybatis.mapper.ArticleFavoriteMapper articleFavoriteMapper;
 
     @Test
-    public void should_save_and_fetch_articleFavorite_success() throws Exception {
+    public void should_save_and_fetch_articleFavorite_success() {
         ArticleFavorite articleFavorite = new ArticleFavorite("123", "456");
         articleFavoriteRepository.save(articleFavorite);
-        assertThat(articleFavoriteMapper.find(articleFavorite.getArticleId(), articleFavorite.getUserId()), notNullValue());
+        assertNotNull(articleFavoriteMapper.find(articleFavorite.getArticleId(), articleFavorite.getUserId()));
     }
 
     @Test
-    public void should_remove_favorite_success() throws Exception {
+    public void should_remove_favorite_success() {
         ArticleFavorite articleFavorite = new ArticleFavorite("123", "456");
         articleFavoriteRepository.save(articleFavorite);
         articleFavoriteRepository.remove(articleFavorite);
-        assertThat(articleFavoriteRepository.find("123", "456").isPresent(), is(false));
+        assertFalse(articleFavoriteRepository.find("123", "456").isPresent());
     }
 }
