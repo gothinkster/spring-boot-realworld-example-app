@@ -23,8 +23,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.List;
 import java.util.Optional;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @SuppressWarnings("deprecation")
 @MybatisTest
@@ -62,9 +62,9 @@ public class CommentQueryServiceTest {
         commentRepository.save(comment);
 
         Optional<CommentData> optional = commentQueryService.findById(comment.getId(), user);
-        assertThat(optional.isPresent(), is(true));
+        assertTrue(optional.isPresent());
         CommentData commentData = optional.get();
-        assertThat(commentData.getProfileData().getUsername(), is(user.getUsername()));
+        assertEquals(commentData.getProfileData().getUsername(), user.getUsername());
     }
 
     @Test
@@ -82,7 +82,7 @@ public class CommentQueryServiceTest {
         commentRepository.save(comment2);
 
         List<CommentData> comments = commentQueryService.findByArticleId(article.getId(), user);
-        assertThat(comments.size(), is(2));
+        assertEquals(comments.size(), 2);
 
     }
 }

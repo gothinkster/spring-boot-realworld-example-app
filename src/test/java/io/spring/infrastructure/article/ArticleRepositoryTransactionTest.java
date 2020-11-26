@@ -12,8 +12,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -39,7 +38,7 @@ public class ArticleRepositoryTransactionTest {
         try {
             articleRepository.save(anotherArticle);
         } catch (Exception e) {
-            assertThat(articleMapper.findTag("other"), is(false));
+            assertNull(articleMapper.findTag("other"));
         }
     }
 

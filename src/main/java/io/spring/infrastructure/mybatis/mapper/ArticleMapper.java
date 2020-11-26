@@ -11,7 +11,7 @@ public interface ArticleMapper {
 
     Article findById(@Param("id") String id);
 
-    boolean findTag(@Param("tagName") String tagName);
+    Tag findTag(@Param("tagName") String tagName);
 
     void insertTag(@Param("tag") Tag tag);
 

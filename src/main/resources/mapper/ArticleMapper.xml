@@ -54,9 +54,10 @@
         where A.id = #{id}
     </select>
 
-    <select id="findTag" resultType="java.lang.Boolean">
-        select count(*) from tags where name = #{tagName}
+    <select id="findTag" resultType="io.spring.core.article.Tag">
+        select id, name from tags where name = #{tagName}
     </select>
+
     <select id="findBySlug" resultMap="article">
         <include refid="selectArticle"/>
         where A.slug = #{slug}

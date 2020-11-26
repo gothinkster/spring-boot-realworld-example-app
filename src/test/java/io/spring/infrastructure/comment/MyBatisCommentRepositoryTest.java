@@ -12,8 +12,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @MybatisTest
 @RunWith(SpringRunner.class)
@@ -28,7 +28,7 @@ public class MyBatisCommentRepositoryTest {
         commentRepository.save(comment);
 
         Optional<Comment> optional = commentRepository.findById("456", comment.getId());
-        assertThat(optional.isPresent(), is(true));
-        assertThat(optional.get(), is(comment));
+        assertTrue(optional.isPresent());
+        assertEquals(optional.get(), comment);
     }
 }
