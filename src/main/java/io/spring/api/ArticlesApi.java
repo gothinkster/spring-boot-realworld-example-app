@@ -44,6 +44,11 @@ public class ArticlesApi {
             throw new InvalidRequestException(bindingResult);
         }
 
+        if (articleQueryService.findBySlug(Article.toSlug(newArticleParam.getTitle()), null).isPresent()) {
+            bindingResult.rejectValue("title", "DUPLICATED", "article name exists");
+            throw new InvalidRequestException(bindingResult);
+        }
+
         Article article = new Article(
             newArticleParam.getTitle(),
             newArticleParam.getDescription(),
