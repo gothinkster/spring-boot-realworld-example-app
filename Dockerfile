@@ -12,7 +12,7 @@ ENV GRADLE_USER_HOME /home/gradle/project
 
 COPY . /home/gradle/project
 
-RUN gradle build
+RUN ./gradlew build
 
 
 FROM java:jre-alpine
