@@ -60,6 +60,10 @@ The repository contains a lot of test cases to cover both api test and repositor
 
     ./gradlew test
 
+# Use git pre-commit hook
+
+Follow the instruction from [google-java-format-git-pre-commit-hook](https://github.com/a1exsh/google-java-format-git-pre-commit-hook) to use a `pre-commit` hook to make the code format style stable from different contributors.
+
 # Help
 
 Please fork and PR to improve the code.
