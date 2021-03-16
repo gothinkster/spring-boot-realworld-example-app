@@ -10,7 +10,9 @@ import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.spring.JacksonCustomizations;
 import io.spring.api.security.WebSecurityConfig;
 import io.spring.application.UserQueryService;
+import io.spring.application.user.UserService;
 import io.spring.core.user.User;
+import io.spring.infrastructure.service.NaiveEncryptService;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -28,7 +30,8 @@ import org.springframework.test.web.servlet.MockMvc;
   WebSecurityConfig.class,
   JacksonCustomizations.class,
   UserService.class,
-  ValidationAutoConfiguration.class
+  ValidationAutoConfiguration.class,
+  NaiveEncryptService.class
 })
 public class CurrentUserApiTest extends TestWithCurrentUser {
 

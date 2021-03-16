@@ -1,25 +1,13 @@
 package io.spring.api;
 
-import com.fasterxml.jackson.annotation.JsonRootName;
 import io.spring.application.ArticleQueryService;
 import io.spring.application.Page;
+import io.spring.application.article.ArticleCommandService;
+import io.spring.application.article.NewArticleParam;
 import io.spring.core.article.Article;
-import io.spring.core.article.ArticleRepository;
 import io.spring.core.user.User;
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.util.HashMap;
-import javax.validation.Constraint;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-import javax.validation.Payload;
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -33,26 +21,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = "/articles")
 public class ArticlesApi {
-  private ArticleRepository articleRepository;
+  private ArticleCommandService articleCommandService;
   private ArticleQueryService articleQueryService;
 
   @Autowired
-  public ArticlesApi(ArticleRepository articleRepository, ArticleQueryService articleQueryService) {
-    this.articleRepository = articleRepository;
+  public ArticlesApi(
+      ArticleCommandService articleCommandService, ArticleQueryService articleQueryService) {
+    this.articleCommandService = articleCommandService;
     this.articleQueryService = articleQueryService;
   }
 
   @PostMapping
   public ResponseEntity createArticle(
       @Valid @RequestBody NewArticleParam newArticleParam, @AuthenticationPrincipal User user) {
-    Article article =
-        new Article(
-            newArticleParam.getTitle(),
-            newArticleParam.getDescription(),
-            newArticleParam.getBody(),
-            newArticleParam.getTagList(),
-            user.getId());
-    articleRepository.save(article);
+    Article article = articleCommandService.createArticle(newArticleParam, user);
     return ResponseEntity.ok(
         new HashMap<String, Object>() {
           {
@@ -80,45 +62,5 @@ public class ArticlesApi {
     return ResponseEntity.ok(
         articleQueryService.findRecentArticles(
             tag, author, favoritedBy, new Page(offset, limit), user));
-  }
-}
-
-@Getter
-@JsonRootName("article")
-@NoArgsConstructor
-class NewArticleParam {
-  @NotBlank(message = "can't be empty")
-  @DuplicatedArticleConstraint
-  private String title;
-
-  @NotBlank(message = "can't be empty")
-  private String description;
-
-  @NotBlank(message = "can't be empty")
-  private String body;
-
-  private String[] tagList;
-}
-
-@Documented
-@Constraint(validatedBy = DuplicatedArticleValidator.class)
-@Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE_USE})
-@Retention(RetentionPolicy.RUNTIME)
-@interface DuplicatedArticleConstraint {
-  String message() default "article name exists";
-
-  Class<?>[] groups() default {};
-
-  Class<? extends Payload>[] payload() default {};
-}
-
-class DuplicatedArticleValidator
-    implements ConstraintValidator<DuplicatedArticleConstraint, String> {
-
-  @Autowired private ArticleQueryService articleQueryService;
-
-  @Override
-  public boolean isValid(String value, ConstraintValidatorContext context) {
-    return !articleQueryService.findBySlug(Article.toSlug(value), null).isPresent();
   }
 }

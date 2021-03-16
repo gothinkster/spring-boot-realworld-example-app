@@ -6,6 +6,7 @@
         C.id commentId,
         C.body commentBody,
         C.created_at commentCreatedAt,
+        C.article_id commentArticleId,
         <include refid="io.spring.infrastructure.mybatis.readservice.ArticleReadService.profileColumns"/>
         from comments C
         left join users U

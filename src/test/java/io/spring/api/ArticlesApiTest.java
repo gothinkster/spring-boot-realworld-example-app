@@ -1,6 +1,7 @@
 package io.spring.api;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
+import static java.util.Arrays.asList;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -11,12 +12,12 @@ import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.spring.JacksonCustomizations;
 import io.spring.api.security.WebSecurityConfig;
 import io.spring.application.ArticleQueryService;
+import io.spring.application.article.ArticleCommandService;
 import io.spring.application.data.ArticleData;
 import io.spring.application.data.ProfileData;
 import io.spring.core.article.Article;
-import io.spring.core.article.ArticleRepository;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.joda.time.DateTime;
@@ -33,9 +34,9 @@ import org.springframework.test.web.servlet.MockMvc;
 public class ArticlesApiTest extends TestWithCurrentUser {
   @Autowired private MockMvc mvc;
 
-  @MockBean private ArticleRepository articleRepository;
-
   @MockBean private ArticleQueryService articleQueryService;
+
+  @MockBean private ArticleCommandService articleCommandService;
 
   @Override
   @Before
@@ -50,7 +51,7 @@ public class ArticlesApiTest extends TestWithCurrentUser {
     String slug = "how-to-train-your-dragon";
     String description = "Ever wonder how?";
     String body = "You have to believe";
-    String[] tagList = {"reactjs", "angularjs", "dragons"};
+    List<String> tagList = asList("reactjs", "angularjs", "dragons");
     Map<String, Object> param = prepareParam(title, description, body, tagList);
 
     ArticleData articleData =
@@ -64,8 +65,11 @@ public class ArticlesApiTest extends TestWithCurrentUser {
             0,
             new DateTime(),
             new DateTime(),
-            Arrays.asList(tagList),
+            tagList,
             new ProfileData("userid", user.getUsername(), user.getBio(), user.getImage(), false));
+
+    when(articleCommandService.createArticle(any(), any()))
+        .thenReturn(new Article(title, description, body, tagList, user.getId()));
 
     when(articleQueryService.findBySlug(eq(Article.toSlug(title)), any()))
         .thenReturn(Optional.empty());
@@ -87,7 +91,7 @@ public class ArticlesApiTest extends TestWithCurrentUser {
         .body("article.author.username", equalTo(user.getUsername()))
         .body("article.author.id", equalTo(null));
 
-    verify(articleRepository).save(any());
+    verify(articleCommandService).createArticle(any(), any());
   }
 
   @Test
@@ -96,7 +100,7 @@ public class ArticlesApiTest extends TestWithCurrentUser {
     String description = "Ever wonder how?";
     String body = "";
     String[] tagList = {"reactjs", "angularjs", "dragons"};
-    Map<String, Object> param = prepareParam(title, description, body, tagList);
+    Map<String, Object> param = prepareParam(title, description, body, asList(tagList));
 
     given()
         .contentType("application/json")
@@ -117,7 +121,7 @@ public class ArticlesApiTest extends TestWithCurrentUser {
     String description = "Ever wonder how?";
     String body = "You have to believe";
     String[] tagList = {"reactjs", "angularjs", "dragons"};
-    Map<String, Object> param = prepareParam(title, description, body, tagList);
+    Map<String, Object> param = prepareParam(title, description, body, asList(tagList));
 
     ArticleData articleData =
         new ArticleData(
@@ -130,7 +134,7 @@ public class ArticlesApiTest extends TestWithCurrentUser {
             0,
             new DateTime(),
             new DateTime(),
-            Arrays.asList(tagList),
+            asList(tagList),
             new ProfileData("userid", user.getUsername(), user.getBio(), user.getImage(), false));
 
     when(articleQueryService.findBySlug(eq(Article.toSlug(title)), any()))
@@ -150,7 +154,7 @@ public class ArticlesApiTest extends TestWithCurrentUser {
   }
 
   private HashMap<String, Object> prepareParam(
-      final String title, final String description, final String body, final String[] tagList) {
+      final String title, final String description, final String body, final List<String> tagList) {
     return new HashMap<String, Object>() {
       {
         put(

@@ -51,7 +51,8 @@ public class CommentsApi {
       @PathVariable("slug") String slug,
       @AuthenticationPrincipal User user,
       @Valid @RequestBody NewCommentParam newCommentParam) {
-    Article article = findArticle(slug);
+    Article article =
+        articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
     Comment comment = new Comment(newCommentParam.getBody(), user.getId(), article.getId());
     commentRepository.save(comment);
     return ResponseEntity.status(201)
@@ -61,7 +62,8 @@ public class CommentsApi {
   @GetMapping
   public ResponseEntity getComments(
       @PathVariable("slug") String slug, @AuthenticationPrincipal User user) {
-    Article article = findArticle(slug);
+    Article article =
+        articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
     List<CommentData> comments = commentQueryService.findByArticleId(article.getId(), user);
     return ResponseEntity.ok(
         new HashMap<String, Object>() {
@@ -76,7 +78,8 @@ public class CommentsApi {
       @PathVariable("slug") String slug,
       @PathVariable("id") String commentId,
       @AuthenticationPrincipal User user) {
-    Article article = findArticle(slug);
+    Article article =
+        articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
     return commentRepository
         .findById(article.getId(), commentId)
         .map(
@@ -87,13 +90,6 @@ public class CommentsApi {
               commentRepository.remove(comment);
               return ResponseEntity.noContent().build();
             })
-        .orElseThrow(ResourceNotFoundException::new);
-  }
-
-  private Article findArticle(String slug) {
-    return articleRepository
-        .findBySlug(slug)
-        .map(article -> article)
         .orElseThrow(ResourceNotFoundException::new);
   }
 

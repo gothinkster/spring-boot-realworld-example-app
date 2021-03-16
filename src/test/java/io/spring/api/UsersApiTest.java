@@ -12,6 +12,7 @@ import io.spring.JacksonCustomizations;
 import io.spring.api.security.WebSecurityConfig;
 import io.spring.application.UserQueryService;
 import io.spring.application.data.UserData;
+import io.spring.application.user.UserService;
 import io.spring.core.service.JwtService;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
@@ -46,6 +47,9 @@ public class UsersApiTest {
   @MockBean private JwtService jwtService;
 
   @MockBean private UserReadService userReadService;
+
+  @MockBean private UserService userService;
+
   private String defaultAvatar;
 
   @Before
@@ -63,6 +67,8 @@ public class UsersApiTest {
     User user = new User(email, username, "123", "", defaultAvatar);
     UserData userData = new UserData(user.getId(), email, username, "", defaultAvatar);
     when(userReadService.findById(any())).thenReturn(userData);
+
+    when(userService.createUser(any())).thenReturn(user);
 
     when(userRepository.findByUsername(eq(username))).thenReturn(Optional.empty());
     when(userRepository.findByEmail(eq(email))).thenReturn(Optional.empty());
@@ -82,7 +88,7 @@ public class UsersApiTest {
         .body("user.image", equalTo(defaultAvatar))
         .body("user.token", equalTo("123"));
 
-    verify(userRepository).save(any());
+    verify(userService).createUser(any());
   }
 
   @Test
