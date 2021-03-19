@@ -17,10 +17,12 @@ import io.spring.application.data.CommentData;
 import io.spring.core.user.User;
 import io.spring.graphql.DgsConstants.ARTICLE;
 import io.spring.graphql.DgsConstants.COMMENTPAYLOAD;
+import io.spring.graphql.types.Article;
 import io.spring.graphql.types.Comment;
 import io.spring.graphql.types.CommentEdge;
 import io.spring.graphql.types.CommentsConnection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.joda.time.format.ISODateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +64,9 @@ public class CommentDatafetcher {
     }
 
     User current = SecurityUtil.getCurrentUser().orElse(null);
-    ArticleData articleData = dfe.getLocalContext();
+    Article article = dfe.getSource();
+    Map<String, ArticleData> map = dfe.getLocalContext();
+    ArticleData articleData = map.get(article.getSlug());
 
     CursorPager<CommentData> comments;
     if (first != null) {
