@@ -24,6 +24,17 @@
         left join tags T on T.id = AT.tag_id
         left join users U on U.id = A.user_id
     </sql>
+    <sql id="selectArticleIds">
+        select
+        DISTINCT(A.id) articleId, A.created_at
+        from
+        articles A
+        left join article_tags AT on A.id = AT.article_id
+        left join tags T on T.id = AT.tag_id
+        left join article_favorites AF on AF.article_id = A.id
+        left join users AU on AU.id = A.user_id
+        left join users AFU on AFU.id = AF.user_id
+    </sql>
 
     <select id="findById" resultMap="transfer.data.articleData">
         <include refid="selectArticleData"/>
@@ -34,15 +45,7 @@
         where A.slug = #{slug}
     </select>
     <select id="queryArticles" resultMap="articleId">
-        select
-        DISTINCT(A.id) articleId, A.created_at
-        from
-        articles A
-        left join article_tags AT on A.id = AT.article_id
-        left join tags T on T.id = AT.tag_id
-        left join article_favorites AF on AF.article_id = A.id
-        left join users AU on AU.id = A.user_id
-        left join users AFU on AFU.id = AF.user_id
+        <include refid="selectArticleIds" />
         <where>
             <if test="tag != null">
                 T.name = #{tag}
@@ -100,6 +103,55 @@
         <foreach collection="authors" item="id" open="(" close=")" separator=",">
             #{id}
         </foreach>
+    </select>
+    <select id="findArticlesWithCursor" resultType="java.lang.String">
+        <include refid="selectArticleIds" />
+        <where>
+            <if test="tag != null">
+                T.name = #{tag}
+            </if>
+            <if test="author != null">
+                AND AU.username = #{author}
+            </if>
+            <if test="favoritedBy != null">
+                AND AFU.username = #{favoritedBy}
+            </if>
+            <if test='page.cursor != "" and page.direction.name() == "NEXT"'>
+                AND A.created_at &lt; #{page.cursor}
+            </if>
+            <if test='page.cursor != "" and page.direction.name() == "PREV"'>
+                AND A.created_at > #{page.cursor}
+            </if>
+        </where>
+        <if test='page.direction.name() == "NEXT"'>
+            order by A.created_at desc
+        </if>
+        <if test='page.direction.name() == "PREV"'>
+            order by A.created_at asc
+        </if>
+        limit #{page.queryLimit}
+    </select>
+    <select id="findArticlesOfAuthorsWithCursor" resultMap="transfer.data.articleData">
+        <include refid="selectArticleData"/>
+        <where>
+        A.user_id in
+        <foreach index="index" collection="authors" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        <if test='page.cursor != "" and page.direction.name() == "NEXT"'>
+            AND A.created_at &lt; #{page.cursor}
+        </if>
+        <if test='page.cursor != "" and page.direction.name() == "PREV"'>
+            AND A.created_at > #{page.cursor}
+        </if>
+        <if test='page.direction.name() == "NEXT"'>
+            order by A.created_at desc
+        </if>
+        <if test='page.direction.name() == "PREV"'>
+            order by A.created_at asc
+        </if>
+        </where>
+        limit #{page.queryLimit}
     </select>
 
     <resultMap id="articleId" type="string">

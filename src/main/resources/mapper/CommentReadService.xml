@@ -21,4 +21,22 @@
         <include refid="selectCommentData"/>
         where C.article_id = #{articleId}
     </select>
+    <select id="findByArticleIdWithCursor" resultMap="transfer.data.commentData">
+        <include refid="selectCommentData"/>
+        <where>
+        C.article_id = #{articleId}
+        <if test='page.cursor != "" and page.direction.name() == "NEXT"'>
+            AND C.created_at &lt; #{page.cursor}
+        </if>
+        <if test='page.cursor != "" and page.direction.name() == "PREV"'>
+            AND C.created_at > #{page.cursor}
+        </if>
+        </where>
+        <if test='page.direction.name() == "NEXT"'>
+            order by C.created_at desc
+        </if>
+        <if test='page.direction.name() == "PREV"'>
+            order by C.created_at asc
+        </if>
+    </select>
 </mapper>

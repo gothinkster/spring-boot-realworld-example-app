@@ -10,22 +10,18 @@ import io.spring.core.article.ArticleRepository;
 import io.spring.core.article.Tag;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
+import io.spring.infrastructure.DbTestBase;
 import io.spring.infrastructure.repository.MyBatisArticleRepository;
 import io.spring.infrastructure.repository.MyBatisUserRepository;
 import java.util.Arrays;
 import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit4.SpringRunner;
 
-@MybatisTest
-@RunWith(SpringRunner.class)
 @Import({MyBatisArticleRepository.class, MyBatisUserRepository.class})
-public class MyBatisArticleRepositoryTest {
+public class MyBatisArticleRepositoryTest extends DbTestBase {
   @Autowired private ArticleRepository articleRepository;
 
   @Autowired private UserRepository userRepository;

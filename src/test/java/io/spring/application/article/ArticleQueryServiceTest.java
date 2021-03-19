@@ -6,6 +6,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import io.spring.application.ArticleQueryService;
+import io.spring.application.CursorPageParameter;
+import io.spring.application.CursorPager;
+import io.spring.application.CursorPager.Direction;
 import io.spring.application.Page;
 import io.spring.application.data.ArticleData;
 import io.spring.application.data.ArticleDataList;
@@ -16,6 +19,7 @@ import io.spring.core.favorite.ArticleFavoriteRepository;
 import io.spring.core.user.FollowRelation;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
+import io.spring.infrastructure.DbTestBase;
 import io.spring.infrastructure.repository.MyBatisArticleFavoriteRepository;
 import io.spring.infrastructure.repository.MyBatisArticleRepository;
 import io.spring.infrastructure.repository.MyBatisUserRepository;
@@ -24,21 +28,16 @@ import java.util.Optional;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
-@MybatisTest
 @Import({
   ArticleQueryService.class,
   MyBatisUserRepository.class,
   MyBatisArticleRepository.class,
   MyBatisArticleFavoriteRepository.class
 })
-public class ArticleQueryServiceTest {
+public class ArticleQueryServiceTest extends DbTestBase {
   @Autowired private ArticleQueryService queryService;
 
   @Autowired private ArticleRepository articleRepository;
@@ -109,6 +108,40 @@ public class ArticleQueryServiceTest {
         queryService.findRecentArticles(null, null, null, new Page(2, 10), user);
     assertEquals(nodata.getCount(), 2);
     assertEquals(nodata.getArticleDatas().size(), 0);
+  }
+
+  @Test
+  public void should_get_default_article_list_by_cursor() {
+    Article anotherArticle =
+        new Article(
+            "new article",
+            "desc",
+            "body",
+            Arrays.asList("test"),
+            user.getId(),
+            new DateTime().minusHours(1));
+    articleRepository.save(anotherArticle);
+
+    CursorPager<ArticleData> recentArticles =
+        queryService.findRecentArticlesWithCursor(
+            null, null, null, new CursorPageParameter("", 20, Direction.NEXT), user);
+    assertEquals(recentArticles.getData().size(), 2);
+    assertEquals(recentArticles.getData().get(0).getId(), article.getId());
+
+    CursorPager<ArticleData> nodata =
+        queryService.findRecentArticlesWithCursor(
+            null,
+            null,
+            null,
+            new CursorPageParameter(recentArticles.getEndCursor(), 20, Direction.NEXT),
+            user);
+    assertEquals(nodata.getData().size(), 0);
+    assertEquals(nodata.getStartCursor(), "");
+
+    CursorPager<ArticleData> prevArticles =
+        queryService.findRecentArticlesWithCursor(
+            null, null, null, new CursorPageParameter("", 20, Direction.PREV), user);
+    assertEquals(prevArticles.getData().size(), 2);
   }
 
   @Test
