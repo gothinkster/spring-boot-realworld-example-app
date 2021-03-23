@@ -6,13 +6,13 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class CursorPageParameter {
+public class CursorPageParameter<T> {
   private static final int MAX_LIMIT = 1000;
   private int limit = 20;
-  private String cursor;
+  private T cursor;
   private Direction direction;
 
-  public CursorPageParameter(String cursor, int limit, Direction direction) {
+  public CursorPageParameter(T cursor, int limit, Direction direction) {
     setLimit(limit);
     setCursor(cursor);
     setDirection(direction);
@@ -26,12 +26,8 @@ public class CursorPageParameter {
     return limit + 1;
   }
 
-  private void setCursor(String cursor) {
-    if (cursor == null) {
-      this.cursor = "";
-    } else {
-      this.cursor = cursor;
-    }
+  private void setCursor(T cursor) {
+    this.cursor = cursor;
   }
 
   private void setLimit(int limit) {

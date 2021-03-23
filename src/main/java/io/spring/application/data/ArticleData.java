@@ -1,6 +1,7 @@
 package io.spring.application.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.spring.application.DateTimeCursor;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,7 +27,7 @@ public class ArticleData implements io.spring.application.Node {
   private ProfileData profileData;
 
   @Override
-  public String getCursor() {
-    return String.valueOf(getUpdatedAt().getMillis());
+  public DateTimeCursor getCursor() {
+    return new DateTimeCursor(updatedAt);
   }
 }

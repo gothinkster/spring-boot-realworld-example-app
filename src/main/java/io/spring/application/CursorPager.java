@@ -29,12 +29,12 @@ public class CursorPager<T extends Node> {
     return previous;
   }
 
-  public String getStartCursor() {
-    return data.isEmpty() ? "" : data.get(0).getCursor();
+  public PageCursor getStartCursor() {
+    return data.isEmpty() ? null : data.get(0).getCursor();
   }
 
-  public String getEndCursor() {
-    return data.isEmpty() ? "" : data.get(data.size() - 1).getCursor();
+  public PageCursor getEndCursor() {
+    return data.isEmpty() ? null : data.get(data.size() - 1).getCursor();
   }
 
   public enum Direction {

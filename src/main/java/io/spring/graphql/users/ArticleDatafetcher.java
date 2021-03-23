@@ -8,12 +8,12 @@ import graphql.execution.DataFetcherResult;
 import graphql.relay.DefaultConnectionCursor;
 import graphql.relay.DefaultPageInfo;
 import graphql.schema.DataFetchingEnvironment;
-import io.spring.Util;
 import io.spring.api.exception.ResourceNotFoundException;
 import io.spring.application.ArticleQueryService;
 import io.spring.application.CursorPageParameter;
 import io.spring.application.CursorPager;
 import io.spring.application.CursorPager.Direction;
+import io.spring.application.DateTimeCursor;
 import io.spring.application.data.ArticleData;
 import io.spring.application.data.CommentData;
 import io.spring.core.user.User;
@@ -62,11 +62,13 @@ public class ArticleDatafetcher {
     if (first != null) {
       articles =
           articleQueryService.findUserFeedWithCursor(
-              current, new CursorPageParameter(after, first, Direction.NEXT));
+              current,
+              new CursorPageParameter<>(DateTimeCursor.parse(after), first, Direction.NEXT));
     } else {
       articles =
           articleQueryService.findUserFeedWithCursor(
-              current, new CursorPageParameter(before, last, Direction.PREV));
+              current,
+              new CursorPageParameter<>(DateTimeCursor.parse(before), last, Direction.PREV));
     }
     graphql.relay.PageInfo pageInfo = buildArticlePageInfo(articles);
     ArticlesConnection articlesConnection =
@@ -77,7 +79,7 @@ public class ArticleDatafetcher {
                     .map(
                         a ->
                             ArticleEdge.newBuilder()
-                                .cursor(a.getCursor())
+                                .cursor(a.getCursor().toString())
                                 .node(buildArticleResult(a))
                                 .build())
                     .collect(Collectors.toList()))
@@ -110,11 +112,13 @@ public class ArticleDatafetcher {
     if (first != null) {
       articles =
           articleQueryService.findUserFeedWithCursor(
-              target, new CursorPageParameter(after, first, Direction.NEXT));
+              target,
+              new CursorPageParameter<>(DateTimeCursor.parse(after), first, Direction.NEXT));
     } else {
       articles =
           articleQueryService.findUserFeedWithCursor(
-              target, new CursorPageParameter(before, last, Direction.PREV));
+              target,
+              new CursorPageParameter<>(DateTimeCursor.parse(before), last, Direction.PREV));
     }
     graphql.relay.PageInfo pageInfo = buildArticlePageInfo(articles);
     ArticlesConnection articlesConnection =
@@ -125,7 +129,7 @@ public class ArticleDatafetcher {
                     .map(
                         a ->
                             ArticleEdge.newBuilder()
-                                .cursor(a.getCursor())
+                                .cursor(a.getCursor().toString())
                                 .node(buildArticleResult(a))
                                 .build())
                     .collect(Collectors.toList()))
@@ -158,7 +162,7 @@ public class ArticleDatafetcher {
               null,
               null,
               profile.getUsername(),
-              new CursorPageParameter(after, first, Direction.NEXT),
+              new CursorPageParameter<>(DateTimeCursor.parse(after), first, Direction.NEXT),
               current);
     } else {
       articles =
@@ -166,7 +170,7 @@ public class ArticleDatafetcher {
               null,
               null,
               profile.getUsername(),
-              new CursorPageParameter(before, last, Direction.PREV),
+              new CursorPageParameter<>(DateTimeCursor.parse(before), last, Direction.PREV),
               current);
     }
     graphql.relay.PageInfo pageInfo = buildArticlePageInfo(articles);
@@ -179,7 +183,7 @@ public class ArticleDatafetcher {
                     .map(
                         a ->
                             ArticleEdge.newBuilder()
-                                .cursor(a.getCursor())
+                                .cursor(a.getCursor().toString())
                                 .node(buildArticleResult(a))
                                 .build())
                     .collect(Collectors.toList()))
@@ -212,7 +216,7 @@ public class ArticleDatafetcher {
               null,
               profile.getUsername(),
               null,
-              new CursorPageParameter(after, first, Direction.NEXT),
+              new CursorPageParameter<>(DateTimeCursor.parse(after), first, Direction.NEXT),
               current);
     } else {
       articles =
@@ -220,7 +224,7 @@ public class ArticleDatafetcher {
               null,
               profile.getUsername(),
               null,
-              new CursorPageParameter(before, last, Direction.PREV),
+              new CursorPageParameter<>(DateTimeCursor.parse(before), last, Direction.PREV),
               current);
     }
     graphql.relay.PageInfo pageInfo = buildArticlePageInfo(articles);
@@ -232,7 +236,7 @@ public class ArticleDatafetcher {
                     .map(
                         a ->
                             ArticleEdge.newBuilder()
-                                .cursor(a.getCursor())
+                                .cursor(a.getCursor().toString())
                                 .node(buildArticleResult(a))
                                 .build())
                     .collect(Collectors.toList()))
@@ -267,7 +271,7 @@ public class ArticleDatafetcher {
               withTag,
               authoredBy,
               favoritedBy,
-              new CursorPageParameter(after, first, Direction.NEXT),
+              new CursorPageParameter<>(DateTimeCursor.parse(after), first, Direction.NEXT),
               current);
     } else {
       articles =
@@ -275,7 +279,7 @@ public class ArticleDatafetcher {
               withTag,
               authoredBy,
               favoritedBy,
-              new CursorPageParameter(before, last, Direction.PREV),
+              new CursorPageParameter<>(DateTimeCursor.parse(before), last, Direction.PREV),
               current);
     }
     graphql.relay.PageInfo pageInfo = buildArticlePageInfo(articles);
@@ -287,7 +291,7 @@ public class ArticleDatafetcher {
                     .map(
                         a ->
                             ArticleEdge.newBuilder()
-                                .cursor(a.getCursor())
+                                .cursor(a.getCursor().toString())
                                 .node(buildArticleResult(a))
                                 .build())
                     .collect(Collectors.toList()))
@@ -360,12 +364,12 @@ public class ArticleDatafetcher {
 
   private DefaultPageInfo buildArticlePageInfo(CursorPager<ArticleData> articles) {
     return new DefaultPageInfo(
-        Util.isEmpty(articles.getStartCursor())
+        articles.getStartCursor() == null
             ? null
-            : new DefaultConnectionCursor(articles.getStartCursor()),
-        Util.isEmpty(articles.getEndCursor())
+            : new DefaultConnectionCursor(articles.getStartCursor().toString()),
+        articles.getEndCursor() == null
             ? null
-            : new DefaultConnectionCursor(articles.getEndCursor()),
+            : new DefaultConnectionCursor(articles.getEndCursor().toString()),
         articles.hasPrevious(),
         articles.hasNext());
   }

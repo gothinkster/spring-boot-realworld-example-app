@@ -9,6 +9,7 @@ import io.spring.application.ArticleQueryService;
 import io.spring.application.CursorPageParameter;
 import io.spring.application.CursorPager;
 import io.spring.application.CursorPager.Direction;
+import io.spring.application.DateTimeCursor;
 import io.spring.application.Page;
 import io.spring.application.data.ArticleData;
 import io.spring.application.data.ArticleDataList;
@@ -124,7 +125,7 @@ public class ArticleQueryServiceTest extends DbTestBase {
 
     CursorPager<ArticleData> recentArticles =
         queryService.findRecentArticlesWithCursor(
-            null, null, null, new CursorPageParameter("", 20, Direction.NEXT), user);
+            null, null, null, new CursorPageParameter<>(null, 20, Direction.NEXT), user);
     assertEquals(recentArticles.getData().size(), 2);
     assertEquals(recentArticles.getData().get(0).getId(), article.getId());
 
@@ -133,14 +134,15 @@ public class ArticleQueryServiceTest extends DbTestBase {
             null,
             null,
             null,
-            new CursorPageParameter(recentArticles.getEndCursor(), 20, Direction.NEXT),
+            new CursorPageParameter<DateTime>(
+                DateTimeCursor.parse(recentArticles.getEndCursor().toString()), 20, Direction.NEXT),
             user);
     assertEquals(nodata.getData().size(), 0);
-    assertEquals(nodata.getStartCursor(), "");
+    assertEquals(nodata.getStartCursor(), null);
 
     CursorPager<ArticleData> prevArticles =
         queryService.findRecentArticlesWithCursor(
-            null, null, null, new CursorPageParameter("", 20, Direction.PREV), user);
+            null, null, null, new CursorPageParameter<>(null, 20, Direction.PREV), user);
     assertEquals(prevArticles.getData().size(), 2);
   }
 

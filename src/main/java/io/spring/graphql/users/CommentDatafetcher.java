@@ -7,11 +7,11 @@ import com.netflix.graphql.dgs.InputArgument;
 import graphql.execution.DataFetcherResult;
 import graphql.relay.DefaultConnectionCursor;
 import graphql.relay.DefaultPageInfo;
-import io.spring.Util;
 import io.spring.application.CommentQueryService;
 import io.spring.application.CursorPageParameter;
 import io.spring.application.CursorPager;
 import io.spring.application.CursorPager.Direction;
+import io.spring.application.DateTimeCursor;
 import io.spring.application.data.ArticleData;
 import io.spring.application.data.CommentData;
 import io.spring.core.user.User;
@@ -72,11 +72,15 @@ public class CommentDatafetcher {
     if (first != null) {
       comments =
           commentQueryService.findByArticleIdWithCursor(
-              articleData.getId(), current, new CursorPageParameter(after, first, Direction.NEXT));
+              articleData.getId(),
+              current,
+              new CursorPageParameter<>(DateTimeCursor.parse(after), first, Direction.NEXT));
     } else {
       comments =
           commentQueryService.findByArticleIdWithCursor(
-              articleData.getId(), current, new CursorPageParameter(before, last, Direction.PREV));
+              articleData.getId(),
+              current,
+              new CursorPageParameter<>(DateTimeCursor.parse(before), last, Direction.PREV));
     }
     graphql.relay.PageInfo pageInfo = buildCommentPageInfo(comments);
     CommentsConnection result =
@@ -87,7 +91,7 @@ public class CommentDatafetcher {
                     .map(
                         a ->
                             CommentEdge.newBuilder()
-                                .cursor(a.getCursor())
+                                .cursor(a.getCursor().toString())
                                 .node(buildCommentResult(a))
                                 .build())
                     .collect(Collectors.toList()))
@@ -101,12 +105,12 @@ public class CommentDatafetcher {
 
   private DefaultPageInfo buildCommentPageInfo(CursorPager<CommentData> comments) {
     return new DefaultPageInfo(
-        Util.isEmpty(comments.getStartCursor())
+        comments.getStartCursor() == null
             ? null
-            : new DefaultConnectionCursor(comments.getStartCursor()),
-        Util.isEmpty(comments.getEndCursor())
+            : new DefaultConnectionCursor(comments.getStartCursor().toString()),
+        comments.getEndCursor() == null
             ? null
-            : new DefaultConnectionCursor(comments.getEndCursor()),
+            : new DefaultConnectionCursor(comments.getEndCursor().toString()),
         comments.hasPrevious(),
         comments.hasNext());
   }

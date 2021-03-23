@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -60,7 +61,11 @@ public class ArticleQueryService {
   }
 
   public CursorPager<ArticleData> findRecentArticlesWithCursor(
-      String tag, String author, String favoritedBy, CursorPageParameter page, User currentUser) {
+      String tag,
+      String author,
+      String favoritedBy,
+      CursorPageParameter<DateTime> page,
+      User currentUser) {
     List<String> articleIds =
         articleReadService.findArticlesWithCursor(tag, author, favoritedBy, page);
     if (articleIds.size() == 0) {
@@ -81,7 +86,8 @@ public class ArticleQueryService {
     }
   }
 
-  public CursorPager<ArticleData> findUserFeedWithCursor(User user, CursorPageParameter page) {
+  public CursorPager<ArticleData> findUserFeedWithCursor(
+      User user, CursorPageParameter<DateTime> page) {
     List<String> followdUsers = userRelationshipQueryService.followedUsers(user.getId());
     if (followdUsers.size() == 0) {
       return new CursorPager<>(new ArrayList<>(), page.getDirection(), false);

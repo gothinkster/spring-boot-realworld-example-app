@@ -5,6 +5,7 @@ import io.spring.application.data.CommentData;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.joda.time.DateTime;
 
 @Mapper
 public interface CommentReadService {
@@ -13,5 +14,5 @@ public interface CommentReadService {
   List<CommentData> findByArticleId(@Param("articleId") String articleId);
 
   List<CommentData> findByArticleIdWithCursor(
-      @Param("articleId") String articleId, @Param("page") CursorPageParameter page);
+      @Param("articleId") String articleId, @Param("page") CursorPageParameter<DateTime> page);
 }

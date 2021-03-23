@@ -25,10 +25,10 @@
         <include refid="selectCommentData"/>
         <where>
         C.article_id = #{articleId}
-        <if test='page.cursor != "" and page.direction.name() == "NEXT"'>
+        <if test='page.cursor != null and page.direction.name() == "NEXT"'>
             AND C.created_at &lt; #{page.cursor}
         </if>
-        <if test='page.cursor != "" and page.direction.name() == "PREV"'>
+        <if test='page.cursor != null and page.direction.name() == "PREV"'>
             AND C.created_at > #{page.cursor}
         </if>
         </where>
