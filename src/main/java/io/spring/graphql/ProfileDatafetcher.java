@@ -1,4 +1,4 @@
-package io.spring.graphql.users;
+package io.spring.graphql;
 
 import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsData;
@@ -10,7 +10,6 @@ import io.spring.application.data.ArticleData;
 import io.spring.application.data.CommentData;
 import io.spring.application.data.ProfileData;
 import io.spring.core.user.User;
-import io.spring.graphql.DgsConstants;
 import io.spring.graphql.DgsConstants.ARTICLE;
 import io.spring.graphql.DgsConstants.COMMENT;
 import io.spring.graphql.DgsConstants.QUERY;

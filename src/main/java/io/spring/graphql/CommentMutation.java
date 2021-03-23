@@ -1,4 +1,4 @@
-package io.spring.graphql.users;
+package io.spring.graphql;
 
 import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsData;
@@ -14,8 +14,8 @@ import io.spring.core.comment.Comment;
 import io.spring.core.comment.CommentRepository;
 import io.spring.core.service.AuthorizationService;
 import io.spring.core.user.User;
-import io.spring.graphql.AuthenticationException;
 import io.spring.graphql.DgsConstants.MUTATION;
+import io.spring.graphql.exception.AuthenticationException;
 import io.spring.graphql.types.CommentPayload;
 import io.spring.graphql.types.DeletionStatus;
 import org.springframework.beans.factory.annotation.Autowired;

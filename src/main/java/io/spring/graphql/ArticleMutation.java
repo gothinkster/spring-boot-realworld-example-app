@@ -1,4 +1,4 @@
-package io.spring.graphql.users;
+package io.spring.graphql;
 
 import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsData;
@@ -15,8 +15,8 @@ import io.spring.core.favorite.ArticleFavorite;
 import io.spring.core.favorite.ArticleFavoriteRepository;
 import io.spring.core.service.AuthorizationService;
 import io.spring.core.user.User;
-import io.spring.graphql.AuthenticationException;
 import io.spring.graphql.DgsConstants.MUTATION;
+import io.spring.graphql.exception.AuthenticationException;
 import io.spring.graphql.types.ArticlePayload;
 import io.spring.graphql.types.CreateArticleInput;
 import io.spring.graphql.types.DeletionStatus;

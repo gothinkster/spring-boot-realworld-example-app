@@ -1,4 +1,4 @@
-package io.spring.graphql.users;
+package io.spring.graphql;
 
 import io.spring.core.user.User;
 import java.util.Optional;

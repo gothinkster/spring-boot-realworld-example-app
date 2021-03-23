@@ -1,4 +1,4 @@
-package io.spring.graphql.users;
+package io.spring.graphql;
 
 import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsData;
