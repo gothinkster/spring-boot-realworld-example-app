@@ -16,9 +16,11 @@ type Query {
     tags: [String]
 }
 
+union UserResult = UserPayload | Error
+
 type Mutation {
     ### User & Profile
-    createUser(input: CreateUserInput): UserPayload
+    createUser(input: CreateUserInput): UserResult
     login(password: String!, email: String!): UserPayload
     updateUser(changes: UpdateUserInput!): UserPayload
     followUser(username: String!): ProfilePayload
@@ -114,6 +116,17 @@ type User {
     profile: Profile!
     token: String!
     username: String!
+}
+
+### Error
+type Error {
+    message: String
+    errors: [ErrorItem!]
+}
+
+type ErrorItem {
+    key: String!
+    value: [String!]!
 }
 
 ## Mutations

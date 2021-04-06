@@ -13,14 +13,19 @@ import io.spring.core.user.EncryptService;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
 import io.spring.graphql.DgsConstants.MUTATION;
+import io.spring.graphql.exception.GraphQLCustomizeExceptionHandler;
 import io.spring.graphql.types.CreateUserInput;
 import io.spring.graphql.types.UpdateUserInput;
 import io.spring.graphql.types.UserPayload;
 import java.util.Optional;
+
+import io.spring.graphql.types.UserResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import javax.validation.ConstraintViolationException;
 
 @DgsComponent
 public class UserMutation {
@@ -38,12 +43,17 @@ public class UserMutation {
   }
 
   @DgsData(parentType = MUTATION.TYPE_NAME, field = MUTATION.CreateUser)
-  public DataFetcherResult<UserPayload> createUser(@InputArgument("input") CreateUserInput input) {
+  public DataFetcherResult<UserResult> createUser(@InputArgument("input") CreateUserInput input) {
     RegisterParam registerParam =
         new RegisterParam(input.getEmail(), input.getUsername(), input.getPassword());
-    User user = userService.createUser(registerParam);
+    User user;
+    try {
+      user = userService.createUser(registerParam);
+    } catch (ConstraintViolationException cve) {
+      return DataFetcherResult.<UserResult>newResult().data(GraphQLCustomizeExceptionHandler.getErrorsAsData(cve)).build();
+    }
 
-    return DataFetcherResult.<UserPayload>newResult()
+    return DataFetcherResult.<UserResult>newResult()
         .data(UserPayload.newBuilder().build())
         .localContext(user)
         .build();
