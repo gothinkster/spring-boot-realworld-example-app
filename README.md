@@ -8,6 +8,15 @@ This codebase was created to demonstrate a fully fledged fullstack application b
 
 For more information on how to this works with other frontends/backends, head over to the [RealWorld](https://github.com/gothinkster/realworld) repo.
 
+# GraphQL Support *NEW* 
+
+Following some DDD principle. The REST or GraphQL is just kind of adapter. And the domain layer will be consistent all the time. So this repository implement GraphQL and REST at the same time.
+
+The GraphQL is https://github.com/gothinkster/spring-boot-realworld-example-app/blob/master/src/main/resources/schema/schema.graphqls and the visualization looks like below.
+
+![](graphql-schema.png)
+
+And this implementation is using [dgs-framework](https://github.com/Netflix/dgs-framework) which is a quite new java graphql server framework.
 # How it works
 
 The application uses Spring boot (Web, Mybatis).
