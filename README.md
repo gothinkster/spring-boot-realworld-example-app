@@ -8,11 +8,11 @@ This codebase was created to demonstrate a fully fledged fullstack application b
 
 For more information on how to this works with other frontends/backends, head over to the [RealWorld](https://github.com/gothinkster/realworld) repo.
 
-# GraphQL Support *NEW* 
+# *NEW* GraphQL Support  
 
 Following some DDD principle. The REST or GraphQL is just kind of adapter. And the domain layer will be consistent all the time. So this repository implement GraphQL and REST at the same time.
 
-The GraphQL is https://github.com/gothinkster/spring-boot-realworld-example-app/blob/master/src/main/resources/schema/schema.graphqls and the visualization looks like below.
+The GraphQL schema is https://github.com/gothinkster/spring-boot-realworld-example-app/blob/master/src/main/resources/schema/schema.graphqls and the visualization looks like below.
 
 ![](graphql-schema.png)
 
@@ -40,7 +40,7 @@ The secret key is stored in `application.properties`.
 
 # Database
 
-It uses a H2 in memory database (for now), can be changed easily in the `application.properties` for any other database.
+It uses a ~~H2 in memory database~~ sqlite database (for easy local test without lost test data after every restart), can be changed easily in the `application.properties` for any other database.
 
 # Getting started
 
