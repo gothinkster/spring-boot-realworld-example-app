@@ -4,7 +4,7 @@
 
 > ### Spring boot + MyBatis codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the [RealWorld](https://github.com/gothinkster/realworld-example-apps) spec and API.
 
-This codebase was created to demonstrate a fully fledged full stack application built with Spring boot + Mybatis including CRUD operations, authentication, routing, pagination, and more.
+This codebase was created to demonstrate a fully fledged full-stack application built with Spring boot + Mybatis including CRUD operations, authentication, routing, pagination, and more.
 
 For more information on how to this works with other frontends/backends, head over to the [RealWorld](https://github.com/gothinkster/realworld) repo.
 
@@ -29,7 +29,7 @@ And the code is organized as this:
 
 1. `api` is the web layer implemented by Spring MVC
 2. `core` is the business model including entities and services
-3. `application` is the high level services for querying the data transfer objects
+3. `application` is the high-level services for querying the data transfer objects
 4. `infrastructure`  contains all the implementation classes as the technique details
 
 # Security
@@ -55,7 +55,7 @@ Alternatively, you can run
 
 # Try it out with [Docker](https://www.docker.com/)
 
-You need Docker installed.
+You'll need Docker installed.
 	
 	docker-compose up -d
 
@@ -75,4 +75,4 @@ Follow the instruction from [google-java-format-git-pre-commit-hook](https://git
 
 # Help
 
-Please fork and PR to improve the code.
+Please fork and PR to improve the project.
