@@ -14,6 +14,7 @@ import io.spring.TestHelper;
 import io.spring.api.security.WebSecurityConfig;
 import io.spring.application.ArticleQueryService;
 import io.spring.application.article.ArticleCommandService;
+import io.spring.application.article.UpdateArticleParam;
 import io.spring.application.data.ArticleData;
 import io.spring.application.data.ProfileData;
 import io.spring.core.article.Article;
@@ -21,6 +22,7 @@ import io.spring.core.article.ArticleRepository;
 import io.spring.core.user.User;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.joda.time.DateTime;
@@ -94,9 +96,6 @@ public class ArticleApiTest extends TestWithCurrentUser {
 
     Map<String, Object> updateParam =
         prepareUpdateParam(updatedArticle.getTitle(), updatedArticle.getBody(), updatedArticle.getDescription());
-
-    UpdateArticleParam articleUpdate =
-        new UpdateArticleParam(updatedArticle.getTitle(), updatedArticle.getBody(), updatedArticle.getDescription());
 
     ArticleData updatedArticleData = TestHelper.getArticleDataFromArticleAndUser(updatedArticle, user);
 
