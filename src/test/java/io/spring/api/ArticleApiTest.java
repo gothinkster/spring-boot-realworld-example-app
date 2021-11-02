@@ -14,6 +14,7 @@ import io.spring.TestHelper;
 import io.spring.api.security.WebSecurityConfig;
 import io.spring.application.ArticleQueryService;
 import io.spring.application.article.ArticleCommandService;
+import io.spring.application.article.UpdateArticleParam;
 import io.spring.application.data.ArticleData;
 import io.spring.application.data.ProfileData;
 import io.spring.core.article.Article;
@@ -21,6 +22,7 @@ import io.spring.core.article.ArticleRepository;
 import io.spring.core.user.User;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.joda.time.DateTime;
@@ -84,29 +86,33 @@ public class ArticleApiTest extends TestWithCurrentUser {
 
   @Test
   public void should_update_article_content_success() throws Exception {
-    String title = "new-title";
-    String body = "new body";
-    String description = "new description";
-    Map<String, Object> updateParam = prepareUpdateParam(title, body, description);
+    List<String> tagList = Arrays.asList("java", "spring", "jpg");
 
-    Article article =
-        new Article(title, description, body, Arrays.asList("java", "spring", "jpg"), user.getId());
+    Article originalArticle =
+        new Article("old title", "old description", "old body", tagList, user.getId());
 
-    ArticleData articleData = TestHelper.getArticleDataFromArticleAndUser(article, user);
+    Article updatedArticle =
+        new Article("new title", "new description", "new body", tagList, user.getId());
 
-    when(articleRepository.findBySlug(eq(article.getSlug()))).thenReturn(Optional.of(article));
-    when(articleQueryService.findBySlug(eq(article.getSlug()), eq(user)))
-        .thenReturn(Optional.of(articleData));
+    Map<String, Object> updateParam =
+        prepareUpdateParam(updatedArticle.getTitle(), updatedArticle.getBody(), updatedArticle.getDescription());
+
+    ArticleData updatedArticleData = TestHelper.getArticleDataFromArticleAndUser(updatedArticle, user);
+
+    when(articleRepository.findBySlug(eq(originalArticle.getSlug()))).thenReturn(Optional.of(originalArticle));
+    when(articleCommandService.updateArticle(eq(originalArticle), any())).thenReturn(updatedArticle);
+    when(articleQueryService.findBySlug(eq(updatedArticle.getSlug()), eq(user)))
+        .thenReturn(Optional.of(updatedArticleData));
 
     given()
         .contentType("application/json")
         .header("Authorization", "Token " + token)
         .body(updateParam)
         .when()
-        .put("/articles/{slug}", article.getSlug())
+        .put("/articles/{slug}", originalArticle.getSlug())
         .then()
         .statusCode(200)
-        .body("article.slug", equalTo(articleData.getSlug()));
+        .body("article.slug", equalTo(updatedArticleData.getSlug()));
   }
 
   @Test

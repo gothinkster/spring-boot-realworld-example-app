@@ -6,6 +6,7 @@ import io.spring.application.ArticleQueryService;
 import io.spring.application.article.ArticleCommandService;
 import io.spring.application.article.UpdateArticleParam;
 import io.spring.application.data.ArticleData;
+import io.spring.core.article.Article;
 import io.spring.core.article.ArticleRepository;
 import io.spring.core.service.AuthorizationService;
 import io.spring.core.user.User;
@@ -61,9 +62,9 @@ public class ArticleApi {
               if (!AuthorizationService.canWriteArticle(user, article)) {
                 throw new NoAuthorizationException();
               }
-              articleCommandService.updateArticle(article, updateArticleParam);
+              Article updatedArticle = articleCommandService.updateArticle(article, updateArticleParam);
               return ResponseEntity.ok(
-                  articleResponse(articleQueryService.findBySlug(slug, user).get()));
+                  articleResponse(articleQueryService.findBySlug(updatedArticle.getSlug(), user).get()));
             })
         .orElseThrow(ResourceNotFoundException::new);
   }
