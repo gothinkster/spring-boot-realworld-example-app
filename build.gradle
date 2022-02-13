@@ -8,6 +8,8 @@ plugins {
 }
 
 version = '0.0.1-SNAPSHOT'
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
 sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
 
@@ -17,6 +19,7 @@ repositories {
 
 configurations {
     compileOnly.extendsFrom annotationProcessor
+    testCompileOnly.extendsFrom annotationProcessor
 }
 
 dependencies {
@@ -27,6 +30,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation "org.mybatis.spring.boot:mybatis-spring-boot-starter:${mybatisStarterVersion}"
     implementation 'com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter:latest.release'
+
     implementation 'org.flywaydb:flyway-core'
     implementation "io.jsonwebtoken:jjwt:${jsonwebtokenVersion}"
     implementation "joda-time:joda-time:${hodaTimeVersion}"
@@ -35,26 +39,36 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation "org.mybatis.spring.boot:mybatis-spring-boot-starter-test:${mybatisStarterVersion}"
+
+    testImplementation 'org.junit.vintage:junit-vintage-engine'
     testImplementation "io.rest-assured:rest-assured:${restAssuredVersion}"
     testImplementation "io.rest-assured:spring-mock-mvc:${restAssuredVersion}"
     testImplementation "io.rest-assured:xml-path:${restAssuredVersion}"
     testImplementation "io.rest-assured:json-path:${restAssuredVersion}"
-    testImplementation 'org.springframework.security:spring-security-test'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.junit.vintage:junit-vintage-engine'
-    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-    testImplementation "org.mybatis.spring.boot:mybatis-spring-boot-starter-test:${mybatisStarterVersion}"
 }
 
-test {
+tasks.named('test') {
     useJUnitPlatform()
 }
 
-generateJava {
+tasks.named('generateJava') {
     schemaPaths = ["${projectDir}/src/main/resources/schema"] // List of directories containing schema files
     packageName = 'io.spring.graphql' // The package name to use to generate sources
 }
 
-jar {
+tasks.named('jar') {
     enabled = false
+}
+
+tasks.named('clean') {
+    doFirst {
+        delete './dev.db/'
+    }
 }
