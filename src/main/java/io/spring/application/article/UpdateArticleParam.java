@@ -10,7 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonRootName("article")
 public class UpdateArticleParam {
-  private String title = "";
-  private String body = "";
-  private String description = "";
+
+    private String title = "";
+    private String body = "";
+    private String description = "";
+
 }

@@ -1,7 +1,5 @@
 package io.spring.infrastructure.service;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.spring.core.service.JwtService;
@@ -15,12 +13,15 @@ import java.util.Optional;
 
 @Component
 public class DefaultJwtService implements JwtService {
-    private String secret;
-    private int sessionTime;
+
+    private final String secret;
+    private final int sessionTime;
 
     @Autowired
-    public DefaultJwtService(@Value("${jwt.secret}") String secret,
-                             @Value("${jwt.sessionTime}") int sessionTime) {
+    public DefaultJwtService(
+            @Value("${jwt.secret}") String secret,
+            @Value("${jwt.sessionTime}") int sessionTime
+    ) {
         this.secret = secret;
         this.sessionTime = sessionTime;
     }
@@ -28,16 +29,16 @@ public class DefaultJwtService implements JwtService {
     @Override
     public String toToken(User user) {
         return Jwts.builder()
-            .setSubject(user.getId())
-            .setExpiration(expireTimeFromNow())
-            .signWith(SignatureAlgorithm.HS512, secret)
-            .compact();
+                .setSubject(user.getId())
+                .setExpiration(expireTimeFromNow())
+                .signWith(SignatureAlgorithm.HS512, secret)
+                .compact();
     }
 
     @Override
     public Optional<String> getSubFromToken(String token) {
         try {
-            Jws<Claims> claimsJws = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+            var claimsJws = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
             return Optional.ofNullable(claimsJws.getBody().getSubject());
         } catch (Exception e) {
             return Optional.empty();
@@ -45,6 +46,7 @@ public class DefaultJwtService implements JwtService {
     }
 
     private Date expireTimeFromNow() {
-        return new Date(System.currentTimeMillis() + sessionTime * 1000);
+        return new Date(System.currentTimeMillis() + sessionTime * 1000L);
     }
+
 }

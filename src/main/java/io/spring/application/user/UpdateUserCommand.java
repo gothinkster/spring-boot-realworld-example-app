@@ -9,6 +9,7 @@ import lombok.Getter;
 @UpdateUserConstraint
 public class UpdateUserCommand {
 
-  private User targetUser;
-  private UpdateUserParam param;
+    private User targetUser;
+    private UpdateUserParam param;
+
 }

@@ -21,9 +21,11 @@ public class JacksonCustomizations {
     }
 
     public static class RealWorldModules extends SimpleModule {
+
         public RealWorldModules() {
             addSerializer(DateTime.class, new DateTimeSerializer());
         }
+
     }
 
     public static class DateTimeSerializer extends StdSerializer<DateTime> {
@@ -40,6 +42,7 @@ public class JacksonCustomizations {
                 gen.writeString(ISODateTimeFormat.dateTime().withZoneUTC().print(value));
             }
         }
+
     }
 
 }

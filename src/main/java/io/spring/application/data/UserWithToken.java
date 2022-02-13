@@ -4,11 +4,12 @@ import lombok.Getter;
 
 @Getter
 public class UserWithToken {
-    private String email;
-    private String username;
-    private String bio;
-    private String image;
-    private String token;
+
+    private final String email;
+    private final String username;
+    private final String bio;
+    private final String image;
+    private final String token;
 
     public UserWithToken(UserData userData, String token) {
         this.email = userData.getEmail();

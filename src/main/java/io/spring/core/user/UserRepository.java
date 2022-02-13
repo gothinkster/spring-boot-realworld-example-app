@@ -6,6 +6,7 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository {
+
     void save(User user);
 
     Optional<User> findById(String id);
@@ -19,4 +20,5 @@ public interface UserRepository {
     Optional<FollowRelation> findRelation(String userId, String targetId);
 
     void removeRelation(FollowRelation followRelation);
+
 }

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class NaiveEncryptService implements EncryptService {
+
     @Override
     public String encrypt(String password) {
         return password;
@@ -14,4 +15,5 @@ public class NaiveEncryptService implements EncryptService {
     public boolean check(String checkPassword, String realPassword) {
         return checkPassword.equals(realPassword);
     }
+
 }

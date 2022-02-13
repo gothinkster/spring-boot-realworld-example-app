@@ -3,19 +3,17 @@ package io.spring.infrastructure.repository;
 import io.spring.core.comment.Comment;
 import io.spring.core.comment.CommentRepository;
 import io.spring.infrastructure.mybatis.mapper.CommentMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class MyBatisCommentRepository implements CommentRepository {
-    private CommentMapper commentMapper;
 
-    @Autowired
-    public MyBatisCommentRepository(CommentMapper commentMapper) {
-        this.commentMapper = commentMapper;
-    }
+    private final CommentMapper commentMapper;
+
 
     @Override
     public void save(Comment comment) {
@@ -31,4 +29,5 @@ public class MyBatisCommentRepository implements CommentRepository {
     public void remove(Comment comment) {
         commentMapper.delete(comment.getId());
     }
+
 }

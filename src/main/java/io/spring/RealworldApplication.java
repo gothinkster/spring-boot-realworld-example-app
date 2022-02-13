@@ -7,7 +7,8 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 @SpringBootApplication(exclude = HibernateJpaAutoConfiguration.class)
 public class RealworldApplication {
 
-  public static void main(String[] args) {
-    SpringApplication.run(RealworldApplication.class, args);
-  }
+    public static void main(String[] args) {
+        SpringApplication.run(RealworldApplication.class, args);
+    }
+
 }

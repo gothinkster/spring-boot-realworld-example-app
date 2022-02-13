@@ -11,6 +11,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class Comment {
+
     private String id;
     private String body;
     private String userId;
@@ -24,4 +25,5 @@ public class Comment {
         this.articleId = articleId;
         this.createdAt = new DateTime();
     }
+
 }

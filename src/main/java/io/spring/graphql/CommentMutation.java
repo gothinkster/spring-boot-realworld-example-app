@@ -7,7 +7,6 @@ import graphql.execution.DataFetcherResult;
 import io.spring.api.exception.NoAuthorizationException;
 import io.spring.api.exception.ResourceNotFoundException;
 import io.spring.application.CommentQueryService;
-import io.spring.application.data.CommentData;
 import io.spring.core.article.Article;
 import io.spring.core.article.ArticleRepository;
 import io.spring.core.comment.Comment;
@@ -18,60 +17,63 @@ import io.spring.graphql.DgsConstants.MUTATION;
 import io.spring.graphql.exception.AuthenticationException;
 import io.spring.graphql.types.CommentPayload;
 import io.spring.graphql.types.DeletionStatus;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 
 @DgsComponent
+@RequiredArgsConstructor
 public class CommentMutation {
 
-  private ArticleRepository articleRepository;
-  private CommentRepository commentRepository;
-  private CommentQueryService commentQueryService;
+    private final ArticleRepository articleRepository;
+    private final CommentRepository commentRepository;
+    private final CommentQueryService commentQueryService;
 
-  @Autowired
-  public CommentMutation(
-      ArticleRepository articleRepository,
-      CommentRepository commentRepository,
-      CommentQueryService commentQueryService) {
-    this.articleRepository = articleRepository;
-    this.commentRepository = commentRepository;
-    this.commentQueryService = commentQueryService;
-  }
 
-  @DgsData(parentType = MUTATION.TYPE_NAME, field = MUTATION.AddComment)
-  public DataFetcherResult<CommentPayload> createComment(
-      @InputArgument("slug") String slug, @InputArgument("body") String body) {
-    User user = SecurityUtil.getCurrentUser().orElseThrow(AuthenticationException::new);
-    Article article =
-        articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
-    Comment comment = new Comment(body, user.getId(), article.getId());
-    commentRepository.save(comment);
-    CommentData commentData =
-        commentQueryService
-            .findById(comment.getId(), user)
-            .orElseThrow(ResourceNotFoundException::new);
-    return DataFetcherResult.<CommentPayload>newResult()
-        .localContext(commentData)
-        .data(CommentPayload.newBuilder().build())
-        .build();
-  }
+    @DgsData(parentType = MUTATION.TYPE_NAME, field = MUTATION.AddComment)
+    public DataFetcherResult<CommentPayload> createComment(
+            @InputArgument("slug") String slug,
+            @InputArgument("body") String body
+    ) {
+        var user = getUser();
+        var article = getArticle(slug);
+        var comment = new Comment(body, user.getId(), article.getId());
+        commentRepository.save(comment);
+        var commentData = commentQueryService
+                .findById(comment.getId(), user)
+                .orElseThrow(ResourceNotFoundException::new);
+        return DataFetcherResult.<CommentPayload>newResult()
+                .localContext(commentData)
+                .data(CommentPayload.newBuilder().build())
+                .build();
+    }
 
-  @DgsData(parentType = MUTATION.TYPE_NAME, field = MUTATION.DeleteComment)
-  public DeletionStatus removeComment(
-      @InputArgument("slug") String slug, @InputArgument("id") String commentId) {
-    User user = SecurityUtil.getCurrentUser().orElseThrow(AuthenticationException::new);
 
-    Article article =
-        articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
-    return commentRepository
-        .findById(article.getId(), commentId)
-        .map(
-            comment -> {
-              if (!AuthorizationService.canWriteComment(user, article, comment)) {
-                throw new NoAuthorizationException();
-              }
-              commentRepository.remove(comment);
-              return DeletionStatus.newBuilder().success(true).build();
-            })
-        .orElseThrow(ResourceNotFoundException::new);
-  }
+    @DgsData(parentType = MUTATION.TYPE_NAME, field = MUTATION.DeleteComment)
+    public DeletionStatus removeComment(
+            @InputArgument("slug") String slug,
+            @InputArgument("id") String commentId
+    ) {
+        var user = getUser();
+        var article = getArticle(slug);
+        return commentRepository
+                .findById(article.getId(), commentId)
+                .map(comment -> {
+                    if (!AuthorizationService.canWriteComment(user, article, comment)) {
+                        throw new NoAuthorizationException();
+                    }
+                    commentRepository.remove(comment);
+                    return DeletionStatus.newBuilder().success(true).build();
+                })
+                .orElseThrow(ResourceNotFoundException::new);
+    }
+
+
+    private Article getArticle(String slug) {
+        return articleRepository.findBySlug(slug)
+                .orElseThrow(ResourceNotFoundException::new);
+    }
+
+    private User getUser() {
+        return SecurityUtils.getCurrentUser().orElseThrow(AuthenticationException::new);
+    }
+
 }

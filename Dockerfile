@@ -1,4 +1,4 @@
-FROM gradle:jdk-alpine
+FROM gradle:jdk-alpine as builder
 
 WORKDIR /home/gradle/project
 
@@ -19,6 +19,6 @@ FROM java:jre-alpine
 
 WORKDIR /home/gradle/project
 
-COPY --from=0 /home/gradle/project/build/libs/project-0.0.1-SNAPSHOT.jar .
+COPY --from=builder /home/gradle/project/build/libs/project-0.0.1-SNAPSHOT.jar .
 
 ENTRYPOINT java -jar project-0.0.1-SNAPSHOT.jar

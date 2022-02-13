@@ -10,6 +10,7 @@ import java.util.UUID;
 @Data
 @EqualsAndHashCode(of = "name")
 public class Tag {
+
     private String id;
     private String name;
 
@@ -17,4 +18,5 @@ public class Tag {
         this.id = UUID.randomUUID().toString();
         this.name = name;
     }
+
 }

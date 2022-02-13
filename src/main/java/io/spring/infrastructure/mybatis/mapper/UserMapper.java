@@ -7,9 +7,11 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface UserMapper {
+
     void insert(@Param("user") User user);
 
     User findByUsername(@Param("username") String username);
+
     User findByEmail(@Param("email") String email);
 
     User findById(@Param("id") String id);
@@ -21,4 +23,5 @@ public interface UserMapper {
     void saveRelation(@Param("followRelation") FollowRelation followRelation);
 
     void deleteRelation(@Param("followRelation") FollowRelation followRelation);
+
 }

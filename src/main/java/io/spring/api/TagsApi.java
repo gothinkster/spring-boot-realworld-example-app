@@ -1,28 +1,25 @@
 package io.spring.api;
 
 import io.spring.application.TagsQueryService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = "tags")
+@RequiredArgsConstructor
 public class TagsApi {
-    private TagsQueryService tagsQueryService;
 
-    @Autowired
-    public TagsApi(TagsQueryService tagsQueryService) {
-        this.tagsQueryService = tagsQueryService;
-    }
+    private final TagsQueryService tagsQueryService;
+
 
     @GetMapping
-    public ResponseEntity getTags() {
-        return ResponseEntity.ok(new HashMap<String, Object>() {{
-            put("tags", tagsQueryService.allTags());
-        }});
+    public ResponseEntity<?> getTags() {
+        return ResponseEntity.ok(Map.of("tags", tagsQueryService.allTags()));
     }
+
 }

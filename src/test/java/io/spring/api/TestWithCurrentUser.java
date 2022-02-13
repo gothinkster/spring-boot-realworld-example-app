@@ -17,6 +17,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 abstract class TestWithCurrentUser {
+
     @MockBean
     protected UserRepository userRepository;
 
@@ -53,4 +54,5 @@ abstract class TestWithCurrentUser {
     public void setUp() throws Exception {
         userFixture();
     }
+
 }

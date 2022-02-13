@@ -1,17 +1,22 @@
 package io.spring.application.user;
 
 import io.spring.core.user.UserRepository;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+
+import static io.spring.Utils.isEmpty;
+
 public class DuplicatedEmailValidator
-    implements ConstraintValidator<DuplicatedEmailConstraint, String> {
+        implements ConstraintValidator<DuplicatedEmailConstraint, String> {
 
-  @Autowired private UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-  @Override
-  public boolean isValid(String value, ConstraintValidatorContext context) {
-    return (value == null || value.isEmpty()) || !userRepository.findByEmail(value).isPresent();
-  }
+    @Override
+    public boolean isValid(String value, ConstraintValidatorContext context) {
+        return (isEmpty(value)) || !userRepository.findByEmail(value).isPresent();
+    }
+
 }

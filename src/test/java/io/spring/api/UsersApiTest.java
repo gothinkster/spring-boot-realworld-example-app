@@ -1,12 +1,5 @@
 package io.spring.api;
 
-import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.spring.JacksonCustomizations;
 import io.spring.api.security.WebSecurityConfig;
@@ -18,9 +11,6 @@ import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
 import io.spring.infrastructure.mybatis.readservice.UserReadService;
 import io.spring.infrastructure.service.NaiveEncryptService;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,241 +21,240 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Map;
+import java.util.Optional;
+
+import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 @RunWith(SpringRunner.class)
 @WebMvcTest(UsersApi.class)
 @Import({
-  WebSecurityConfig.class,
-  UserQueryService.class,
-  NaiveEncryptService.class,
-  JacksonCustomizations.class
+        WebSecurityConfig.class,
+        UserQueryService.class,
+        NaiveEncryptService.class,
+        JacksonCustomizations.class
 })
 public class UsersApiTest {
-  @Autowired private MockMvc mvc;
 
-  @MockBean private UserRepository userRepository;
+    @Autowired
+    private MockMvc mvc;
 
-  @MockBean private JwtService jwtService;
+    @MockBean
+    private UserRepository userRepository;
 
-  @MockBean private UserReadService userReadService;
+    @MockBean
+    private JwtService jwtService;
 
-  @MockBean private UserService userService;
+    @MockBean
+    private UserReadService userReadService;
 
-  private String defaultAvatar;
+    @MockBean
+    private UserService userService;
 
-  @Before
-  public void setUp() throws Exception {
-    RestAssuredMockMvc.mockMvc(mvc);
-    defaultAvatar = "https://static.productionready.io/images/smiley-cyrus.jpg";
-  }
+    private String defaultAvatar;
 
-  @Test
-  public void should_create_user_success() throws Exception {
-    String email = "john@jacob.com";
-    String username = "johnjacob";
 
-    when(jwtService.toToken(any())).thenReturn("123");
-    User user = new User(email, username, "123", "", defaultAvatar);
-    UserData userData = new UserData(user.getId(), email, username, "", defaultAvatar);
-    when(userReadService.findById(any())).thenReturn(userData);
+    @Before
+    public void setUp() throws Exception {
+        RestAssuredMockMvc.mockMvc(mvc);
+        defaultAvatar = "https://static.productionready.io/images/smiley-cyrus.jpg";
+    }
 
-    when(userService.createUser(any())).thenReturn(user);
 
-    when(userRepository.findByUsername(eq(username))).thenReturn(Optional.empty());
-    when(userRepository.findByEmail(eq(email))).thenReturn(Optional.empty());
+    @Test
+    public void should_create_user_success() {
+        var email = "john@jacob.com";
+        var username = "johnjacob";
 
-    Map<String, Object> param = prepareRegisterParameter(email, username);
+        when(jwtService.toToken(any())).thenReturn("123");
 
-    given()
-        .contentType("application/json")
-        .body(param)
-        .when()
-        .post("/users")
-        .then()
-        .statusCode(201)
-        .body("user.email", equalTo(email))
-        .body("user.username", equalTo(username))
-        .body("user.bio", equalTo(""))
-        .body("user.image", equalTo(defaultAvatar))
-        .body("user.token", equalTo("123"));
+        var user = new User(email, username, "123", "", defaultAvatar);
+        var userData = new UserData(user.getId(), email, username, "", defaultAvatar);
 
-    verify(userService).createUser(any());
-  }
+        when(userReadService.findById(any())).thenReturn(userData);
+        when(userService.createUser(any())).thenReturn(user);
+        when(userRepository.findByUsername(eq(username))).thenReturn(Optional.empty());
+        when(userRepository.findByEmail(eq(email))).thenReturn(Optional.empty());
 
-  @Test
-  public void should_show_error_message_for_blank_username() throws Exception {
+        var param = prepareRegisterParameter(email, username);
 
-    String email = "john@jacob.com";
-    String username = "";
+        given()
+                .contentType("application/json")
+                .body(param)
+                .when()
+                .post("/users")
+                .then()
+                .statusCode(201)
+                .body("user.email", equalTo(email))
+                .body("user.username", equalTo(username))
+                .body("user.bio", equalTo(""))
+                .body("user.image", equalTo(defaultAvatar))
+                .body("user.token", equalTo("123"));
 
-    Map<String, Object> param = prepareRegisterParameter(email, username);
+        verify(userService).createUser(any());
+    }
 
-    given()
-        .contentType("application/json")
-        .body(param)
-        .when()
-        .post("/users")
-        .prettyPeek()
-        .then()
-        .statusCode(422)
-        .body("errors.username[0]", equalTo("can't be empty"));
-  }
+    @Test
+    public void should_show_error_message_for_blank_username() {
+        var email = "john@jacob.com";
+        var username = "";
+        var param = prepareRegisterParameter(email, username);
 
-  @Test
-  public void should_show_error_message_for_invalid_email() throws Exception {
-    String email = "johnxjacob.com";
-    String username = "johnjacob";
+        given()
+                .contentType("application/json")
+                .body(param)
+                .when()
+                .post("/users")
+                .prettyPeek()
+                .then()
+                .statusCode(422)
+                .body("errors.username[0]", equalTo("can't be empty"));
+    }
 
-    Map<String, Object> param = prepareRegisterParameter(email, username);
 
-    given()
-        .contentType("application/json")
-        .body(param)
-        .when()
-        .post("/users")
-        .prettyPeek()
-        .then()
-        .statusCode(422)
-        .body("errors.email[0]", equalTo("should be an email"));
-  }
+    @Test
+    public void should_show_error_message_for_invalid_email() {
+        var email = "johnxjacob.com";
+        var username = "johnjacob";
+        var param = prepareRegisterParameter(email, username);
 
-  @Test
-  public void should_show_error_for_duplicated_username() throws Exception {
-    String email = "john@jacob.com";
-    String username = "johnjacob";
+        given()
+                .contentType("application/json")
+                .body(param)
+                .when()
+                .post("/users")
+                .prettyPeek()
+                .then()
+                .statusCode(422)
+                .body("errors.email[0]", equalTo("should be an email"));
+    }
 
-    when(userRepository.findByUsername(eq(username)))
-        .thenReturn(Optional.of(new User(email, username, "123", "bio", "")));
-    when(userRepository.findByEmail(any())).thenReturn(Optional.empty());
 
-    Map<String, Object> param = prepareRegisterParameter(email, username);
+    @Test
+    public void should_show_error_for_duplicated_username() {
+        var email = "john@jacob.com";
+        var username = "johnjacob";
 
-    given()
-        .contentType("application/json")
-        .body(param)
-        .when()
-        .post("/users")
-        .prettyPeek()
-        .then()
-        .statusCode(422)
-        .body("errors.username[0]", equalTo("duplicated username"));
-  }
+        when(userRepository.findByUsername(eq(username)))
+                .thenReturn(Optional.of(new User(email, username, "123", "bio", "")));
+        when(userRepository.findByEmail(any()))
+                .thenReturn(Optional.empty());
 
-  @Test
-  public void should_show_error_for_duplicated_email() throws Exception {
-    String email = "john@jacob.com";
-    String username = "johnjacob2";
+        var param = prepareRegisterParameter(email, username);
 
-    when(userRepository.findByEmail(eq(email)))
-        .thenReturn(Optional.of(new User(email, username, "123", "bio", "")));
+        given()
+                .contentType("application/json")
+                .body(param)
+                .when()
+                .post("/users")
+                .prettyPeek()
+                .then()
+                .statusCode(422)
+                .body("errors.username[0]", equalTo("duplicated username"));
+    }
 
-    when(userRepository.findByUsername(eq(username))).thenReturn(Optional.empty());
+    @Test
+    public void should_show_error_for_duplicated_email() {
+        var email = "john@jacob.com";
+        var username = "johnjacob2";
 
-    Map<String, Object> param = prepareRegisterParameter(email, username);
+        when(userRepository.findByEmail(eq(email)))
+                .thenReturn(Optional.of(new User(email, username, "123", "bio", "")));
+        when(userRepository.findByUsername(eq(username)))
+                .thenReturn(Optional.empty());
 
-    given()
-        .contentType("application/json")
-        .body(param)
-        .when()
-        .post("/users")
-        .then()
-        .statusCode(422)
-        .body("errors.email[0]", equalTo("duplicated email"));
-  }
+        var param = prepareRegisterParameter(email, username);
 
-  private HashMap<String, Object> prepareRegisterParameter(
-      final String email, final String username) {
-    return new HashMap<String, Object>() {
-      {
-        put(
-            "user",
-            new HashMap<String, Object>() {
-              {
-                put("email", email);
-                put("password", "johnnyjacob");
-                put("username", username);
-              }
-            });
-      }
-    };
-  }
+        given()
+                .contentType("application/json")
+                .body(param)
+                .when()
+                .post("/users")
+                .then()
+                .statusCode(422)
+                .body("errors.email[0]", equalTo("duplicated email"));
+    }
 
-  @Test
-  public void should_login_success() throws Exception {
-    String email = "john@jacob.com";
-    String username = "johnjacob2";
-    String password = "123";
+    private Map<String, Map<String, String>> prepareRegisterParameter(
+            final String email,
+            final String username
+    ) {
+        return Map.of("user", Map.of(
+                        "email", email,
+                        "password", "johnnyjacob",
+                        "username", username
+                )
+        );
+    }
 
-    User user = new User(email, username, password, "", defaultAvatar);
-    UserData userData = new UserData("123", email, username, "", defaultAvatar);
 
-    when(userRepository.findByEmail(eq(email))).thenReturn(Optional.of(user));
-    when(userReadService.findByUsername(eq(username))).thenReturn(userData);
-    when(userReadService.findById(eq(user.getId()))).thenReturn(userData);
-    when(jwtService.toToken(any())).thenReturn("123");
+    @Test
+    public void should_login_success() {
+        var email = "john@jacob.com";
+        var username = "johnjacob2";
+        var password = "123";
+        var user = new User(email, username, password, "", defaultAvatar);
+        var userData = new UserData("123", email, username, "", defaultAvatar);
 
-    Map<String, Object> param =
-        new HashMap<String, Object>() {
-          {
-            put(
-                "user",
-                new HashMap<String, Object>() {
-                  {
-                    put("email", email);
-                    put("password", password);
-                  }
-                });
-          }
-        };
+        when(userRepository.findByEmail(eq(email))).thenReturn(Optional.of(user));
+        when(userReadService.findByUsername(eq(username))).thenReturn(userData);
+        when(userReadService.findById(eq(user.getId()))).thenReturn(userData);
+        when(jwtService.toToken(any())).thenReturn("123");
 
-    given()
-        .contentType("application/json")
-        .body(param)
-        .when()
-        .post("/users/login")
-        .then()
-        .statusCode(200)
-        .body("user.email", equalTo(email))
-        .body("user.username", equalTo(username))
-        .body("user.bio", equalTo(""))
-        .body("user.image", equalTo(defaultAvatar))
-        .body("user.token", equalTo("123"));
-    ;
-  }
+        var param = Map.of(
+                "user", Map.of(
+                        "email", email,
+                        "password", password
+                )
+        );
 
-  @Test
-  public void should_fail_login_with_wrong_password() throws Exception {
-    String email = "john@jacob.com";
-    String username = "johnjacob2";
-    String password = "123";
+        given()
+                .contentType("application/json")
+                .body(param)
+                .when()
+                .post("/users/login")
+                .then()
+                .statusCode(200)
+                .body("user.email", equalTo(email))
+                .body("user.username", equalTo(username))
+                .body("user.bio", equalTo(""))
+                .body("user.image", equalTo(defaultAvatar))
+                .body("user.token", equalTo("123"));
+        ;
+    }
 
-    User user = new User(email, username, password, "", defaultAvatar);
-    UserData userData = new UserData(user.getId(), email, username, "", defaultAvatar);
+    @Test
+    public void should_fail_login_with_wrong_password() {
+        var email = "john@jacob.com";
+        var username = "johnjacob2";
+        var password = "123";
+        var user = new User(email, username, password, "", defaultAvatar);
+        var userData = new UserData(user.getId(), email, username, "", defaultAvatar);
 
-    when(userRepository.findByEmail(eq(email))).thenReturn(Optional.of(user));
-    when(userReadService.findByUsername(eq(username))).thenReturn(userData);
+        when(userRepository.findByEmail(eq(email))).thenReturn(Optional.of(user));
+        when(userReadService.findByUsername(eq(username))).thenReturn(userData);
 
-    Map<String, Object> param =
-        new HashMap<String, Object>() {
-          {
-            put(
-                "user",
-                new HashMap<String, Object>() {
-                  {
-                    put("email", email);
-                    put("password", "123123");
-                  }
-                });
-          }
-        };
+        var param = Map.of(
+                "user", Map.of(
+                        "email", email,
+                        "password", "123123"
+                )
+        );
 
-    given()
-        .contentType("application/json")
-        .body(param)
-        .when()
-        .post("/users/login")
-        .prettyPeek()
-        .then()
-        .statusCode(422)
-        .body("message", equalTo("invalid email or password"));
-  }
+        given()
+                .contentType("application/json")
+                .body(param)
+                .when()
+                .post("/users/login")
+                .prettyPeek()
+                .then()
+                .statusCode(422)
+                .body("message", equalTo("invalid email or password"));
+    }
+
 }

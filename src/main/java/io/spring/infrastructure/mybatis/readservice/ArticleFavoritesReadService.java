@@ -10,6 +10,7 @@ import java.util.Set;
 
 @Mapper
 public interface ArticleFavoritesReadService {
+
     boolean isUserFavorite(@Param("userId") String userId, @Param("articleId") String articleId);
 
     int articleFavoriteCount(@Param("articleId") String articleId);
@@ -17,4 +18,5 @@ public interface ArticleFavoritesReadService {
     List<ArticleFavoriteCount> articlesFavoriteCount(@Param("ids") List<String> ids);
 
     Set<String> userFavorites(@Param("ids") List<String> ids, @Param("currentUser") User currentUser);
+
 }

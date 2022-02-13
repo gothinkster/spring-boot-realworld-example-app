@@ -10,5 +10,6 @@ public interface UserReadService {
     UserData findByUsername(@Param("username") String username);
 
     UserData findById(@Param("id") String id);
+
 }
 
