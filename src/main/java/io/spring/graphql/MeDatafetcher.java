@@ -42,7 +42,7 @@ public class MeDatafetcher {
                 .username(userWithToken.getUsername())
                 .token(userWithToken.getToken())
                 .build();
-        return DataFetcherResult.<User>newResult().data(result).localContext(user).build();
+        return getDataFetcherResult(result, user);
     }
 
 
@@ -51,12 +51,16 @@ public class MeDatafetcher {
             DataFetchingEnvironment dataFetchingEnvironment
     ) {
         var user = dataFetchingEnvironment.<io.spring.core.user.User>getLocalContext();
-        var result =
-                User.newBuilder()
-                        .email(user.getEmail())
-                        .username(user.getUsername())
-                        .token(jwtService.toToken(user))
-                        .build();
+        var result = User.newBuilder()
+                .email(user.getEmail())
+                .username(user.getUsername())
+                .token(jwtService.toToken(user))
+                .build();
+        return getDataFetcherResult(result, user);
+    }
+
+
+    private DataFetcherResult<User> getDataFetcherResult(User result, io.spring.core.user.User user) {
         return DataFetcherResult.<User>newResult().data(result).localContext(user).build();
     }
 

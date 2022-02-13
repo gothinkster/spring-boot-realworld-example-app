@@ -24,13 +24,13 @@ public class RelationMutation {
 
     @DgsData(parentType = MUTATION.TYPE_NAME, field = MUTATION.FollowUser)
     public ProfilePayload follow(@InputArgument("username") String username) {
-        User user = SecurityUtils.getCurrentUser().orElseThrow(AuthenticationException::new);
+        var user = SecurityUtils.getCurrentUser().orElseThrow(AuthenticationException::new);
         return userRepository
                 .findByUsername(username)
                 .map(target -> {
-                    FollowRelation followRelation = new FollowRelation(user.getId(), target.getId());
+                    var followRelation = new FollowRelation(user.getId(), target.getId());
                     userRepository.saveRelation(followRelation);
-                    Profile profile = buildProfile(username, user);
+                    var profile = buildProfile(username, user);
                     return ProfilePayload.newBuilder().profile(profile).build();
                 })
                 .orElseThrow(ResourceNotFoundException::new);

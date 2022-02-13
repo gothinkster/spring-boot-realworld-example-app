@@ -22,7 +22,7 @@ public class ProfileQueryService {
         if (userData == null) {
             return Optional.empty();
         }
-        boolean following = currentUser != null &&
+        var following = currentUser != null &&
                 userRelationshipQueryService.isUserFollowing(currentUser.getId(), userData.getId());
         var profileData = new ProfileData(
                 userData.getId(),

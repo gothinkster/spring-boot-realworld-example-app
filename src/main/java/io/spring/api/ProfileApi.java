@@ -44,7 +44,7 @@ public class ProfileApi {
     ) {
         return userRepository.findByUsername(username)
                 .map(target -> {
-                    FollowRelation followRelation = new FollowRelation(user.getId(), target.getId());
+                    var followRelation = new FollowRelation(user.getId(), target.getId());
                     userRepository.saveRelation(followRelation);
                     return profileResponse(profileQueryService.findByUsername(username, user).get());
                 })

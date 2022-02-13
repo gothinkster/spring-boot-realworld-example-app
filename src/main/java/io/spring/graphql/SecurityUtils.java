@@ -13,8 +13,7 @@ public class SecurityUtils {
         if (authentication instanceof AnonymousAuthenticationToken || authentication.getPrincipal() == null) {
             return Optional.empty();
         }
-        User currentUser = (User) authentication.getPrincipal();
-        return Optional.of(currentUser);
+        return Optional.of((User) authentication.getPrincipal());
     }
 
 }

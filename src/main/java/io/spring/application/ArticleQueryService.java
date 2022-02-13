@@ -56,12 +56,12 @@ public class ArticleQueryService {
             CursorPageParameter<DateTime> page,
             User currentUser
     ) {
-        List<String> articleIds = articleReadService.findArticlesWithCursor(tag, author, favoritedBy, page);
+        var articleIds = articleReadService.findArticlesWithCursor(tag, author, favoritedBy, page);
         if (articleIds.size() == 0) {
             return new CursorPager<>(new ArrayList<>(), page.getDirection(), false);
         }
 
-        boolean hasExtra = articleIds.size() > page.getLimit();
+        var hasExtra = articleIds.size() > page.getLimit();
         if (hasExtra) {
             articleIds.remove(page.getLimit());
         }
@@ -84,7 +84,7 @@ public class ArticleQueryService {
             return new CursorPager<>(new ArrayList<>(), page.getDirection(), false);
         }
         var articles = articleReadService.findArticlesOfAuthorsWithCursor(followdUsers, page);
-        boolean hasExtra = articles.size() > page.getLimit();
+        var hasExtra = articles.size() > page.getLimit();
         if (hasExtra) {
             articles.remove(page.getLimit());
         }
@@ -104,7 +104,7 @@ public class ArticleQueryService {
             User currentUser
     ) {
         var articleIds = articleReadService.queryArticles(tag, author, favoritedBy, page);
-        int articleCount = articleReadService.countArticle(tag, author, favoritedBy);
+        var articleCount = articleReadService.countArticle(tag, author, favoritedBy);
         if (articleIds.size() == 0) {
             return new ArticleDataList(new ArrayList<>(), articleCount);
         }
@@ -121,7 +121,7 @@ public class ArticleQueryService {
         }
         var articles = articleReadService.findArticlesOfAuthors(followdUsers, page);
         fillExtraInfo(articles, user);
-        int count = articleReadService.countFeedSize(followdUsers);
+        var count = articleReadService.countFeedSize(followdUsers);
         return new ArticleDataList(articles, count);
     }
 
@@ -152,7 +152,7 @@ public class ArticleQueryService {
 
 
     private void setFavoriteCount(List<ArticleData> articles) {
-        List<String> ids = getIds(articles);
+        var ids = getIds(articles);
         var favoritesCounts = articleFavoritesReadService.articlesFavoriteCount(ids);
         var countMap = new HashMap<String, Integer>();
         favoritesCounts.forEach(item -> countMap.put(item.getId(), item.getCount()));
@@ -161,7 +161,7 @@ public class ArticleQueryService {
 
 
     private void setIsFavorite(List<ArticleData> articles, User currentUser) {
-        List<String> ids = getIds(articles);
+        var ids = getIds(articles);
         var favoritedArticles = articleFavoritesReadService.userFavorites(ids, currentUser);
         articles.forEach(articleData -> {
             if (favoritedArticles.contains(articleData.getId())) {
@@ -181,7 +181,7 @@ public class ArticleQueryService {
     private void fillExtraInfo(String id, User user, ArticleData articleData) {
         articleData.setFavorited(articleFavoritesReadService.isUserFavorite(user.getId(), id));
         articleData.setFavoritesCount(articleFavoritesReadService.articleFavoriteCount(id));
-        boolean userFollowing = userRelationshipQueryService.isUserFollowing(
+        var userFollowing = userRelationshipQueryService.isUserFollowing(
                 user.getId(),
                 articleData.getProfileData().getId()
         );

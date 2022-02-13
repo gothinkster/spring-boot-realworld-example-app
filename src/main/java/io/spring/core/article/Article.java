@@ -10,8 +10,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
-import static java.util.stream.Collectors.toList;
-
 @Getter
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"id"})
@@ -46,7 +44,7 @@ public class Article {
         this.title = title;
         this.description = description;
         this.body = body;
-        this.tags = new HashSet<>(tagList).stream().map(Tag::new).collect(toList());
+        this.tags = new HashSet<>(tagList).stream().map(Tag::new).toList();
         this.userId = userId;
         this.createdAt = createdAt;
         this.updatedAt = createdAt;

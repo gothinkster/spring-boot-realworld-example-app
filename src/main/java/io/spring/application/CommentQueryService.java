@@ -26,7 +26,7 @@ public class CommentQueryService {
         if (commentData == null) {
             return Optional.empty();
         }
-        boolean userFollowing = userRelationshipQueryService.isUserFollowing(
+        var userFollowing = userRelationshipQueryService.isUserFollowing(
                 user.getId(),
                 commentData.getProfileData().getId()
         );
@@ -68,7 +68,7 @@ public class CommentQueryService {
                 }
             });
         }
-        boolean hasExtra = comments.size() > page.getLimit();
+        var hasExtra = comments.size() > page.getLimit();
         if (hasExtra) {
             comments.remove(page.getLimit());
         }

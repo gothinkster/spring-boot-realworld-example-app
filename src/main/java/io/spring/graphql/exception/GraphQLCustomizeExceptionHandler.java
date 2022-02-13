@@ -77,11 +77,10 @@ public class GraphQLCustomizeExceptionHandler implements DataFetcherExceptionHan
     public static Error getErrorsAsData(ConstraintViolationException cve) {
         var errors = new ArrayList<FieldErrorResource>();
         for (var violation : cve.getConstraintViolations()) {
-            FieldErrorResource fieldErrorResource = new FieldErrorResource(
+            var fieldErrorResource = new FieldErrorResource(
                     violation.getRootBeanClass().getName(),
                     getParam(violation.getPropertyPath().toString()),
                     getSimpleName(violation),
-
                     violation.getMessage());
             errors.add(fieldErrorResource);
         }
@@ -107,7 +106,7 @@ public class GraphQLCustomizeExceptionHandler implements DataFetcherExceptionHan
     }
 
     private static String getParam(String s) {
-        String[] splits = s.split("\\.");
+        var splits = s.split("\\.");
         if (splits.length == 1) {
             return s;
         } else {

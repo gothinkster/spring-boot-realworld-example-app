@@ -27,7 +27,8 @@ public class UserService {
     public UserService(
             UserRepository userRepository,
             @Value("${image.default}") String defaultImage,
-            EncryptService encryptService) {
+            EncryptService encryptService
+    ) {
         this.userRepository = userRepository;
         this.defaultImage = defaultImage;
         this.encryptService = encryptService;
