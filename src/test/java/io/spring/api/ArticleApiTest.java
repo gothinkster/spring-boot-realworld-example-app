@@ -14,7 +14,6 @@ import io.spring.TestHelper;
 import io.spring.api.security.WebSecurityConfig;
 import io.spring.application.ArticleQueryService;
 import io.spring.application.article.ArticleCommandService;
-import io.spring.application.article.UpdateArticleParam;
 import io.spring.application.data.ArticleData;
 import io.spring.application.data.ProfileData;
 import io.spring.core.article.Article;
@@ -95,12 +94,16 @@ public class ArticleApiTest extends TestWithCurrentUser {
         new Article("new title", "new description", "new body", tagList, user.getId());
 
     Map<String, Object> updateParam =
-        prepareUpdateParam(updatedArticle.getTitle(), updatedArticle.getBody(), updatedArticle.getDescription());
+        prepareUpdateParam(
+            updatedArticle.getTitle(), updatedArticle.getBody(), updatedArticle.getDescription());
 
-    ArticleData updatedArticleData = TestHelper.getArticleDataFromArticleAndUser(updatedArticle, user);
+    ArticleData updatedArticleData =
+        TestHelper.getArticleDataFromArticleAndUser(updatedArticle, user);
 
-    when(articleRepository.findBySlug(eq(originalArticle.getSlug()))).thenReturn(Optional.of(originalArticle));
-    when(articleCommandService.updateArticle(eq(originalArticle), any())).thenReturn(updatedArticle);
+    when(articleRepository.findBySlug(eq(originalArticle.getSlug())))
+        .thenReturn(Optional.of(originalArticle));
+    when(articleCommandService.updateArticle(eq(originalArticle), any()))
+        .thenReturn(updatedArticle);
     when(articleQueryService.findBySlug(eq(updatedArticle.getSlug()), eq(user)))
         .thenReturn(Optional.of(updatedArticleData));
 

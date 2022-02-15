@@ -3,11 +3,22 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
     id "com.netflix.dgs.codegen" version "5.0.6"
+    id "com.diffplug.spotless" version "6.2.1"
 }
 
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 targetCompatibility = '11'
+
+spotless {
+    java {
+        target project.fileTree(project.rootDir) {
+            include '**/*.java'
+            exclude 'build/generated/**/*.*', 'build/generated-examples/**/*.*'
+        }
+        googleJavaFormat()
+    }
+}
 
 repositories {
     mavenCentral()

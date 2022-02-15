@@ -62,9 +62,11 @@ public class ArticleApi {
               if (!AuthorizationService.canWriteArticle(user, article)) {
                 throw new NoAuthorizationException();
               }
-              Article updatedArticle = articleCommandService.updateArticle(article, updateArticleParam);
+              Article updatedArticle =
+                  articleCommandService.updateArticle(article, updateArticleParam);
               return ResponseEntity.ok(
-                  articleResponse(articleQueryService.findBySlug(updatedArticle.getSlug(), user).get()));
+                  articleResponse(
+                      articleQueryService.findBySlug(updatedArticle.getSlug(), user).get()));
             })
         .orElseThrow(ResourceNotFoundException::new);
   }

@@ -4,6 +4,6 @@ import lombok.Value;
 
 @Value
 public class ArticleFavoriteCount {
-    private String id;
-    private Integer count;
+  private String id;
+  private Integer count;
 }

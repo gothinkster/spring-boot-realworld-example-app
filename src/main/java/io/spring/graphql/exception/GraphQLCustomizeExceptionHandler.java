@@ -1,6 +1,5 @@
 package io.spring.graphql.exception;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.graphql.dgs.exceptions.DefaultDataFetcherExceptionHandler;
 import com.netflix.graphql.types.errors.ErrorType;
 import com.netflix.graphql.types.errors.TypedGraphQLError;
@@ -10,6 +9,8 @@ import graphql.execution.DataFetcherExceptionHandlerParameters;
 import graphql.execution.DataFetcherExceptionHandlerResult;
 import io.spring.api.exception.FieldErrorResource;
 import io.spring.api.exception.InvalidAuthenticationException;
+import io.spring.graphql.types.Error;
+import io.spring.graphql.types.ErrorItem;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -18,9 +19,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-
-import io.spring.graphql.types.Error;
-import io.spring.graphql.types.ErrorItem;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -34,7 +32,8 @@ public class GraphQLCustomizeExceptionHandler implements DataFetcherExceptionHan
       DataFetcherExceptionHandlerParameters handlerParameters) {
     if (handlerParameters.getException() instanceof InvalidAuthenticationException) {
       GraphQLError graphqlError =
-          TypedGraphQLError.newBuilder().errorType(ErrorType.UNAUTHENTICATED)
+          TypedGraphQLError.newBuilder()
+              .errorType(ErrorType.UNAUTHENTICATED)
               .message(handlerParameters.getException().getMessage())
               .path(handlerParameters.getPath())
               .build();
@@ -72,30 +71,25 @@ public class GraphQLCustomizeExceptionHandler implements DataFetcherExceptionHan
     List<FieldErrorResource> errors = new ArrayList<>();
     for (ConstraintViolation<?> violation : cve.getConstraintViolations()) {
       FieldErrorResource fieldErrorResource =
-              new FieldErrorResource(
-                      violation.getRootBeanClass().getName(),
-                      getParam(violation.getPropertyPath().toString()),
-                      violation
-                              .getConstraintDescriptor()
-                              .getAnnotation()
-                              .annotationType()
-                              .getSimpleName(),
-                      violation.getMessage());
+          new FieldErrorResource(
+              violation.getRootBeanClass().getName(),
+              getParam(violation.getPropertyPath().toString()),
+              violation.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName(),
+              violation.getMessage());
       errors.add(fieldErrorResource);
     }
     Map<String, List<String>> errorMap = new HashMap<>();
-    for (FieldErrorResource fieldErrorResource: errors) {
+    for (FieldErrorResource fieldErrorResource : errors) {
       if (!errorMap.containsKey(fieldErrorResource.getField())) {
         errorMap.put(fieldErrorResource.getField(), new ArrayList<>());
       }
       errorMap.get(fieldErrorResource.getField()).add(fieldErrorResource.getMessage());
     }
-    List<ErrorItem> errorItems = errorMap.entrySet().stream()
+    List<ErrorItem> errorItems =
+        errorMap.entrySet().stream()
             .map(kv -> ErrorItem.newBuilder().key(kv.getKey()).value(kv.getValue()).build())
             .collect(Collectors.toList());
-    return Error.newBuilder()
-            .message("BAD_REQUEST")
-            .errors(errorItems).build();
+    return Error.newBuilder().message("BAD_REQUEST").errors(errorItems).build();
   }
 
   private static String getParam(String s) {

@@ -1,20 +1,20 @@
 package io.spring.application.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-
 import java.util.List;
+import lombok.Getter;
 
 @Getter
 public class ArticleDataList {
-    @JsonProperty("articles")
-    private final List<ArticleData> articleDatas;
-    @JsonProperty("articlesCount")
-    private final int count;
+  @JsonProperty("articles")
+  private final List<ArticleData> articleDatas;
 
-    public ArticleDataList(List<ArticleData> articleDatas, int count) {
+  @JsonProperty("articlesCount")
+  private final int count;
 
-        this.articleDatas = articleDatas;
-        this.count = count;
-    }
+  public ArticleDataList(List<ArticleData> articleDatas, int count) {
+
+    this.articleDatas = articleDatas;
+    this.count = count;
+  }
 }

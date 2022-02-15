@@ -17,15 +17,13 @@ import io.spring.graphql.exception.GraphQLCustomizeExceptionHandler;
 import io.spring.graphql.types.CreateUserInput;
 import io.spring.graphql.types.UpdateUserInput;
 import io.spring.graphql.types.UserPayload;
-import java.util.Optional;
-
 import io.spring.graphql.types.UserResult;
+import java.util.Optional;
+import javax.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import javax.validation.ConstraintViolationException;
 
 @DgsComponent
 public class UserMutation {
@@ -50,7 +48,9 @@ public class UserMutation {
     try {
       user = userService.createUser(registerParam);
     } catch (ConstraintViolationException cve) {
-      return DataFetcherResult.<UserResult>newResult().data(GraphQLCustomizeExceptionHandler.getErrorsAsData(cve)).build();
+      return DataFetcherResult.<UserResult>newResult()
+          .data(GraphQLCustomizeExceptionHandler.getErrorsAsData(cve))
+          .build();
     }
 
     return DataFetcherResult.<UserResult>newResult()

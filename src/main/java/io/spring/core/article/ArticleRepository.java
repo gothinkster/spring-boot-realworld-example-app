@@ -4,12 +4,11 @@ import java.util.Optional;
 
 public interface ArticleRepository {
 
-    void save(Article article);
+  void save(Article article);
 
-    Optional<Article> findById(String id);
+  Optional<Article> findById(String id);
 
-    Optional<Article> findBySlug(String slug);
+  Optional<Article> findBySlug(String slug);
 
-
-    void remove(Article article);
+  void remove(Article article);
 }
