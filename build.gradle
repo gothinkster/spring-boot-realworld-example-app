@@ -35,8 +35,8 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
-    testImplementation 'io.rest-assured:rest-assured:3.1.1'
-    testImplementation 'io.rest-assured:spring-mock-mvc:3.1.1'
+    testImplementation 'io.rest-assured:rest-assured:3.3.0'
+    testImplementation 'io.rest-assured:spring-mock-mvc:3.3.0'
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.junit.vintage:junit-vintage-engine'
