@@ -57,7 +57,8 @@ Alternatively, you can run
 
 You'll need Docker installed.
 	
-	docker-compose up -d
+  ./gradlew bootBuildImage --imageName spring-boot-realworld-example-app
+  docker run -p 8081:8080 spring-boot-realworld-example-app
 
 # Try it out with a RealWorld frontend
 
