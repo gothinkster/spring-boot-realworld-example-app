@@ -22,8 +22,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -44,7 +44,7 @@ public class CommentsApiTest extends TestWithCurrentUser {
   private Comment comment;
   @Autowired private MockMvc mvc;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     RestAssuredMockMvc.mockMvc(mvc);
     super.setUp();

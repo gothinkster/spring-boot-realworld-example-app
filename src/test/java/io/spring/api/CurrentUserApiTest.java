@@ -16,8 +16,8 @@ import io.spring.infrastructure.service.NaiveEncryptService;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -40,7 +40,7 @@ public class CurrentUserApiTest extends TestWithCurrentUser {
   @MockBean private UserQueryService userQueryService;
 
   @Override
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     super.setUp();
     RestAssuredMockMvc.mockMvc(mvc);

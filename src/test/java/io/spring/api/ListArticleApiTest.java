@@ -14,8 +14,8 @@ import io.spring.application.Page;
 import io.spring.application.article.ArticleCommandService;
 import io.spring.application.data.ArticleDataList;
 import io.spring.core.article.ArticleRepository;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -34,7 +34,7 @@ public class ListArticleApiTest extends TestWithCurrentUser {
   @Autowired private MockMvc mvc;
 
   @Override
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     super.setUp();
     RestAssuredMockMvc.mockMvc(mvc);

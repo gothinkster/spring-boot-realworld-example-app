@@ -1,7 +1,5 @@
 package io.spring.application.profile;
 
-import static org.junit.Assert.assertTrue;
-
 import io.spring.application.ProfileQueryService;
 import io.spring.application.data.ProfileData;
 import io.spring.core.user.User;
@@ -9,7 +7,8 @@ import io.spring.core.user.UserRepository;
 import io.spring.infrastructure.DbTestBase;
 import io.spring.infrastructure.repository.MyBatisUserRepository;
 import java.util.Optional;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 
@@ -26,6 +25,6 @@ public class ProfileQueryServiceTest extends DbTestBase {
 
     Optional<ProfileData> optional =
         profileQueryService.findByUsername(profileUser.getUsername(), currentUser);
-    assertTrue(optional.isPresent());
+    Assertions.assertTrue(optional.isPresent());
   }
 }

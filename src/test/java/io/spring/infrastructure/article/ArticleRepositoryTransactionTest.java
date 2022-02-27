@@ -1,25 +1,21 @@
 package io.spring.infrastructure.article;
 
-import static org.junit.Assert.assertNull;
-
 import io.spring.core.article.Article;
 import io.spring.core.article.ArticleRepository;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
 import io.spring.infrastructure.mybatis.mapper.ArticleMapper;
 import java.util.Arrays;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 @ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@RunWith(SpringRunner.class)
 public class ArticleRepositoryTransactionTest {
   @Autowired private ArticleRepository articleRepository;
 
@@ -39,7 +35,7 @@ public class ArticleRepositoryTransactionTest {
     try {
       articleRepository.save(anotherArticle);
     } catch (Exception e) {
-      assertNull(articleMapper.findTag("other"));
+      Assertions.assertNull(articleMapper.findTag("other"));
     }
   }
 }

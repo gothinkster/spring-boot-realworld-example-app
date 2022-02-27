@@ -1,14 +1,12 @@
 package io.spring.infrastructure.comment;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import io.spring.core.comment.Comment;
 import io.spring.core.comment.CommentRepository;
 import io.spring.infrastructure.DbTestBase;
 import io.spring.infrastructure.repository.MyBatisCommentRepository;
 import java.util.Optional;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 
@@ -22,7 +20,7 @@ public class MyBatisCommentRepositoryTest extends DbTestBase {
     commentRepository.save(comment);
 
     Optional<Comment> optional = commentRepository.findById("456", comment.getId());
-    assertTrue(optional.isPresent());
-    assertEquals(optional.get(), comment);
+    Assertions.assertTrue(optional.isPresent());
+    Assertions.assertEquals(optional.get(), comment);
   }
 }

@@ -1,10 +1,5 @@
 package io.spring.infrastructure.article;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
-
 import io.spring.core.article.Article;
 import io.spring.core.article.ArticleRepository;
 import io.spring.core.article.Tag;
@@ -15,8 +10,9 @@ import io.spring.infrastructure.repository.MyBatisArticleRepository;
 import io.spring.infrastructure.repository.MyBatisUserRepository;
 import java.util.Arrays;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 
@@ -28,7 +24,7 @@ public class MyBatisArticleRepositoryTest extends DbTestBase {
 
   private Article article;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     User user = new User("aisensiy@gmail.com", "aisensiy", "123", "bio", "default");
     userRepository.save(user);
@@ -39,10 +35,10 @@ public class MyBatisArticleRepositoryTest extends DbTestBase {
   public void should_create_and_fetch_article_success() {
     articleRepository.save(article);
     Optional<Article> optional = articleRepository.findById(article.getId());
-    assertTrue(optional.isPresent());
-    assertEquals(optional.get(), article);
-    assertTrue(optional.get().getTags().contains(new Tag("java")));
-    assertTrue(optional.get().getTags().contains(new Tag("spring")));
+    Assertions.assertTrue(optional.isPresent());
+    Assertions.assertEquals(optional.get(), article);
+    Assertions.assertTrue(optional.get().getTags().contains(new Tag("java")));
+    Assertions.assertTrue(optional.get().getTags().contains(new Tag("spring")));
   }
 
   @Test
@@ -54,10 +50,10 @@ public class MyBatisArticleRepositoryTest extends DbTestBase {
     articleRepository.save(article);
     System.out.println(article.getSlug());
     Optional<Article> optional = articleRepository.findBySlug(article.getSlug());
-    assertTrue(optional.isPresent());
+    Assertions.assertTrue(optional.isPresent());
     Article fetched = optional.get();
-    assertEquals(fetched.getTitle(), newTitle);
-    assertNotEquals(fetched.getBody(), "");
+    Assertions.assertEquals(fetched.getTitle(), newTitle);
+    Assertions.assertNotEquals(fetched.getBody(), "");
   }
 
   @Test
@@ -65,6 +61,6 @@ public class MyBatisArticleRepositoryTest extends DbTestBase {
     articleRepository.save(article);
 
     articleRepository.remove(article);
-    assertFalse(articleRepository.findById(article.getId()).isPresent());
+    Assertions.assertFalse(articleRepository.findById(article.getId()).isPresent());
   }
 }

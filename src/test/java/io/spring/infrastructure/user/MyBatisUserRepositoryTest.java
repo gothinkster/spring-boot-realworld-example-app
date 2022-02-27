@@ -1,17 +1,14 @@
 package io.spring.infrastructure.user;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import io.spring.core.user.FollowRelation;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
 import io.spring.infrastructure.DbTestBase;
 import io.spring.infrastructure.repository.MyBatisUserRepository;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 
@@ -20,7 +17,7 @@ public class MyBatisUserRepositoryTest extends DbTestBase {
   @Autowired private UserRepository userRepository;
   private User user;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     user = new User("aisensiy@163.com", "aisensiy", "123", "", "default");
   }
@@ -29,9 +26,9 @@ public class MyBatisUserRepositoryTest extends DbTestBase {
   public void should_save_and_fetch_user_success() {
     userRepository.save(user);
     Optional<User> userOptional = userRepository.findByUsername("aisensiy");
-    assertEquals(userOptional.get(), user);
+    Assertions.assertEquals(userOptional.get(), user);
     Optional<User> userOptional2 = userRepository.findByEmail("aisensiy@163.com");
-    assertEquals(userOptional2.get(), user);
+    Assertions.assertEquals(userOptional2.get(), user);
   }
 
   @Test
@@ -40,16 +37,16 @@ public class MyBatisUserRepositoryTest extends DbTestBase {
     user.update(newEmail, "", "", "", "");
     userRepository.save(user);
     Optional<User> optional = userRepository.findByUsername(user.getUsername());
-    assertTrue(optional.isPresent());
-    assertEquals(optional.get().getEmail(), newEmail);
+    Assertions.assertTrue(optional.isPresent());
+    Assertions.assertEquals(optional.get().getEmail(), newEmail);
 
     String newUsername = "newUsername";
     user.update("", newUsername, "", "", "");
     userRepository.save(user);
     optional = userRepository.findByEmail(user.getEmail());
-    assertTrue(optional.isPresent());
-    assertEquals(optional.get().getUsername(), newUsername);
-    assertEquals(optional.get().getImage(), user.getImage());
+    Assertions.assertTrue(optional.isPresent());
+    Assertions.assertEquals(optional.get().getUsername(), newUsername);
+    Assertions.assertEquals(optional.get().getImage(), user.getImage());
   }
 
   @Test
@@ -59,7 +56,7 @@ public class MyBatisUserRepositoryTest extends DbTestBase {
 
     FollowRelation followRelation = new FollowRelation(user.getId(), other.getId());
     userRepository.saveRelation(followRelation);
-    assertTrue(userRepository.findRelation(user.getId(), other.getId()).isPresent());
+    Assertions.assertTrue(userRepository.findRelation(user.getId(), other.getId()).isPresent());
   }
 
   @Test
@@ -71,6 +68,6 @@ public class MyBatisUserRepositoryTest extends DbTestBase {
     userRepository.saveRelation(followRelation);
 
     userRepository.removeRelation(followRelation);
-    assertFalse(userRepository.findRelation(user.getId(), other.getId()).isPresent());
+    Assertions.assertFalse(userRepository.findRelation(user.getId(), other.getId()).isPresent());
   }
 }

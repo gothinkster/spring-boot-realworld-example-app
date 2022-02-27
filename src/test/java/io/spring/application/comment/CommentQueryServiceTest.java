@@ -1,8 +1,5 @@
 package io.spring.application.comment;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import io.spring.application.CommentQueryService;
 import io.spring.application.data.CommentData;
 import io.spring.core.article.Article;
@@ -19,8 +16,9 @@ import io.spring.infrastructure.repository.MyBatisUserRepository;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 
@@ -41,7 +39,7 @@ public class CommentQueryServiceTest extends DbTestBase {
 
   private User user;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     user = new User("aisensiy@test.com", "aisensiy", "123", "", "");
     userRepository.save(user);
@@ -53,9 +51,9 @@ public class CommentQueryServiceTest extends DbTestBase {
     commentRepository.save(comment);
 
     Optional<CommentData> optional = commentQueryService.findById(comment.getId(), user);
-    assertTrue(optional.isPresent());
+    Assertions.assertTrue(optional.isPresent());
     CommentData commentData = optional.get();
-    assertEquals(commentData.getProfileData().getUsername(), user.getUsername());
+    Assertions.assertEquals(commentData.getProfileData().getUsername(), user.getUsername());
   }
 
   @Test
@@ -73,6 +71,6 @@ public class CommentQueryServiceTest extends DbTestBase {
     commentRepository.save(comment2);
 
     List<CommentData> comments = commentQueryService.findByArticleId(article.getId(), user);
-    assertEquals(comments.size(), 2);
+    Assertions.assertEquals(comments.size(), 2);
   }
 }

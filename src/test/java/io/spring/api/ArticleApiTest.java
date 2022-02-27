@@ -26,8 +26,8 @@ import java.util.Map;
 import java.util.Optional;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -46,7 +46,7 @@ public class ArticleApiTest extends TestWithCurrentUser {
   @MockBean ArticleCommandService articleCommandService;
 
   @Override
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     super.setUp();
     RestAssuredMockMvc.mockMvc(mvc);
