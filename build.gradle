@@ -55,7 +55,13 @@ dependencies {
 }
 
 tasks.named('test') {
-	  useJUnitPlatform()
+	useJUnitPlatform()
+}
+
+tasks.named('clean') {
+    doFirst {
+        delete './dev.db'
+    }
 }
 
 tasks.named('generateJava') {
