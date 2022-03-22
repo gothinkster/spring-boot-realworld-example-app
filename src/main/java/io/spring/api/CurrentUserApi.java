@@ -10,7 +10,7 @@ import io.spring.core.user.User;
 import java.util.HashMap;
 import java.util.Map;
 import javax.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,16 +22,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = "/user")
+@AllArgsConstructor
 public class CurrentUserApi {
 
   private UserQueryService userQueryService;
   private UserService userService;
-
-  @Autowired
-  public CurrentUserApi(UserQueryService userQueryService, UserService userService) {
-    this.userQueryService = userQueryService;
-    this.userService = userService;
-  }
 
   @GetMapping
   public ResponseEntity currentUser(

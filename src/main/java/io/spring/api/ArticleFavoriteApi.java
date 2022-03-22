@@ -9,7 +9,7 @@ import io.spring.core.favorite.ArticleFavorite;
 import io.spring.core.favorite.ArticleFavoriteRepository;
 import io.spring.core.user.User;
 import java.util.HashMap;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,20 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = "articles/{slug}/favorite")
+@AllArgsConstructor
 public class ArticleFavoriteApi {
   private ArticleFavoriteRepository articleFavoriteRepository;
   private ArticleRepository articleRepository;
   private ArticleQueryService articleQueryService;
-
-  @Autowired
-  public ArticleFavoriteApi(
-      ArticleFavoriteRepository articleFavoriteRepository,
-      ArticleRepository articleRepository,
-      ArticleQueryService articleQueryService) {
-    this.articleFavoriteRepository = articleFavoriteRepository;
-    this.articleRepository = articleRepository;
-    this.articleQueryService = articleQueryService;
-  }
 
   @PostMapping
   public ResponseEntity favoriteArticle(

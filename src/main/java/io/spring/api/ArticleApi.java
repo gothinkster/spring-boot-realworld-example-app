@@ -13,7 +13,7 @@ import io.spring.core.user.User;
 import java.util.HashMap;
 import java.util.Map;
 import javax.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,20 +26,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = "/articles/{slug}")
+@AllArgsConstructor
 public class ArticleApi {
   private ArticleQueryService articleQueryService;
   private ArticleRepository articleRepository;
   private ArticleCommandService articleCommandService;
-
-  @Autowired
-  public ArticleApi(
-      ArticleQueryService articleQueryService,
-      ArticleRepository articleRepository,
-      ArticleCommandService articleCommandService) {
-    this.articleQueryService = articleQueryService;
-    this.articleRepository = articleRepository;
-    this.articleCommandService = articleCommandService;
-  }
 
   @GetMapping
   public ResponseEntity<?> article(

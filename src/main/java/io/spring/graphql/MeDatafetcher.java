@@ -12,22 +12,17 @@ import io.spring.core.service.JwtService;
 import io.spring.graphql.DgsConstants.QUERY;
 import io.spring.graphql.DgsConstants.USERPAYLOAD;
 import io.spring.graphql.types.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 @DgsComponent
+@AllArgsConstructor
 public class MeDatafetcher {
   private UserQueryService userQueryService;
   private JwtService jwtService;
-
-  @Autowired
-  public MeDatafetcher(UserQueryService userQueryService, JwtService jwtService) {
-    this.userQueryService = userQueryService;
-    this.jwtService = jwtService;
-  }
 
   @DgsData(parentType = DgsConstants.QUERY_TYPE, field = QUERY.Me)
   public DataFetcherResult<User> getMe(

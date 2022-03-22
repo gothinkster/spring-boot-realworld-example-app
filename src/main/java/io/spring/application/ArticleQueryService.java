@@ -16,25 +16,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import lombok.AllArgsConstructor;
 import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class ArticleQueryService {
   private ArticleReadService articleReadService;
   private UserRelationshipQueryService userRelationshipQueryService;
   private ArticleFavoritesReadService articleFavoritesReadService;
-
-  @Autowired
-  public ArticleQueryService(
-      ArticleReadService articleReadService,
-      UserRelationshipQueryService userRelationshipQueryService,
-      ArticleFavoritesReadService articleFavoritesReadService) {
-    this.articleReadService = articleReadService;
-    this.userRelationshipQueryService = userRelationshipQueryService;
-    this.articleFavoritesReadService = articleFavoritesReadService;
-  }
 
   public Optional<ArticleData> findById(String id, User user) {
     ArticleData articleData = articleReadService.findById(id);

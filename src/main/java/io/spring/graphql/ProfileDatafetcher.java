@@ -19,17 +19,13 @@ import io.spring.graphql.types.Comment;
 import io.spring.graphql.types.Profile;
 import io.spring.graphql.types.ProfilePayload;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 
 @DgsComponent
+@AllArgsConstructor
 public class ProfileDatafetcher {
 
   private ProfileQueryService profileQueryService;
-
-  @Autowired
-  public ProfileDatafetcher(ProfileQueryService profileQueryService) {
-    this.profileQueryService = profileQueryService;
-  }
 
   @DgsData(parentType = USER.TYPE_NAME, field = USER.Profile)
   public Profile getUserProfile(DataFetchingEnvironment dataFetchingEnvironment) {

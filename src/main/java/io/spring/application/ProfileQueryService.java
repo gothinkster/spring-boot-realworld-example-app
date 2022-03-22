@@ -6,20 +6,14 @@ import io.spring.core.user.User;
 import io.spring.infrastructure.mybatis.readservice.UserReadService;
 import io.spring.infrastructure.mybatis.readservice.UserRelationshipQueryService;
 import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@AllArgsConstructor
 public class ProfileQueryService {
   private UserReadService userReadService;
   private UserRelationshipQueryService userRelationshipQueryService;
-
-  @Autowired
-  public ProfileQueryService(
-      UserReadService userReadService, UserRelationshipQueryService userRelationshipQueryService) {
-    this.userReadService = userReadService;
-    this.userRelationshipQueryService = userRelationshipQueryService;
-  }
 
   public Optional<ProfileData> findByUsername(String username, User currentUser) {
     UserData userData = userReadService.findByUsername(username);

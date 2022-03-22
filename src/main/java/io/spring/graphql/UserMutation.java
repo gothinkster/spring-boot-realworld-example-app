@@ -20,25 +20,18 @@ import io.spring.graphql.types.UserPayload;
 import io.spring.graphql.types.UserResult;
 import java.util.Optional;
 import javax.validation.ConstraintViolationException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 @DgsComponent
+@AllArgsConstructor
 public class UserMutation {
 
   private UserRepository userRepository;
   private EncryptService encryptService;
   private UserService userService;
-
-  @Autowired
-  public UserMutation(
-      UserRepository userRepository, EncryptService encryptService, UserService userService) {
-    this.userRepository = userRepository;
-    this.encryptService = encryptService;
-    this.userService = userService;
-  }
 
   @DgsData(parentType = MUTATION.TYPE_NAME, field = MUTATION.CreateUser)
   public DataFetcherResult<UserResult> createUser(@InputArgument("input") CreateUserInput input) {

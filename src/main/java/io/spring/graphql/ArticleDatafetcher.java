@@ -3,6 +3,7 @@ package io.spring.graphql;
 import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsData;
 import com.netflix.graphql.dgs.DgsDataFetchingEnvironment;
+import com.netflix.graphql.dgs.DgsQuery;
 import com.netflix.graphql.dgs.InputArgument;
 import graphql.execution.DataFetcherResult;
 import graphql.relay.DefaultConnectionCursor;
@@ -28,23 +29,17 @@ import io.spring.graphql.types.ArticlesConnection;
 import io.spring.graphql.types.Profile;
 import java.util.HashMap;
 import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
 import org.joda.time.format.ISODateTimeFormat;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @DgsComponent
+@AllArgsConstructor
 public class ArticleDatafetcher {
 
   private ArticleQueryService articleQueryService;
   private UserRepository userRepository;
 
-  @Autowired
-  public ArticleDatafetcher(
-      ArticleQueryService articleQueryService, UserRepository userRepository) {
-    this.articleQueryService = articleQueryService;
-    this.userRepository = userRepository;
-  }
-
-  @DgsData(parentType = DgsConstants.QUERY_TYPE, field = QUERY.Feed)
+  @DgsQuery(field = QUERY.Feed)
   public DataFetcherResult<ArticlesConnection> getFeed(
       @InputArgument("first") Integer first,
       @InputArgument("after") String after,
@@ -344,7 +339,7 @@ public class ArticleDatafetcher {
         .build();
   }
 
-  @DgsData(parentType = DgsConstants.QUERY_TYPE, field = QUERY.Article)
+  @DgsQuery(field = QUERY.Article)
   public DataFetcherResult<Article> findArticleBySlug(@InputArgument("slug") String slug) {
     User current = SecurityUtil.getCurrentUser().orElse(null);
     ArticleData articleData =

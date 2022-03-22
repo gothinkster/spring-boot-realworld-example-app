@@ -24,17 +24,13 @@ import io.spring.graphql.types.CommentsConnection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
 import org.joda.time.format.ISODateTimeFormat;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @DgsComponent
+@AllArgsConstructor
 public class CommentDatafetcher {
   private CommentQueryService commentQueryService;
-
-  @Autowired
-  public CommentDatafetcher(CommentQueryService commentQueryService) {
-    this.commentQueryService = commentQueryService;
-  }
 
   @DgsData(parentType = COMMENTPAYLOAD.TYPE_NAME, field = COMMENTPAYLOAD.Comment)
   public DataFetcherResult<Comment> getComment(DgsDataFetchingEnvironment dfe) {

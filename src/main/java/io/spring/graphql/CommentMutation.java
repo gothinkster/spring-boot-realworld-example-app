@@ -18,24 +18,15 @@ import io.spring.graphql.DgsConstants.MUTATION;
 import io.spring.graphql.exception.AuthenticationException;
 import io.spring.graphql.types.CommentPayload;
 import io.spring.graphql.types.DeletionStatus;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 
 @DgsComponent
+@AllArgsConstructor
 public class CommentMutation {
 
   private ArticleRepository articleRepository;
   private CommentRepository commentRepository;
   private CommentQueryService commentQueryService;
-
-  @Autowired
-  public CommentMutation(
-      ArticleRepository articleRepository,
-      CommentRepository commentRepository,
-      CommentQueryService commentQueryService) {
-    this.articleRepository = articleRepository;
-    this.commentRepository = commentRepository;
-    this.commentQueryService = commentQueryService;
-  }
 
   @DgsData(parentType = MUTATION.TYPE_NAME, field = MUTATION.AddComment)
   public DataFetcherResult<CommentPayload> createComment(

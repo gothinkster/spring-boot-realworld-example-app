@@ -1,7 +1,7 @@
 package io.spring.graphql;
 
 import com.netflix.graphql.dgs.DgsComponent;
-import com.netflix.graphql.dgs.DgsData;
+import com.netflix.graphql.dgs.DgsMutation;
 import com.netflix.graphql.dgs.InputArgument;
 import graphql.execution.DataFetcherResult;
 import io.spring.api.exception.NoAuthorizationException;
@@ -22,26 +22,17 @@ import io.spring.graphql.types.CreateArticleInput;
 import io.spring.graphql.types.DeletionStatus;
 import io.spring.graphql.types.UpdateArticleInput;
 import java.util.Collections;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 
 @DgsComponent
+@AllArgsConstructor
 public class ArticleMutation {
 
   private ArticleCommandService articleCommandService;
   private ArticleFavoriteRepository articleFavoriteRepository;
   private ArticleRepository articleRepository;
 
-  @Autowired
-  public ArticleMutation(
-      ArticleCommandService articleCommandService,
-      ArticleFavoriteRepository articleFavoriteRepository,
-      ArticleRepository articleRepository) {
-    this.articleCommandService = articleCommandService;
-    this.articleFavoriteRepository = articleFavoriteRepository;
-    this.articleRepository = articleRepository;
-  }
-
-  @DgsData(parentType = MUTATION.TYPE_NAME, field = MUTATION.CreateArticle)
+  @DgsMutation(field = MUTATION.CreateArticle)
   public DataFetcherResult<ArticlePayload> createArticle(
       @InputArgument("input") CreateArticleInput input) {
     User user = SecurityUtil.getCurrentUser().orElseThrow(AuthenticationException::new);
@@ -59,7 +50,7 @@ public class ArticleMutation {
         .build();
   }
 
-  @DgsData(parentType = MUTATION.TYPE_NAME, field = MUTATION.UpdateArticle)
+  @DgsMutation(field = MUTATION.UpdateArticle)
   public DataFetcherResult<ArticlePayload> updateArticle(
       @InputArgument("slug") String slug, @InputArgument("changes") UpdateArticleInput params) {
     Article article =
@@ -78,7 +69,7 @@ public class ArticleMutation {
         .build();
   }
 
-  @DgsData(parentType = MUTATION.TYPE_NAME, field = MUTATION.FavoriteArticle)
+  @DgsMutation(field = MUTATION.FavoriteArticle)
   public DataFetcherResult<ArticlePayload> favoriteArticle(@InputArgument("slug") String slug) {
     User user = SecurityUtil.getCurrentUser().orElseThrow(AuthenticationException::new);
     Article article =
@@ -91,7 +82,7 @@ public class ArticleMutation {
         .build();
   }
 
-  @DgsData(parentType = MUTATION.TYPE_NAME, field = MUTATION.UnfavoriteArticle)
+  @DgsMutation(field = MUTATION.UnfavoriteArticle)
   public DataFetcherResult<ArticlePayload> unfavoriteArticle(@InputArgument("slug") String slug) {
     User user = SecurityUtil.getCurrentUser().orElseThrow(AuthenticationException::new);
     Article article =
@@ -108,7 +99,7 @@ public class ArticleMutation {
         .build();
   }
 
-  @DgsData(parentType = MUTATION.TYPE_NAME, field = MUTATION.DeleteArticle)
+  @DgsMutation(field = MUTATION.DeleteArticle)
   public DeletionStatus deleteArticle(@InputArgument("slug") String slug) {
     User user = SecurityUtil.getCurrentUser().orElseThrow(AuthenticationException::new);
     Article article =

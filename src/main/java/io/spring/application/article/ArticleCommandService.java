@@ -4,20 +4,16 @@ import io.spring.core.article.Article;
 import io.spring.core.article.ArticleRepository;
 import io.spring.core.user.User;
 import javax.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 @Service
 @Validated
+@AllArgsConstructor
 public class ArticleCommandService {
 
   private ArticleRepository articleRepository;
-
-  @Autowired
-  public ArticleCommandService(ArticleRepository articleRepository) {
-    this.articleRepository = articleRepository;
-  }
 
   public Article createArticle(@Valid NewArticleParam newArticleParam, User creator) {
     Article article =

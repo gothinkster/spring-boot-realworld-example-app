@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.Map;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,20 +31,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = "/articles/{slug}/comments")
+@AllArgsConstructor
 public class CommentsApi {
   private ArticleRepository articleRepository;
   private CommentRepository commentRepository;
   private CommentQueryService commentQueryService;
-
-  @Autowired
-  public CommentsApi(
-      ArticleRepository articleRepository,
-      CommentRepository commentRepository,
-      CommentQueryService commentQueryService) {
-    this.articleRepository = articleRepository;
-    this.commentRepository = commentRepository;
-    this.commentQueryService = commentQueryService;
-  }
 
   @PostMapping
   public ResponseEntity<?> createComment(

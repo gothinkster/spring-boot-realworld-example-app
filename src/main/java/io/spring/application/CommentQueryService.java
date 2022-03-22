@@ -10,20 +10,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class CommentQueryService {
   private CommentReadService commentReadService;
   private UserRelationshipQueryService userRelationshipQueryService;
-
-  public CommentQueryService(
-      CommentReadService commentReadService,
-      UserRelationshipQueryService userRelationshipQueryService) {
-    this.commentReadService = commentReadService;
-    this.userRelationshipQueryService = userRelationshipQueryService;
-  }
 
   public Optional<CommentData> findById(String id, User user) {
     CommentData commentData = commentReadService.findById(id);

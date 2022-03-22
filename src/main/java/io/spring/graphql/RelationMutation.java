@@ -13,19 +13,14 @@ import io.spring.graphql.DgsConstants.MUTATION;
 import io.spring.graphql.exception.AuthenticationException;
 import io.spring.graphql.types.Profile;
 import io.spring.graphql.types.ProfilePayload;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 
 @DgsComponent
+@AllArgsConstructor
 public class RelationMutation {
 
   private UserRepository userRepository;
   private ProfileQueryService profileQueryService;
-
-  @Autowired
-  public RelationMutation(UserRepository userRepository, ProfileQueryService profileQueryService) {
-    this.userRepository = userRepository;
-    this.profileQueryService = profileQueryService;
-  }
 
   @DgsData(parentType = MUTATION.TYPE_NAME, field = MUTATION.FollowUser)
   public ProfilePayload follow(@InputArgument("username") String username) {

@@ -19,35 +19,22 @@ import java.util.Optional;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@AllArgsConstructor
 public class UsersApi {
   private UserRepository userRepository;
   private UserQueryService userQueryService;
   private EncryptService encryptService;
   private JwtService jwtService;
   private UserService userService;
-
-  @Autowired
-  public UsersApi(
-      UserRepository userRepository,
-      UserQueryService userQueryService,
-      EncryptService encryptService,
-      JwtService jwtService,
-      UserService userService) {
-    this.userRepository = userRepository;
-    this.userQueryService = userQueryService;
-    this.encryptService = encryptService;
-    this.jwtService = jwtService;
-    this.userService = userService;
-  }
 
   @RequestMapping(path = "/users", method = POST)
   public ResponseEntity createUser(@Valid @RequestBody RegisterParam registerParam) {
