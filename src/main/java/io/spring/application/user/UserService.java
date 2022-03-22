@@ -1,6 +1,5 @@
 package io.spring.application.user;
 
-import io.spring.core.user.EncryptService;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
 import java.lang.annotation.Retention;
@@ -11,6 +10,7 @@ import javax.validation.ConstraintValidatorContext;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -19,16 +19,16 @@ import org.springframework.validation.annotation.Validated;
 public class UserService {
   private UserRepository userRepository;
   private String defaultImage;
-  private EncryptService encryptService;
+  private PasswordEncoder passwordEncoder;
 
   @Autowired
   public UserService(
       UserRepository userRepository,
       @Value("${image.default}") String defaultImage,
-      EncryptService encryptService) {
+      PasswordEncoder passwordEncoder) {
     this.userRepository = userRepository;
     this.defaultImage = defaultImage;
-    this.encryptService = encryptService;
+    this.passwordEncoder = passwordEncoder;
   }
 
   public User createUser(@Valid RegisterParam registerParam) {
@@ -36,7 +36,7 @@ public class UserService {
         new User(
             registerParam.getEmail(),
             registerParam.getUsername(),
-            encryptService.encrypt(registerParam.getPassword()),
+            passwordEncoder.encode(registerParam.getPassword()),
             "",
             defaultImage);
     userRepository.save(user);

@@ -9,7 +9,6 @@ import io.spring.application.user.RegisterParam;
 import io.spring.application.user.UpdateUserCommand;
 import io.spring.application.user.UpdateUserParam;
 import io.spring.application.user.UserService;
-import io.spring.core.user.EncryptService;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
 import io.spring.graphql.DgsConstants.MUTATION;
@@ -24,13 +23,14 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @DgsComponent
 @AllArgsConstructor
 public class UserMutation {
 
   private UserRepository userRepository;
-  private EncryptService encryptService;
+  private PasswordEncoder encryptService;
   private UserService userService;
 
   @DgsData(parentType = MUTATION.TYPE_NAME, field = MUTATION.CreateUser)
@@ -56,7 +56,7 @@ public class UserMutation {
   public DataFetcherResult<UserPayload> login(
       @InputArgument("password") String password, @InputArgument("email") String email) {
     Optional<User> optional = userRepository.findByEmail(email);
-    if (optional.isPresent() && encryptService.check(password, optional.get().getPassword())) {
+    if (optional.isPresent() && encryptService.matches(password, optional.get().getPassword())) {
       return DataFetcherResult.<UserPayload>newResult()
           .data(UserPayload.newBuilder().build())
           .localContext(optional.get())

@@ -12,7 +12,6 @@ import io.spring.api.security.WebSecurityConfig;
 import io.spring.application.UserQueryService;
 import io.spring.application.user.UserService;
 import io.spring.core.user.User;
-import io.spring.infrastructure.service.NaiveEncryptService;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -23,6 +22,7 @@ import org.springframework.boot.autoconfigure.validation.ValidationAutoConfigura
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(CurrentUserApi.class)
@@ -31,7 +31,7 @@ import org.springframework.test.web.servlet.MockMvc;
   JacksonCustomizations.class,
   UserService.class,
   ValidationAutoConfiguration.class,
-  NaiveEncryptService.class
+  BCryptPasswordEncoder.class
 })
 public class CurrentUserApiTest extends TestWithCurrentUser {
 

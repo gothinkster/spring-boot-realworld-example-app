@@ -17,7 +17,6 @@ import io.spring.core.service.JwtService;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
 import io.spring.infrastructure.mybatis.readservice.UserReadService;
-import io.spring.infrastructure.service.NaiveEncryptService;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -27,13 +26,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(UsersApi.class)
 @Import({
   WebSecurityConfig.class,
   UserQueryService.class,
-  NaiveEncryptService.class,
+  BCryptPasswordEncoder.class,
   JacksonCustomizations.class
 })
 public class UsersApiTest {
@@ -46,6 +47,8 @@ public class UsersApiTest {
   @MockBean private UserReadService userReadService;
 
   @MockBean private UserService userService;
+
+  @Autowired private PasswordEncoder passwordEncoder;
 
   private String defaultAvatar;
 
@@ -192,7 +195,7 @@ public class UsersApiTest {
     String username = "johnjacob2";
     String password = "123";
 
-    User user = new User(email, username, password, "", defaultAvatar);
+    User user = new User(email, username, passwordEncoder.encode(password), "", defaultAvatar);
     UserData userData = new UserData("123", email, username, "", defaultAvatar);
 
     when(userRepository.findByEmail(eq(email))).thenReturn(Optional.of(user));

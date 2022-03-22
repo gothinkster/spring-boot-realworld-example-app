@@ -10,7 +10,6 @@ import io.spring.application.data.UserWithToken;
 import io.spring.application.user.RegisterParam;
 import io.spring.application.user.UserService;
 import io.spring.core.service.JwtService;
-import io.spring.core.user.EncryptService;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
 import java.util.HashMap;
@@ -23,6 +22,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UsersApi {
   private UserRepository userRepository;
   private UserQueryService userQueryService;
-  private EncryptService encryptService;
+  private PasswordEncoder passwordEncoder;
   private JwtService jwtService;
   private UserService userService;
 
@@ -48,7 +48,7 @@ public class UsersApi {
   public ResponseEntity userLogin(@Valid @RequestBody LoginParam loginParam) {
     Optional<User> optional = userRepository.findByEmail(loginParam.getEmail());
     if (optional.isPresent()
-        && encryptService.check(loginParam.getPassword(), optional.get().getPassword())) {
+        && passwordEncoder.matches(loginParam.getPassword(), optional.get().getPassword())) {
       UserData userData = userQueryService.findById(optional.get().getId()).get();
       return ResponseEntity.ok(
           userResponse(new UserWithToken(userData, jwtService.toToken(optional.get()))));
