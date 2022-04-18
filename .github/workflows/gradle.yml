@@ -37,7 +37,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
       run: ./gradlew build --info
     - uses: azure/webapps-deploy@v2
-        with:
-          app-name: helloworld
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }} 
-          package: '${{ github.workspace }}/target/*.jar'
+      with:
+        app-name: helloworld
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }} 
+        package: '${{ github.workspace }}/target/*.jar'
