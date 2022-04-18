@@ -45,6 +45,8 @@ jobs:
         ls -lah
         cd build
         ls -lah
+        cd libs
+        ls -lah
     #- uses: azure/webapps-deploy@v2
     #  with:
     #    app-name: sample-demo-app
