@@ -3,7 +3,7 @@ name: Java CI
 on:
   push:
     branches:
-      - '**'
+      - 'rach-test'
     tags:
       - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
   pull_request:
@@ -22,6 +22,7 @@ jobs:
       with:
         distribution: zulu
         java-version: '11'
+
     - uses: actions/cache@v2
       with:
         path: |
@@ -30,5 +31,24 @@ jobs:
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
+
     - name: Test with Gradle
       run: ./gradlew clean test
+
+    - name: Build and analyze
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+      run: ./gradlew build --info
+
+    - name: check the directories
+      run: |
+        ls -lah
+        cd build
+        ls -lah
+        cd libs
+        ls -lah
+    - uses: azure/webapps-deploy@v2
+      with:
+        app-name: springboot-rachdemo
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }} 
+        package: 'build/libs/*.jar'

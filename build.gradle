@@ -10,6 +10,10 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 targetCompatibility = '11'
 
+jar {
+    enabled = false
+}
+
 spotless {
     java {
         target project.fileTree(project.rootDir) {
