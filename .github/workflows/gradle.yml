@@ -40,15 +40,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
       run: ./gradlew build --info
 
-    - name: check the directories
-      run: |
-        ls -lah
-        cd build
-        ls -lah
-        cd libs
-        ls -lah
     - uses: azure/webapps-deploy@v2
       with:
-        app-name: springboot-rachdemo
+        app-name: second-springboot-rachdemo
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }} 
         package: 'build/libs/*.jar'
