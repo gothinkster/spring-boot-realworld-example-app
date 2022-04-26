@@ -58,7 +58,6 @@ jobs:
           echo Starting WhiteSource Scan
           java -jar wss-unified-agent.jar
         fi
-
     # - uses: azure/webapps-deploy@v2
     #   with:
     #     app-name: second-springboot-rachdemo
