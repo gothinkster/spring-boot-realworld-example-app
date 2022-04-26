@@ -58,6 +58,16 @@ jobs:
           echo Starting WhiteSource Scan
           java -jar wss-unified-agent.jar
         fi
+        export WS_PROJECTTOKEN=$(jq -r '.projects | .[] | .projectToken' ./whitesource/scanProjectDetails.json)
+        export WS_URL=$(echo $WS_WSS_URL | awk -F "agent" '{print $1}')
+        #RiskReport-Example
+        curl --output ./whitesource/riskreport.pdf --request POST $WS_URL'/api/v1.3' --header 'Content-Type: application/json'  --data-raw '{"requestType":"getProjectRiskReport","userKey":"$WS_USERKEY","projectToken":"$WS_PROJECTTOKEN"}'
+        #InventoryReport-Example
+        curl --output ./whitesource/inventoryreport.xlsx --request POST $WS_URL'/api/v1.3' --header 'Content-Type: application/json'  --data-raw '{"requestType":"getProductInventoryReport","userKey":"$WS_USERKEY","projectToken":"$WS_PROJECTTOKEN"}'
+        #DueDiligenceReport-Example
+        curl --output ./whitesource/duediligencereport.pdf --request POST $WS_URL'/api/v1.3' --header 'Content-Type: application/json'  --data-raw '{"requestType":"getProjectDueDiligenceReport","userKey":"$WS_USERKEY","projectToken":"$WS_PROJECTTOKEN"}'
+
+
     # - uses: azure/webapps-deploy@v2
     #   with:
     #     app-name: second-springboot-rachdemo
