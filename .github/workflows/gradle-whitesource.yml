@@ -74,11 +74,11 @@ jobs:
         ls -a ./whitesource
         chmod +x ./Scripts/list-project-alerts.sh
 
-      - name: Archive Whitesource results
-        uses: actions/upload-artifact@v3
-        with:
-          name: Whitesource reports
-          path: ./whitesource
+    - name: Archive Whitesource results
+      uses: actions/upload-artifact@v3
+      with:
+        name: Whitesource reports
+        path: ./whitesource
 
 
 
