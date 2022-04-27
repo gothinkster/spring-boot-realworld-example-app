@@ -67,7 +67,7 @@ jobs:
         #DueDiligenceReport-Example
         curl --output ./whitesource/duediligencereport.pdf --request POST $WS_URL'/api/v1.3' --header 'Content-Type: application/json'  --data-raw '{"requestType":"getProjectDueDiligenceReport","userKey":"$WS_USERKEY","projectToken":"$WS_PROJECTTOKEN"}'
     - name: List project alerts
-      run: ./Scripts/list-project-alerts.sh
+      run: chmod +x ./Scripts/list-project-alerts.sh
 
 
 
