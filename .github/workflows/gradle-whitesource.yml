@@ -48,7 +48,11 @@ jobs:
         WS_PRODUCTNAME: ${{github.event.repository.name}}
         WS_PROJECTNAME: ${{github.ref}}
         WS_FILESYSTEMSCAN: false
-      run: |
+        WS_GENERATEPROJECTDETAILSJSON: true
+        WS_UPDATEINVENTORY: true #(defaults to true)
+
+      run: 
+        sudo apt-get install jq curl
         echo Downloading WhiteSource Unified Agent
         curl -LJO https://unified-agent.s3.amazonaws.com/wss-unified-agent.jar
         if [[ "$(curl -sL https://unified-agent.s3.amazonaws.com/wss-unified-agent.jar.sha256)" != "$(sha256sum wss-unified-agent.jar)" ]] ; then
@@ -66,8 +70,7 @@ jobs:
         curl --output ./whitesource/inventoryreport.xlsx --request POST $WS_URL'/api/v1.3' --header 'Content-Type: application/json'  --data-raw '{"requestType":"getProductInventoryReport","userKey":"$WS_USERKEY","projectToken":"$WS_PROJECTTOKEN"}'
         #DueDiligenceReport-Example
         curl --output ./whitesource/duediligencereport.pdf --request POST $WS_URL'/api/v1.3' --header 'Content-Type: application/json'  --data-raw '{"requestType":"getProjectDueDiligenceReport","userKey":"$WS_USERKEY","projectToken":"$WS_PROJECTTOKEN"}'
-    - name: List project alerts
-      run: chmod +x ./Scripts/list-project-alerts.sh
+        chmod +x ./Scripts/list-project-alerts.sh
 
 
 
