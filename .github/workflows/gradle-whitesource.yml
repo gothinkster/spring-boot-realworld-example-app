@@ -51,7 +51,7 @@ jobs:
         WS_GENERATEPROJECTDETAILSJSON: true
         WS_UPDATEINVENTORY: true #(defaults to true)
 
-      run: 
+      run: |
         sudo apt-get install jq curl
         echo Downloading WhiteSource Unified Agent
         curl -LJO https://unified-agent.s3.amazonaws.com/wss-unified-agent.jar
