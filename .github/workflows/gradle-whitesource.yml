@@ -52,6 +52,8 @@ jobs:
         WS_UPDATEINVENTORY: true #(defaults to true)
         WS_enableImpactAnalysis: true
         WS_resolveAllDependencies: false
+        WS_resolveDependencies: true
+        WS_aggregateModules: True
         
 
       run: |
