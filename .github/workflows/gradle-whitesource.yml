@@ -47,7 +47,7 @@ jobs:
         WS_WSS_URL: https://app.whitesourcesoftware.com/agent
         WS_PRODUCTNAME: ${{github.event.repository.name}}
         WS_PROJECTNAME: ${{github.ref}}
-        WS_FILESYSTEMSCAN: true
+        WS_FILESYSTEMSCAN: false
         WS_GENERATEPROJECTDETAILSJSON: true
         WS_UPDATEINVENTORY: true #(defaults to true)
         WS_enableImpactAnalysis: true
