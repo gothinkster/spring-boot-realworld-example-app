@@ -10,6 +10,10 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 targetCompatibility = '11'
 
+jar {
+    enabled = false
+}
+
 spotless {
     java {
         target project.fileTree(project.rootDir) {
@@ -65,6 +69,7 @@ tasks.named('clean') {
         delete './dev.db'
     }
 }
+
 
 tasks.named('generateJava') {
     schemaPaths = ["${projectDir}/src/main/resources/schema"] // List of directories containing schema files

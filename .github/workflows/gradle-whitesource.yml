@@ -1,0 +1,94 @@
+name: Java CI
+
+on:
+  push:
+    branches:
+      - 'master'
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 11
+      uses: actions/setup-java@v2
+      with:
+        distribution: zulu
+        java-version: '11'
+
+    - uses: actions/cache@v2
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+    - name: Test with Gradle
+      run: ./gradlew clean test
+
+    - name: Build and analyze
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+      run: ./gradlew build --info
+
+    - name: WhiteSource Unified Agent Scan
+      env:
+        WS_APIKEY: ${{secrets.APIKEY}}
+        WS_USERKEY: ${{secrets.USERKEY}}
+        WS_WSS_URL: https://app.whitesourcesoftware.com/agent
+        WS_PRODUCTNAME: ${{github.event.repository.name}}
+        WS_PROJECTNAME: ${{github.ref}}
+        WS_FILESYSTEMSCAN: false
+        WS_GENERATEPROJECTDETAILSJSON: true
+        WS_UPDATEINVENTORY: true #(defaults to true)
+        WS_enableImpactAnalysis: true
+        WS_resolveAllDependencies: false
+        WS_resolveDependencies: true
+        WS_aggregateModules: True
+        
+
+      run: |
+        sudo apt-get install jq curl
+        echo Downloading WhiteSource Unified Agent
+        curl -LJO https://unified-agent.s3.amazonaws.com/wss-unified-agent.jar
+        if [[ "$(curl -sL https://unified-agent.s3.amazonaws.com/wss-unified-agent.jar.sha256)" != "$(sha256sum wss-unified-agent.jar)" ]] ; then
+          echo "Integrity Check Failed"
+        else
+          echo "Integrity Check Passed"
+          echo Starting WhiteSource Scan
+          java -jar wss-unified-agent.jar
+        fi
+        export WS_PROJECTTOKEN=$(jq -r '.projects | .[] | .projectToken' ./whitesource/scanProjectDetails.json)
+        export WS_URL=$(echo $WS_WSS_URL | awk -F "agent" '{print $1}')
+        #RiskReport-Example
+        curl --output ./whitesource/riskreport.pdf --request POST $WS_URL'/api/v1.3' --header 'Content-Type: application/json'  --data-raw '{"requestType":"getProjectRiskReport","userKey":"$WS_USERKEY","projectToken":"$WS_PROJECTTOKEN"}'
+        #InventoryReport-Example
+        curl --output ./whitesource/inventoryreport.xlsx --request POST $WS_URL'/api/v1.3' --header 'Content-Type: application/json'  --data-raw '{"requestType":"getProductInventoryReport","userKey":"$WS_USERKEY","projectToken":"$WS_PROJECTTOKEN"}'
+        #DueDiligenceReport-Example
+        curl --output ./whitesource/duediligencereport.pdf --request POST $WS_URL'/api/v1.3' --header 'Content-Type: application/json'  --data-raw '{"requestType":"getProjectDueDiligenceReport","userKey":"$WS_USERKEY","projectToken":"$WS_PROJECTTOKEN"}'
+        echo "*****************************"
+        ls -a ./whitesource
+        chmod +x ./Scripts/list-project-alerts.sh
+
+    - name: Archive Whitesource results
+      uses: actions/upload-artifact@v3
+      with:
+        name: Whitesource reports
+        path: ./whitesource
+
+
+
+    # - uses: azure/webapps-deploy@v2
+    #   with:
+    #     app-name: second-springboot-rachdemo
+    #     publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }} 
+    #     package: 'build/libs/*.jar'
