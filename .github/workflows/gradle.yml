@@ -32,3 +32,16 @@ jobs:
           ${{ runner.os }}-gradle-
     - name: Test with Gradle
       run: ./gradlew clean test
+
+    - name: Generate JaCoCo Badge
+#      if: ${{ github.ref == 'refs/heads/main' }}
+      uses: cicirello/jacoco-badge-generator@v2
+      with:
+        jacoco-csv-file: build/reports/jacoco/test/jacocoTestReport.csv
+        badges-directory: build/reports/jacoco/test/html/badges
+
+    - name: Publish coverage report to GitHub Pages
+#      if: ${{ github.ref == 'refs/heads/main' }}
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        folder: build/reports/jacoco/test/html
