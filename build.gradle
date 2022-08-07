@@ -4,6 +4,7 @@ plugins {
     id 'java'
     id "com.netflix.dgs.codegen" version "5.0.6"
     id "com.diffplug.spotless" version "6.2.1"
+    id "jacoco"
 }
 
 version = '0.0.1-SNAPSHOT'
@@ -58,7 +59,48 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+    finalizedBy jacocoTestReport // report is always generated after tests run
 }
+
+jacocoTestReport {
+    dependsOn test //tests are required to run before generating the report
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [ //files & directories which don't need to be covered in the report
+                    // for example:
+//                    "**/dto/*", //for full packages
+//                    "**/config/*",
+//                    "**/exception/*",
+//                    "**/filter/*",
+//                    "**/entity/*"
+                    //"io/spring/application/data/ArticleData.class" for certain class in a package
+            ])
+        }))
+    }
+    reports { //generated files format
+        html.enabled(true)
+        xml.enabled(true)
+        csv.enabled(true)
+    }
+    finalizedBy jacocoTestCoverageVerification
+}
+
+jacocoTestCoverageVerification { // custom set of rules
+    violationRules {
+        rule {
+            enabled = false //for now this rule is set to false to dismiss it
+            limit {
+                minimum = 0.50 // when the rule is enabled to true, the build will fail when less than 50% has passed
+//                with the current code: the instructions covered ratio is 33% so when the rule is enabled, the build will fail
+            }
+        }
+    }
+}
+
+jacoco {
+    toolVersion = "0.8.7"
+}
+
 
 tasks.named('clean') {
     doFirst {
