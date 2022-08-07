@@ -7,7 +7,7 @@ jobs:
   inga-analysis:
 
     runs-on: ubuntu-latest
-    container: ghcr.io/seachicken/inga:0.1.2
+    container: ghcr.io/seachicken/inga:latest-java
 
     steps:
     - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
@@ -16,4 +16,4 @@ jobs:
         fetch-depth: 0
         # https://github.com/actions/checkout/issues/124
         ref: ${{ github.event.pull_request.head.ref }}
-    - run: inga --back-path . --exclude "*Test.java" --github-token ${{ secrets.GITHUB_TOKEN }}
+    - run: inga --back-path . --exclude "*Test.java, *.yml" --github-token ${{ secrets.GITHUB_TOKEN }}
