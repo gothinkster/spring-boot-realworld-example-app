@@ -4,6 +4,7 @@ plugins {
     id 'java'
     id "com.netflix.dgs.codegen" version "5.0.6"
     id "com.diffplug.spotless" version "6.2.1"
+    id "org.springdoc.openapi-gradle-plugin" version "1.4.0"
 }
 
 version = '0.0.1-SNAPSHOT'
