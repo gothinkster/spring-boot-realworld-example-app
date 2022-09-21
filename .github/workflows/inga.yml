@@ -16,4 +16,4 @@ jobs:
         fetch-depth: 0
         # https://github.com/actions/checkout/issues/124
         ref: ${{ github.event.pull_request.head.ref }}
-    - run: inga --back-path . --exclude "*Test.java" --github-token ${{ secrets.GITHUB_TOKEN }}
+    - run: inga --back-path . --exclude "**/src/test/**" --github-token ${{ secrets.GITHUB_TOKEN }}
