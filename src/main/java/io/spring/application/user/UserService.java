@@ -4,6 +4,7 @@ import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.List;
 import javax.validation.Constraint;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -53,6 +54,10 @@ public class UserService {
         updateUserParam.getBio(),
         updateUserParam.getImage());
     userRepository.save(user);
+  }
+
+  public List<User> findAll() {
+    return userRepository.findAll();
   }
 }
 
