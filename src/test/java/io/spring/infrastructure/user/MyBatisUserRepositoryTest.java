@@ -5,6 +5,9 @@ import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
 import io.spring.infrastructure.DbTestBase;
 import io.spring.infrastructure.repository.MyBatisUserRepository;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +26,19 @@ public class MyBatisUserRepositoryTest extends DbTestBase {
   }
 
   @Test
+  public void should_return_users() {
+    List<User> usersList = new ArrayList<>(List.of(
+            new User("john@163.com", "john", "123", "", "default"),
+            new User("adam@163.com", "adam", "123", "", "default")));
+
+    userRepository.save(new User("john@163.com", "john", "123", "", "default"));
+    userRepository.save(new User("adam@163.com", "adam", "123", "", "default"));
+
+    Assertions.assertEquals(userRepository.findAll().get(0).getEmail(), (usersList.get(0).getEmail()));
+    Assertions.assertEquals(userRepository.findAll().get(0).getUsername(), (usersList.get(0).getUsername()));
+    Assertions.assertEquals(userRepository.findAll().get(1).getEmail(), (usersList.get(1).getEmail()));
+    Assertions.assertEquals(userRepository.findAll().get(1).getUsername(), (usersList.get(1).getUsername()));
+  }@Test
   public void should_save_and_fetch_user_success() {
     userRepository.save(user);
     Optional<User> userOptional = userRepository.findByUsername("aisensiy");

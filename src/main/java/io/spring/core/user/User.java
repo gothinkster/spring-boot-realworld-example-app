@@ -1,14 +1,17 @@
 package io.spring.core.user;
 
 import io.spring.Util;
-import java.util.UUID;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+import java.util.UUID;
 
 @Getter
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"id"})
+@ToString
 public class User {
   private String id;
   private String email;

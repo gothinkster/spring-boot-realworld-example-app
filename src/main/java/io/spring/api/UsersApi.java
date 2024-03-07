@@ -1,5 +1,6 @@
 package io.spring.api;
 
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
@@ -55,6 +56,11 @@ public class UsersApi {
     } else {
       throw new InvalidAuthenticationException();
     }
+  }
+
+  @RequestMapping(path = "/users", method = GET)
+  public ResponseEntity findAll() {
+    return ResponseEntity.ok(userService.findAll());
   }
 
   private Map<String, Object> userResponse(UserWithToken userWithToken) {

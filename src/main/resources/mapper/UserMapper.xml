@@ -45,6 +45,10 @@
         where F.user_id = #{userId} and F.follow_id = #{targetId}
     </select>
 
+    <select id="findAll" resultMap="user">
+        SELECT id, username, email, password, bio, image from users
+    </select>
+
     <resultMap id="follow" type="io.spring.core.user.FollowRelation">
         <result column="followUserId" property="userId"/>
         <result column="followTargetId" property="targetId"/>
