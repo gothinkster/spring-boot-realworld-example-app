@@ -18,12 +18,13 @@ public class MyBatisUserRepository implements UserRepository {
   }
 
   @Override
-  public void save(User user) {
+  public User save(User user) {
     if (userMapper.findById(user.getId()) == null) {
       userMapper.insert(user);
     } else {
       userMapper.update(user);
     }
+      return user;
   }
 
   @Override

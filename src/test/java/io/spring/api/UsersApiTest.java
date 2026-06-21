@@ -68,7 +68,7 @@ public class UsersApiTest {
     UserData userData = new UserData(user.getId(), email, username, "", defaultAvatar);
     when(userReadService.findById(any())).thenReturn(userData);
 
-    when(userService.createUser(any())).thenReturn(user);
+    //when(userService.createUser(any())).thenReturn(user);
 
     when(userRepository.findByUsername(eq(username))).thenReturn(Optional.empty());
     when(userRepository.findByEmail(eq(email))).thenReturn(Optional.empty());

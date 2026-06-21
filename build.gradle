@@ -44,8 +44,11 @@ dependencies {
     implementation 'joda-time:joda-time:2.10.13'
     implementation 'org.xerial:sqlite-jdbc:3.36.0.3'
 
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok:1.18.38'
+    annotationProcessor 'org.projectlombok:lombok:1.18.38'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.38'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.38'
 
     testImplementation 'io.rest-assured:rest-assured:4.5.1'
     testImplementation 'io.rest-assured:json-path:4.5.1'

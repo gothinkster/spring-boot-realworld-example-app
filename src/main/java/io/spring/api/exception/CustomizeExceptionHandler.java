@@ -13,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -106,4 +107,26 @@ public class CustomizeExceptionHandler extends ResponseEntityExceptionHandler {
       return String.join(".", Arrays.copyOfRange(splits, 2, splits.length));
     }
   }
+
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(
+            HttpMessageNotReadableException ex,
+            HttpHeaders headers,
+            HttpStatus status,
+            WebRequest request) {
+
+        List<FieldErrorResource> errors = List.of(
+                new FieldErrorResource(
+                        "request",
+                        "body",
+                        "InvalidJson",
+                        "Invalid request format. Expected body wrapped in 'user' object."
+                )
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResource(errors));
+    }
 }
