@@ -5,6 +5,7 @@ import com.netflix.graphql.dgs.DgsData;
 import com.netflix.graphql.dgs.InputArgument;
 import graphql.execution.DataFetcherResult;
 import io.spring.api.exception.InvalidAuthenticationException;
+import io.spring.application.data.UserWithToken;
 import io.spring.application.user.RegisterParam;
 import io.spring.application.user.UpdateUserCommand;
 import io.spring.application.user.UpdateUserParam;
@@ -37,7 +38,7 @@ public class UserMutation {
   public DataFetcherResult<UserResult> createUser(@InputArgument("input") CreateUserInput input) {
     RegisterParam registerParam =
         new RegisterParam(input.getEmail(), input.getUsername(), input.getPassword());
-    User user;
+    UserWithToken user;
     try {
       user = userService.createUser(registerParam);
     } catch (ConstraintViolationException cve) {
