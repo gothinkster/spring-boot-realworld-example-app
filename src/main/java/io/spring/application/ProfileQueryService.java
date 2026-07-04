@@ -12,10 +12,10 @@ import org.springframework.stereotype.Component;
 @Component
 @AllArgsConstructor
 public class ProfileQueryService {
-  private UserReadService userReadService;
-  private UserRelationshipQueryService userRelationshipQueryService;
+  private final UserReadService userReadService;
+  private final UserRelationshipQueryService userRelationshipQueryService;
 
-  public Optional<ProfileData> findByUsername(String username, User currentUser) {
+    public Optional<ProfileData> findByUsername(String username, User currentUser) {
     UserData userData = userReadService.findByUsername(username);
     if (userData == null) {
       return Optional.empty();
@@ -32,4 +32,6 @@ public class ProfileQueryService {
       return Optional.of(profileData);
     }
   }
+
+
 }
