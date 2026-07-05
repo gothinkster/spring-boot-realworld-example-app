@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 public class ArticleApi {
   private ArticleQueryService articleQueryService;
-  private ArticleRepository articleRepository;
   private ArticleCommandService articleCommandService;
 
   @GetMapping
@@ -41,42 +40,32 @@ public class ArticleApi {
         .orElseThrow(ResourceNotFoundException::new);
   }
 
-  @PutMapping
-  public ResponseEntity<?> updateArticle(
-      @PathVariable("slug") String slug,
-      @AuthenticationPrincipal User user,
-      @Valid @RequestBody UpdateArticleParam updateArticleParam) {
-    return articleRepository
-        .findBySlug(slug)
-        .map(
-            article -> {
-              if (!AuthorizationService.canWriteArticle(user, article)) {
-                throw new NoAuthorizationException();
-              }
-              Article updatedArticle =
-                  articleCommandService.updateArticle(article, updateArticleParam);
-              return ResponseEntity.ok(
-                  articleResponse(
-                      articleQueryService.findBySlug(updatedArticle.getSlug(), user).get()));
-            })
-        .orElseThrow(ResourceNotFoundException::new);
-  }
+    @PutMapping
+    public ResponseEntity<?> updateArticle(
+            @PathVariable("slug") String slug,
+            @AuthenticationPrincipal User user,
+            @Valid @RequestBody UpdateArticleParam updateArticleParam) {
 
-  @DeleteMapping
-  public ResponseEntity deleteArticle(
-      @PathVariable("slug") String slug, @AuthenticationPrincipal User user) {
-    return articleRepository
-        .findBySlug(slug)
-        .map(
-            article -> {
-              if (!AuthorizationService.canWriteArticle(user, article)) {
-                throw new NoAuthorizationException();
-              }
-              articleRepository.remove(article);
-              return ResponseEntity.noContent().build();
-            })
-        .orElseThrow(ResourceNotFoundException::new);
-  }
+        Article article =
+                articleCommandService.updateArticle(slug, user, updateArticleParam);
+
+        ArticleData articleData =
+                articleQueryService
+                        .findBySlug(article.getSlug(), user)
+                        .orElseThrow(ResourceNotFoundException::new);
+
+        return ResponseEntity.ok(articleResponse(articleData));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<?> deleteArticle(
+            @PathVariable("slug") String slug,
+            @AuthenticationPrincipal User user) {
+
+        articleCommandService.deleteArticle(slug, user);
+
+        return ResponseEntity.noContent().build();
+    }
 
   private Map<String, Object> articleResponse(ArticleData articleData) {
     return new HashMap<String, Object>() {

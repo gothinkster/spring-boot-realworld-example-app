@@ -50,24 +50,29 @@ public class ArticleMutation {
         .build();
   }
 
-  @DgsMutation(field = MUTATION.UpdateArticle)
-  public DataFetcherResult<ArticlePayload> updateArticle(
-      @InputArgument("slug") String slug, @InputArgument("changes") UpdateArticleInput params) {
-    Article article =
-        articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
-    User user = SecurityUtil.getCurrentUser().orElseThrow(AuthenticationException::new);
-    if (!AuthorizationService.canWriteArticle(user, article)) {
-      throw new NoAuthorizationException();
+    @DgsMutation(field = MUTATION.UpdateArticle)
+    public DataFetcherResult<ArticlePayload> updateArticle(
+            @InputArgument("slug") String slug,
+            @InputArgument("changes") UpdateArticleInput params) {
+
+        User user =
+                SecurityUtil.getCurrentUser()
+                        .orElseThrow(AuthenticationException::new);
+
+        Article article =
+                articleCommandService.updateArticle(
+                        slug,
+                        user,
+                        new UpdateArticleParam(
+                                params.getTitle(),
+                                params.getBody(),
+                                params.getDescription()));
+
+        return DataFetcherResult.<ArticlePayload>newResult()
+                .data(ArticlePayload.newBuilder().build())
+                .localContext(article)
+                .build();
     }
-    article =
-        articleCommandService.updateArticle(
-            article,
-            new UpdateArticleParam(params.getTitle(), params.getBody(), params.getDescription()));
-    return DataFetcherResult.<ArticlePayload>newResult()
-        .data(ArticlePayload.newBuilder().build())
-        .localContext(article)
-        .build();
-  }
 
   @DgsMutation(field = MUTATION.FavoriteArticle)
   public DataFetcherResult<ArticlePayload> favoriteArticle(@InputArgument("slug") String slug) {

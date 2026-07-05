@@ -5,7 +5,6 @@ import io.spring.application.ProfileQueryService;
 import io.spring.application.ProfileService;
 import io.spring.application.data.ProfileData;
 import io.spring.core.user.User;
-import io.spring.core.user.UserRepository;
 import java.util.HashMap;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProfileApi {
   private ProfileQueryService profileQueryService;
   private ProfileService profileService;
-  private UserRepository userRepository;
 
   @GetMapping
   public ResponseEntity getProfile(
