@@ -35,6 +35,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-hateoas'
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.15'
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2'
     implementation 'com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter:4.9.21'
     implementation 'org.flywaydb:flyway-core'

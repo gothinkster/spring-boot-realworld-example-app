@@ -7,6 +7,9 @@ import io.spring.application.user.UpdateUserCommand;
 import io.spring.application.user.UpdateUserParam;
 import io.spring.application.user.UserService;
 import io.spring.core.user.User;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.HashMap;
 import java.util.Map;
 import javax.validation.Valid;
@@ -23,12 +26,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = "/user")
 @AllArgsConstructor
+@Tag(name = "User", description = "Get or update the authenticated user.")
 public class CurrentUserApi {
 
   private UserQueryService userQueryService;
   private UserService userService;
 
   @GetMapping
+  @Operation(summary = "Get the current user")
+  @SecurityRequirement(name = "bearerAuth")
   public ResponseEntity currentUser(
       @AuthenticationPrincipal User currentUser,
       @RequestHeader(value = "Authorization") String authorization) {
@@ -38,6 +44,8 @@ public class CurrentUserApi {
   }
 
   @PutMapping
+  @Operation(summary = "Update the current user")
+  @SecurityRequirement(name = "bearerAuth")
   public ResponseEntity updateProfile(
       @AuthenticationPrincipal User currentUser,
       @RequestHeader("Authorization") String token,

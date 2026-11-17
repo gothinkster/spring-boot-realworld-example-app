@@ -64,6 +64,16 @@ You'll need Docker installed.
 
 The entry point address of the backend API is at http://localhost:8080, **not** http://localhost:8080/api as some of the frontend documentation suggests.
 
+# API documentation
+
+The REST API is documented with OpenAPI. Start the application and open
+[Swagger UI](http://localhost:8080/swagger-ui.html) to browse and try the
+endpoints. The raw [OpenAPI specification](http://localhost:8080/v3/api-docs) is
+also available.
+
+For protected endpoints, use the **Authorize** button and enter the JWT returned
+by registration or login. Swagger UI will send it as a bearer token.
+
 # Run test
 
 The repository contains a lot of test cases to cover both api test and repository test.

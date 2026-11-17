@@ -10,6 +10,9 @@ import io.spring.core.article.Article;
 import io.spring.core.article.ArticleRepository;
 import io.spring.core.service.AuthorizationService;
 import io.spring.core.user.User;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.HashMap;
 import java.util.Map;
 import javax.validation.Valid;
@@ -27,12 +30,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = "/articles/{slug}")
 @AllArgsConstructor
+@Tag(name = "Articles", description = "Read, update, and delete an article.")
 public class ArticleApi {
   private ArticleQueryService articleQueryService;
   private ArticleRepository articleRepository;
   private ArticleCommandService articleCommandService;
 
   @GetMapping
+  @Operation(summary = "Get an article")
   public ResponseEntity<?> article(
       @PathVariable("slug") String slug, @AuthenticationPrincipal User user) {
     return articleQueryService
@@ -42,6 +47,8 @@ public class ArticleApi {
   }
 
   @PutMapping
+  @Operation(summary = "Update an article")
+  @SecurityRequirement(name = "bearerAuth")
   public ResponseEntity<?> updateArticle(
       @PathVariable("slug") String slug,
       @AuthenticationPrincipal User user,
@@ -63,6 +70,8 @@ public class ArticleApi {
   }
 
   @DeleteMapping
+  @Operation(summary = "Delete an article")
+  @SecurityRequirement(name = "bearerAuth")
   public ResponseEntity deleteArticle(
       @PathVariable("slug") String slug, @AuthenticationPrincipal User user) {
     return articleRepository

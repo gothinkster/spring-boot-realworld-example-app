@@ -6,6 +6,9 @@ import io.spring.application.article.ArticleCommandService;
 import io.spring.application.article.NewArticleParam;
 import io.spring.core.article.Article;
 import io.spring.core.user.User;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.HashMap;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -21,11 +24,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = "/articles")
 @AllArgsConstructor
+@Tag(name = "Articles", description = "Create and browse articles.")
 public class ArticlesApi {
   private ArticleCommandService articleCommandService;
   private ArticleQueryService articleQueryService;
 
   @PostMapping
+  @Operation(summary = "Create an article")
+  @SecurityRequirement(name = "bearerAuth")
   public ResponseEntity createArticle(
       @Valid @RequestBody NewArticleParam newArticleParam, @AuthenticationPrincipal User user) {
     Article article = articleCommandService.createArticle(newArticleParam, user);
@@ -38,6 +44,8 @@ public class ArticlesApi {
   }
 
   @GetMapping(path = "feed")
+  @Operation(summary = "Get the current user's article feed")
+  @SecurityRequirement(name = "bearerAuth")
   public ResponseEntity getFeed(
       @RequestParam(value = "offset", defaultValue = "0") int offset,
       @RequestParam(value = "limit", defaultValue = "20") int limit,
@@ -46,6 +54,7 @@ public class ArticlesApi {
   }
 
   @GetMapping
+  @Operation(summary = "List articles")
   public ResponseEntity getArticles(
       @RequestParam(value = "offset", defaultValue = "0") int offset,
       @RequestParam(value = "limit", defaultValue = "20") int limit,

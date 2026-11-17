@@ -12,6 +12,8 @@ import io.spring.application.user.UserService;
 import io.spring.core.service.JwtService;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -29,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @AllArgsConstructor
+@Tag(name = "Authentication", description = "Register or authenticate a user.")
 public class UsersApi {
   private UserRepository userRepository;
   private UserQueryService userQueryService;
@@ -37,6 +40,7 @@ public class UsersApi {
   private UserService userService;
 
   @RequestMapping(path = "/users", method = POST)
+  @Operation(summary = "Register a new user")
   public ResponseEntity createUser(@Valid @RequestBody RegisterParam registerParam) {
     User user = userService.createUser(registerParam);
     UserData userData = userQueryService.findById(user.getId()).get();
@@ -45,6 +49,7 @@ public class UsersApi {
   }
 
   @RequestMapping(path = "/users/login", method = POST)
+  @Operation(summary = "Log in")
   public ResponseEntity userLogin(@Valid @RequestBody LoginParam loginParam) {
     Optional<User> optional = userRepository.findByEmail(loginParam.getEmail());
     if (optional.isPresent()

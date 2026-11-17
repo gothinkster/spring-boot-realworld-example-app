@@ -6,6 +6,9 @@ import io.spring.application.data.ProfileData;
 import io.spring.core.user.FollowRelation;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.HashMap;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
@@ -21,11 +24,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = "profiles/{username}")
 @AllArgsConstructor
+@Tag(name = "Profiles", description = "View profiles and follow or unfollow users.")
 public class ProfileApi {
   private ProfileQueryService profileQueryService;
   private UserRepository userRepository;
 
   @GetMapping
+  @Operation(summary = "Get a profile")
   public ResponseEntity getProfile(
       @PathVariable("username") String username, @AuthenticationPrincipal User user) {
     return profileQueryService
@@ -35,6 +40,8 @@ public class ProfileApi {
   }
 
   @PostMapping(path = "follow")
+  @Operation(summary = "Follow a user")
+  @SecurityRequirement(name = "bearerAuth")
   public ResponseEntity follow(
       @PathVariable("username") String username, @AuthenticationPrincipal User user) {
     return userRepository
@@ -49,6 +56,8 @@ public class ProfileApi {
   }
 
   @DeleteMapping(path = "follow")
+  @Operation(summary = "Unfollow a user")
+  @SecurityRequirement(name = "bearerAuth")
   public ResponseEntity unfollow(
       @PathVariable("username") String username, @AuthenticationPrincipal User user) {
     Optional<User> userOptional = userRepository.findByUsername(username);

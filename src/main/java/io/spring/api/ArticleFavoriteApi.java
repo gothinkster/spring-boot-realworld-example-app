@@ -8,6 +8,9 @@ import io.spring.core.article.ArticleRepository;
 import io.spring.core.favorite.ArticleFavorite;
 import io.spring.core.favorite.ArticleFavoriteRepository;
 import io.spring.core.user.User;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.HashMap;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,12 +24,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = "articles/{slug}/favorite")
 @AllArgsConstructor
+@Tag(name = "Favorites", description = "Favorite or unfavorite an article.")
 public class ArticleFavoriteApi {
   private ArticleFavoriteRepository articleFavoriteRepository;
   private ArticleRepository articleRepository;
   private ArticleQueryService articleQueryService;
 
   @PostMapping
+  @Operation(summary = "Favorite an article")
+  @SecurityRequirement(name = "bearerAuth")
   public ResponseEntity favoriteArticle(
       @PathVariable("slug") String slug, @AuthenticationPrincipal User user) {
     Article article =
@@ -37,6 +43,8 @@ public class ArticleFavoriteApi {
   }
 
   @DeleteMapping
+  @Operation(summary = "Unfavorite an article")
+  @SecurityRequirement(name = "bearerAuth")
   public ResponseEntity unfavoriteArticle(
       @PathVariable("slug") String slug, @AuthenticationPrincipal User user) {
     Article article =

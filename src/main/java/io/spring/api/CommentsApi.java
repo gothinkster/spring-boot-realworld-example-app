@@ -11,6 +11,9 @@ import io.spring.core.comment.Comment;
 import io.spring.core.comment.CommentRepository;
 import io.spring.core.service.AuthorizationService;
 import io.spring.core.user.User;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,12 +35,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = "/articles/{slug}/comments")
 @AllArgsConstructor
+@Tag(name = "Comments", description = "Manage comments on articles.")
 public class CommentsApi {
   private ArticleRepository articleRepository;
   private CommentRepository commentRepository;
   private CommentQueryService commentQueryService;
 
   @PostMapping
+  @Operation(summary = "Add a comment to an article")
+  @SecurityRequirement(name = "bearerAuth")
   public ResponseEntity<?> createComment(
       @PathVariable("slug") String slug,
       @AuthenticationPrincipal User user,
@@ -51,6 +57,7 @@ public class CommentsApi {
   }
 
   @GetMapping
+  @Operation(summary = "List comments on an article")
   public ResponseEntity getComments(
       @PathVariable("slug") String slug, @AuthenticationPrincipal User user) {
     Article article =
@@ -65,6 +72,8 @@ public class CommentsApi {
   }
 
   @RequestMapping(path = "{id}", method = RequestMethod.DELETE)
+  @Operation(summary = "Delete a comment")
+  @SecurityRequirement(name = "bearerAuth")
   public ResponseEntity deleteComment(
       @PathVariable("slug") String slug,
       @PathVariable("id") String commentId,
